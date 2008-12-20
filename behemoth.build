@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="Behemoth" default="DummyApp">
+  
+  <!-- Settings -->
+  <property name="project.version" value="0.1.1"/>
+  <property name="project.build_dir"
+            value="${nant.project.basedir}/build"/>
+
+
+  <target name="init">
+    <mkdir dir="${project.build_dir}"/>
+  </target>
+
+  <target name="Behemoth.Dummy" depends="init">
+    <csc target="library" output="${project.build_dir}/Behemoth.Dummy.dll">
+      <sources>
+        <includes name="Behemoth/Dummy/Dummy.cs"/>
+      </sources>
+    </csc>
+  </target>
+
+  <target name="DummyApp" depends="Behemoth.Dummy">
+    <csc target="exe" output="${project.build_dir}/DummyApp.exe">
+      <sources>
+        <includes name="examples/DummyApp/DummyApp.cs"/>
+      </sources>
+      <references>
+        <includes name="Behemoth.Dummy.dll"/>
+      </references>
+    </csc>
+  </target>
+      
+  <target name="clean">
+    <delete dir="${project.build_dir}" failonerror="false"/>
+  </target>
+</project>
