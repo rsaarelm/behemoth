@@ -1,0 +1,8 @@
+The purpose of the Behemoth library is to collect reusable library components
+used in C# game programming projects.
+
+The Behemoth library is provided under the MIT-X11 license which makes it free
+for commercial and non-commercial use.
+
+The library components aim to be CLS-compliant, cross-platform and
+cross-runtime.

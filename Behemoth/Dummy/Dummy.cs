@@ -11,6 +11,7 @@ namespace Behemoth.Dummy
     public static void HelloWorld()
     {
       System.Console.WriteLine("Hello, world!");
+      System.Console.WriteLine(""+Factorial(10));
     }
 
     /// <summary>
@@ -18,6 +19,12 @@ namespace Behemoth.Dummy
     /// </summary>
     public static int Factorial(int n)
     {
+      // Use this to test unit testing.
+      int result = 1;
+      for (int i = 1; i <= n; i++) {
+        result *= i;
+      }
+      return result;
     }
 
   }
