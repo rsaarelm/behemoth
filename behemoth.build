@@ -35,6 +35,7 @@
 
   <target name="examples"
           depends="DummyApp.exe,
+                   Shooter.exe,
                    "/>
 
 
@@ -72,6 +73,19 @@
   </target>
 
 
+  <target name="Shooter.exe" depends="init">
+    <csc target="exe" output="${build.dir}/Shooter.exe">
+      <sources>
+        <include name="examples/Shooter/Shooter.cs"/>
+      </sources>
+      <references>
+        <include name="${build.dir}/Tao.FreeGlut.dll"/>
+        <include name="${build.dir}/Tao.OpenGl.dll"/>
+      </references>
+    </csc>
+  </target>
+
+
   <target name="init">
     <mkdir dir="${build.dir}"/>
 
@@ -79,6 +93,7 @@
     <copy todir="${build.dir}">
       <fileset basedir="${libs.dir}">
         <include name="*.dll"/>
+        <include name="*.dll.config"/>
       </fileset>
     </copy>
   </target>
