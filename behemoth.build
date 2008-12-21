@@ -73,16 +73,31 @@
   </target>
 
 
-  <target name="Shooter.exe" depends="init">
-    <csc target="exe" output="${build.dir}/Shooter.exe">
+  <!-- Shooter demo -->
+  <target name="Shooter.exe" depends="init,Shooter.zip">
+    <csc target="exe" 
+         output="${build.dir}/Shooter.exe"
+         unsafe="true">
       <sources>
         <include name="examples/Shooter/Shooter.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Tao.FreeGlut.dll"/>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
+        <include name="${build.dir}/Tao.DevIl.dll"/>
+        <include name="${build.dir}/Tao.PhysFs.dll"/>
       </references>
     </csc>
+  </target>
+
+
+  <!-- Data files for shooter demo -->
+  <target name="Shooter.zip" depends="init">
+    <zip zipfile="${build.dir}/Shooter.zip">
+      <fileset basedir="examples/Shooter/data">
+        <include name="**/*"/>
+      </fileset>
+    </zip>
   </target>
 
 
