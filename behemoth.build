@@ -1,17 +1,60 @@
 <?xml version="1.0"?>
-<project name="Behemoth" default="DummyApp">
+<project name="Behemoth" default="DummyApp.exe">
   
   <!-- Settings -->
   <property name="project.version" value="0.1.1"/>
   <property name="build.dir"
             value="${project::get-base-directory()}/build"/>
-
+  <property name="libs.dir"
+            value="${project::get-base-directory()}/3rdparty"/>
 
   <target name="init">
     <mkdir dir="${build.dir}"/>
+
+    <!-- Copy 3rdparty dlls into build dir -->
+    <copy todir="${build.dir}">
+      <fileset basedir="${libs.dir}">
+        <include name="*.dll"/>
+      </fileset>
+    </copy>
   </target>
 
-  <target name="Behemoth.Dummy" depends="init">
+  <target name="build" 
+          depends="Behemoth.Alg.dll,
+                   Behemoth.Dummy.dll"/>
+
+  <target name="test"
+          depends="Behemoth.Alg.Test.dll">
+
+    <nunit2>
+      <formatter type="Plain"/>
+      <test assemblyname="${build.dir}/Behemoth.Alg.Test.dll"/>
+
+    </nunit2>
+  </target>
+
+  <target name="Behemoth.Alg.dll" depends="init">
+    <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
+      <sources>
+        <include name="Behemoth.Alg/Alg.cs"/>
+      </sources>
+    </csc>
+  </target>
+
+  <target name="Behemoth.Alg.Test.dll" depends="Behemoth.Alg.dll">
+    <csc target="library" output="${build.dir}/Behemoth.Alg.Test.dll">
+      <sources>
+        <include name="tests/Behemoth.Alg/Alg.cs"/>
+      </sources>
+      <references>
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${libs.dir}/nunit.framework.dll"/>
+      </references>
+    </csc>
+  </target>
+
+  <!-- TODO: Clean up the dummy stuff. -->
+  <target name="Behemoth.Dummy.dll" depends="init">
     <csc target="library" output="${build.dir}/Behemoth.Dummy.dll">
       <sources>
         <include name="Behemoth/Dummy/Dummy.cs"/>
@@ -19,7 +62,7 @@
     </csc>
   </target>
 
-  <target name="DummyApp" depends="Behemoth.Dummy">
+  <target name="DummyApp.exe" depends="Behemoth.Dummy.dll">
     <csc target="exe" output="${build.dir}/DummyApp.exe">
       <sources>
         <include name="examples/DummyApp/DummyApp.cs"/>
