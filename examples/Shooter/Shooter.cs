@@ -36,8 +36,9 @@ namespace Shooter
       // run the exe from the project root dir.
       Fs.PHYSFS_addToSearchPath(Path.Combine("build", "Shooter.zip"), 1);
 
-
       InitGlut();
+
+      InitGl();
 
       texture = LoadTexture("sprites.png");
     }
@@ -57,12 +58,23 @@ namespace Shooter
     }
 
 
+    static void InitGl()
+    {
+      Gl.glEnable(Gl.GL_TEXTURE_2D);
+      Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
+      Gl.glClearColor(0f, 0.1f, 0.1f, 1f);
+      Gl.glShadeModel(Gl.GL_SMOOTH);
+      Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_DST_ALPHA);
+      Gl.glEnable(Gl.GL_BLEND);
+    }
+
+
     static void Reshape(int w, int h)
     {
-      Console.WriteLine("Window size is now: " + w + ", " + h);
+      Gl.glViewport(0, 0, w, h);
       Gl.glMatrixMode(Gl.GL_PROJECTION);
       Gl.glLoadIdentity();
-      Glu.gluPerspective(45.0, (double)w / (double)h, 0.1, 100.0);
+      Glu.gluOrtho2D(-w/2.0, w/2.0, -h/2.0, h/2.0);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
     }
 
@@ -84,26 +96,66 @@ namespace Shooter
 
     static void IdleCallback()
     {
+      Glut.glutPostRedisplay();
     }
 
 
     static void Display()
     {
-      Gl.glClearColor(0f, 0.1f, 0.1f, 1f);
-      Gl.glShadeModel(Gl.GL_SMOOTH);
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
+      Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
 
-      Glu.gluLookAt(0, 1.0, 5.0, 0, 0, 0, 0, 1.0, 0);
-      Glut.glutWireTeapot(1.0);
+      Gl.glPushMatrix();
+
+      Gl.glScaled(16.0, 16.0, 1.0);
+
+      DrawSprite((DateTime.Now.Millisecond / 128) % 8);
+
+      Gl.glPopMatrix();
 
       Glut.glutSwapBuffers();
     }
 
 
+    static void DrawSprite(int frame)
+    {
+      const int rows = 8;
+      const int columns = 8;
+
+      float x0 = (float)(frame % columns) / (float)columns;
+      float y0 = 1.0f - (float)((frame + columns) / rows) / (float)rows;
+
+      float x1 = x0 + 1.0f / (float)columns;
+      float y1 = y0 + 1.0f / (float)rows;
+
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture);
+
+      Gl.glBegin(Gl.GL_QUADS);
+
+      Gl.glTexCoord2f(x0, y0);
+      Gl.glVertex3f(-1.0f, -1.0f, 0.0f);
+
+      Gl.glTexCoord2f(x1, y0);
+      Gl.glVertex3f( 1.0f, -1.0f, 0.0f);
+
+      Gl.glTexCoord2f(x1, y1);
+      Gl.glVertex3f( 1.0f, 1.0f, 0.0f);
+
+      Gl.glTexCoord2f(x0, y1);
+      Gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+
+      Gl.glEnd();
+
+    }
+    
+
     static uint MakeRgbaTexture(IntPtr pixels, int w, int h, bool clampEdge)
     {
       uint textureHandle;
+
+//      var filtering = Gl.GL_LINEAR;
+      var filtering = Gl.GL_NEAREST;
 
       // Setup new texture.
       Gl.glGenTextures(1, out textureHandle);
@@ -120,8 +172,8 @@ namespace Shooter
         Gl.GL_TEXTURE_WRAP_T,
         (clampEdge ? Gl.GL_CLAMP : Gl.GL_REPEAT));
 
-      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
+      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, filtering);
+      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, filtering);
 
       // Create the texture.
       Gl.glTexImage2D(
@@ -136,6 +188,9 @@ namespace Shooter
     static uint LoadTexture(string filename)
     {
       int imageId = LoadImage(filename);
+
+      // Flip to compensate for the Y axis flip when moving to OpenGL coordinates.
+      Ilu.iluFlipImage();
 
       Il.ilConvertImage(Il.IL_RGBA, Il.IL_UNSIGNED_BYTE);
       int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
