@@ -38,8 +38,8 @@ namespace Shooter
     public bool Intersects(Entity other)
     {
       return Geom.RectanglesIntersect(
-        hitBoxX, hitBoxY, hitBoxW, hitBoxH,
-        other.hitBoxX, other.hitBoxY, other.hitBoxW, other.hitBoxH);
+        hitBoxX + X, hitBoxY + Y, hitBoxW, hitBoxH,
+        other.hitBoxX + other.X, other.hitBoxY + other.Y, other.hitBoxW, other.hitBoxH);
     }
 
 
@@ -197,6 +197,15 @@ namespace Shooter
 
     public override void Update(EntityManager context)
     {
+      foreach (Entity o in new List<Entity>(context.Entities))
+      {
+        var enemy = o as Enemy;
+        if (enemy != null && this.Intersects(enemy))
+        {
+          enemy.Die(context);
+        }
+      }
+
       Y += speed;
 
       if (Y > Shooter.pixelHeight + Shooter.spriteHeight)
@@ -206,6 +215,66 @@ namespace Shooter
     }
 
     private const double speed = 5.0;
+  }
+
+
+  class Enemy : Entity
+  {
+    public Enemy(double x, double y, double dx, double dy)
+    {
+      X = x;
+      Y = y;
+      DX = dx;
+      DY = dy;
+    }
+
+
+    public override void Update(EntityManager context)
+    {
+      // Collision detection.
+
+      // XXX: Wasteful iterating through all, could optimize by having
+      // collision groups as sublists.
+
+      // XXX: Repeating the iteration pattern from EntityManager...
+      foreach (Entity o in new List<Entity>(context.Entities))
+      {
+        var avatar = o as Avatar;
+        if (avatar != null && this.Intersects(avatar))
+        {
+          avatar.Die(context);
+        }
+      }
+
+      X += DX;
+      Y += DY;
+
+      if (HasLeftStage) {
+        context.Remove(this);
+      }
+
+      frameCount = (frameCount + 1) % (numFrames * frameDelay);
+      Frame = startFrame + (frameCount / frameDelay);
+    }
+
+
+    public void Die(EntityManager context)
+    {
+      context.Add(new Explosion(X, Y));
+      context.Remove(this);
+    }
+
+
+    bool HasLeftStage { get { return Y < -Shooter.spriteHeight; } }
+
+
+    public double DX;
+    public double DY;
+
+    private int frameCount = 0;
+    static int startFrame = 0;
+    static int numFrames = 8;
+    static int frameDelay = 4;
   }
 
 
@@ -278,6 +347,7 @@ namespace Shooter
     // How many ticks does the game keep going after game over.
     static int gameOverCounter = 40;
 
+    static Random rng = new Random();
 
     public static void Main(string[] args)
     {
@@ -381,6 +451,11 @@ namespace Shooter
           isRunning = false;
         }
       }
+
+      if (rng.Next(10) == 0)
+      {
+        SpawnEnemy();
+      }
     }
 
 
@@ -394,10 +469,7 @@ namespace Shooter
           avatar.Die(entities);
           break;
         case 'E':
-          int x, y;
-          RandomPoint(out x, out y);
-
-          entities.Add(new Explosion(x, y));
+          SpawnEnemy();
           break;
         }
       }
@@ -422,10 +494,6 @@ namespace Shooter
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
-
-      double second = CurrentSeconds;
-
-      DrawSprite(160 + (float)(100 * Math.Sin(second)), 120, (int)((second * 10) % 8));
 
       entities.Display(0, 0);
 
@@ -459,10 +527,17 @@ namespace Shooter
 
     public static void RandomPoint(out int x, out int y)
     {
-      Random rng = new Random();
+      x = rng.Next(0, pixelWidth - spriteWidth);
+      y = rng.Next(0, pixelHeight - spriteHeight);
+    }
 
-      x = rng.Next(0, pixelWidth);
-      y = rng.Next(0, pixelHeight);
+
+    public static void SpawnEnemy()
+    {
+      int x, y;
+      RandomPoint(out x, out y);
+
+      entities.Add(new Enemy(x, pixelHeight + spriteHeight, 0.0, -2.0));
     }
 
 
