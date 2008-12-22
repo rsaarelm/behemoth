@@ -15,7 +15,7 @@ namespace Shooter
   {
     public virtual void Display(int xOffset, int yOffset)
     {
-      Shooter.DrawSprite(X + xOffset, Y + yOffset, Frame);
+      Shooter.DrawSprite((int)X + xOffset, (int)Y + yOffset, Frame);
     }
 
 
@@ -24,28 +24,28 @@ namespace Shooter
     }
 
 
-    public int X;
-    public int Y;
+    public double X;
+    public double Y;
     public int Frame;
   }
 
 
   class Explosion : Entity
   {
-    public Explosion(int x, int y)
+    public Explosion(double x, double y)
     {
       X = x;
       Y = y;
       Frame = startFrame;
-      coolDown = rate;
+      cooldown = rate;
     }
 
 
     public override void Update(EntityManager context)
     {
-      if (coolDown-- <= 0)
+      if (cooldown-- <= 0)
       {
-        coolDown = rate;
+        cooldown = rate;
         Frame++;
         if (Frame == endFrame)
         {
@@ -58,7 +58,67 @@ namespace Shooter
     private const int rate = 6;
     private const int startFrame = 8;
     private const int endFrame = 12;
-    private int coolDown;
+    private int cooldown;
+  }
+
+
+  class Avatar : Entity
+  {
+    public Avatar()
+    {
+      Y = 8.0;
+      X = Shooter.pixelWidth / 2 - Shooter.spriteWidth / 2;
+      Frame = 16;
+    }
+
+
+    public override void Update(EntityManager context)
+    {
+      if (IsShooting)
+      {
+        if (cooldown-- <= 0)
+        {
+          Fire();
+        }
+      }
+
+      if (IsMovingLeft && !IsMovingRight)
+      {
+        X = Math.Max(minX, X - speed);
+      }
+      else if (IsMovingRight && !IsMovingLeft)
+      {
+        X = Math.Min(maxX, X + speed);
+      }
+    }
+
+    public void Fire()
+    {
+      // TODO: Spawn bullets.
+      cooldown = firingRate;
+    }
+
+
+
+    public bool IsMovingLeft;
+    public bool IsMovingRight;
+    public bool IsShooting
+    {
+      get { return isShooting; }
+      set
+      {
+        isShooting = value;
+        cooldown = 0;
+      }
+    }
+
+    private bool isShooting;
+    private int cooldown = 0;
+
+    private const double speed = 4.0;
+    private const int firingRate = 4;
+    private const double minX = 0.0;
+    private const double maxX = Shooter.pixelWidth - Shooter.spriteWidth;
   }
 
 
@@ -104,8 +164,11 @@ namespace Shooter
   {
     const byte KEY_ESC = 27;
 
-    const int pixelWidth = 320;
-    const int pixelHeight = 240;
+    public const int pixelWidth = 240;
+    public const int pixelHeight = 320;
+
+    public const int spriteWidth = 16;
+    public const int spriteHeight = 16;
 
     const int fps = 30;
 
@@ -116,6 +179,8 @@ namespace Shooter
     static EntityManager entities = new EntityManager();
 
     static double timeStamp = CurrentSeconds;
+
+    static Avatar avatar = new Avatar();
 
 
     public static void Main(string[] args)
@@ -143,6 +208,8 @@ namespace Shooter
       InitGl();
 
       texture = LoadTexture("sprites.png");
+
+      entities.Add(avatar);
     }
 
 
@@ -221,6 +288,16 @@ namespace Shooter
           break;
         }
       }
+
+      switch (key)
+      {
+      case Glfw.GLFW_KEY_LEFT:
+        avatar.IsMovingLeft = action == Glfw.GLFW_PRESS;
+        break;
+      case Glfw.GLFW_KEY_RIGHT:
+        avatar.IsMovingRight = action == Glfw.GLFW_PRESS;
+        break;
+      }
     }
 
 
@@ -233,7 +310,6 @@ namespace Shooter
       double second = CurrentSeconds;
 
       DrawSprite(160 + (float)(100 * Math.Sin(second)), 120, (int)((second * 10) % 8));
-      DrawSprite(160, 104, 16);
 
       entities.Display(0, 0);
 
@@ -278,9 +354,6 @@ namespace Shooter
     {
       const int rows = 8;
       const int columns = 8;
-
-      const float spriteWidth = 16.0f;
-      const float spriteHeight = 16.0f;
 
       float x0 = (float)(frame % columns) / (float)columns;
       float y0 = 1.0f - (float)((frame + columns) / rows) / (float)rows;
