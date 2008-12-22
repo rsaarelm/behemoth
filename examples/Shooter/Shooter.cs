@@ -3,24 +3,26 @@ using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Tao.OpenGl;
-using Tao.FreeGlut;
+using Tao.Glfw;
 using Tao.DevIl;
 using Tao.PhysFs;
 
 namespace Shooter
 {
-  public class Shooter
+  public class Shooter : IDisposable
   {
     const byte KEY_ESC = 27;
 
     static uint texture;
+
+    static bool isRunning = true;
 
 
     public static void Main(string[] args)
     {
       Init();
 
-      Glut.glutMainLoop();
+      MainLoop();
     }
 
 
@@ -36,7 +38,7 @@ namespace Shooter
       // run the exe from the project root dir.
       Fs.PHYSFS_addToSearchPath(Path.Combine("build", "Shooter.zip"), 1);
 
-      InitGlut();
+      InitGlfw();
 
       InitGl();
 
@@ -44,17 +46,15 @@ namespace Shooter
     }
 
 
-    static void InitGlut()
+    static void InitGlfw()
     {
-      Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH);
-      Glut.glutInit();
-      Glut.glutInitWindowSize(800, 600);
-      Glut.glutCreateWindow("Behemoth Shooter");
+      Glfw.glfwInit();
+      Glfw.glfwOpenWindow(800, 600, 8, 8, 8, 8, 16, 0, Glfw.GLFW_WINDOW);
+      Glfw.glfwSetWindowTitle("Behemoth Shooter");
 
-      Glut.glutDisplayFunc(new Glut.DisplayCallback(Display));
-      Glut.glutReshapeFunc(new Glut.ReshapeCallback(Reshape));
-      Glut.glutKeyboardFunc(new Glut.KeyboardCallback(KeyboardCallback));
-      Glut.glutIdleFunc(new Glut.IdleCallback(IdleCallback));
+      Glfw.glfwSetWindowSizeCallback(new Glfw.GLFWwindowsizefun(Resize));
+      Glfw.glfwSetWindowCloseCallback(new Glfw.GLFWwindowclosefun(Close));
+
     }
 
 
@@ -69,7 +69,7 @@ namespace Shooter
     }
 
 
-    static void Reshape(int w, int h)
+    static void Resize(int w, int h)
     {
       Gl.glViewport(0, 0, w, h);
       Gl.glMatrixMode(Gl.GL_PROJECTION);
@@ -79,24 +79,26 @@ namespace Shooter
     }
 
 
-    static void KeyboardCallback(byte ch, int mouseX, int mouseY)
+    static int Close()
     {
-      if (ch == KEY_ESC)
+      isRunning = false;
+      return 0;
+    }
+
+
+    static void MainLoop()
+    {
+      while (isRunning)
       {
-        Quit();
+        Glfw.glfwPollEvents();
+
+        if (Glfw.glfwGetKey(Glfw.GLFW_KEY_ESC) == Glfw.GLFW_PRESS)
+        {
+          isRunning = false;
+        }
+
+        Display();
       }
-    }
-
-
-    static void Quit()
-    {
-      Glut.glutLeaveMainLoop();
-    }
-
-
-    static void IdleCallback()
-    {
-      Glut.glutPostRedisplay();
     }
 
 
@@ -114,7 +116,7 @@ namespace Shooter
 
       Gl.glPopMatrix();
 
-      Glut.glutSwapBuffers();
+      Glfw.glfwSwapBuffers();
     }
 
 
@@ -148,14 +150,15 @@ namespace Shooter
       Gl.glEnd();
 
     }
-    
+
 
     static uint MakeRgbaTexture(IntPtr pixels, int w, int h, bool clampEdge)
     {
       uint textureHandle;
 
-//      var filtering = Gl.GL_LINEAR;
-      var filtering = Gl.GL_NEAREST;
+      bool filterTexture = false;
+
+      var filtering = filterTexture ? Gl.GL_LINEAR : Gl.GL_NEAREST;
 
       // Setup new texture.
       Gl.glGenTextures(1, out textureHandle);
@@ -231,6 +234,13 @@ namespace Shooter
       }
 
       return imageId;
+    }
+
+
+    public void Dispose()
+    {
+      Glfw.glfwCloseWindow();
+      Glfw.glfwTerminate();
     }
 
 
