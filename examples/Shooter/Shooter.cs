@@ -17,6 +17,9 @@ namespace Shooter
 
     static bool isRunning = true;
 
+    static int pixelWidth = 320;
+    static int pixelHeight = 240;
+
 
     public static void Main(string[] args)
     {
@@ -62,19 +65,23 @@ namespace Shooter
     {
       Gl.glEnable(Gl.GL_TEXTURE_2D);
       Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
-      Gl.glClearColor(0f, 0.1f, 0.1f, 1f);
+      Gl.glClearColor(0f, 1.0f, 1.0f, 1f);
       Gl.glShadeModel(Gl.GL_SMOOTH);
-      Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_DST_ALPHA);
+      Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
       Gl.glEnable(Gl.GL_BLEND);
     }
 
 
     static void Resize(int w, int h)
     {
-      Gl.glViewport(0, 0, w, h);
+      int x, y, width, height;
+      MakeScaledViewport(
+        pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
+      Gl.glViewport(x, y, width, height);
+
       Gl.glMatrixMode(Gl.GL_PROJECTION);
       Gl.glLoadIdentity();
-      Glu.gluOrtho2D(-w/2.0, w/2.0, -h/2.0, h/2.0);
+      Glu.gluOrtho2D(0, pixelWidth, 0, pixelHeight);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
     }
 
@@ -110,9 +117,10 @@ namespace Shooter
 
       Gl.glPushMatrix();
 
-      Gl.glScaled(16.0, 16.0, 1.0);
+      double second = (double)DateTime.Now.Ticks / 1e7;
 
-      DrawSprite((DateTime.Now.Millisecond / 128) % 8);
+      DrawSprite(160 + (float)(100 * Math.Sin(second)), 120, (int)(second * 10) % 8);
+      DrawSprite(160, 104, 16);
 
       Gl.glPopMatrix();
 
@@ -120,10 +128,13 @@ namespace Shooter
     }
 
 
-    static void DrawSprite(int frame)
+    static void DrawSprite(float x, float y, int frame)
     {
       const int rows = 8;
       const int columns = 8;
+
+      const float spriteWidth = 16.0f;
+      const float spriteHeight = 16.0f;
 
       float x0 = (float)(frame % columns) / (float)columns;
       float y0 = 1.0f - (float)((frame + columns) / rows) / (float)rows;
@@ -131,24 +142,77 @@ namespace Shooter
       float x1 = x0 + 1.0f / (float)columns;
       float y1 = y0 + 1.0f / (float)rows;
 
+      Gl.glPushMatrix();
+
+      Gl.glTranslatef(x, y, 0.0f);
+
       Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture);
 
       Gl.glBegin(Gl.GL_QUADS);
 
       Gl.glTexCoord2f(x0, y0);
-      Gl.glVertex3f(-1.0f, -1.0f, 0.0f);
+      Gl.glVertex3f(0.0f, 0.0f, 0.0f);
 
       Gl.glTexCoord2f(x1, y0);
-      Gl.glVertex3f( 1.0f, -1.0f, 0.0f);
+      Gl.glVertex3f(spriteWidth, 0.0f, 0.0f);
 
       Gl.glTexCoord2f(x1, y1);
-      Gl.glVertex3f( 1.0f, 1.0f, 0.0f);
+      Gl.glVertex3f(spriteWidth, spriteHeight, 0.0f);
 
       Gl.glTexCoord2f(x0, y1);
-      Gl.glVertex3f(-1.0f, 1.0f, 0.0f);
+      Gl.glVertex3f(0.0f, spriteHeight, 0.0f);
 
       Gl.glEnd();
 
+      Gl.glPopMatrix();
+    }
+
+
+    /// <description>
+    /// Fit the largest centered (pixelWidth * scale, pixelHeight * scale)
+    /// viewport with integer 'scale' into the given viewport. If the viewport
+    /// is too small to for unit scale (pixelWidth, pixelHeight) viewport,
+    /// scale the pixel viewport down into the largest non-integer fractional
+    /// size that fits in the viewport.
+    /// </description>
+    static void MakeScaledViewport(
+      int pixelWidth, int pixelHeight,
+      int viewportWidth, int viewportHeight,
+      out int x, out int y, out int width, out int height)
+    {
+      Debug.Assert(
+        pixelWidth > 0 && pixelHeight > 0 && viewportWidth > 0 && viewportHeight > 0,
+        "Zero or negative viewport dimensions are not allowed.");
+      double pixelAspect = (double)pixelWidth / (double)pixelHeight;
+      double viewportAspect = (double)viewportWidth / (double)viewportHeight;
+      int scale = Math.Min(viewportWidth / pixelWidth, viewportHeight / pixelHeight);
+      if (scale == 0) {
+        // Viewport is too small to do proper pixels, just fit the largest rect we can in it.
+        if (viewportAspect > pixelAspect)
+        {
+          // Fit Y, adjust X
+          width = (int)(pixelAspect * viewportHeight);
+          x = viewportWidth / 2 - width / 2;
+          height = viewportHeight;
+          y = 0;
+        }
+        else
+        {
+          // Fit X, adjust Y
+          height = (int)(viewportWidth / pixelAspect);
+          y = viewportHeight / 2 - height / 2;
+          width = viewportWidth;
+          x = 0;
+        }
+      }
+      else
+      {
+        width = scale * pixelWidth;
+        height = scale * pixelHeight;
+
+        x = viewportWidth / 2 - width / 2;
+        y = viewportHeight / 2 - height / 2;
+      }
     }
 
 
