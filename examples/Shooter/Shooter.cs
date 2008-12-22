@@ -55,7 +55,7 @@ namespace Shooter
     }
 
 
-    private const int rate = 6;
+    private const int rate = 4;
     private const int startFrame = 8;
     private const int endFrame = 12;
     private int cooldown;
@@ -74,6 +74,11 @@ namespace Shooter
 
     public override void Update(EntityManager context)
     {
+      if (!IsAlive)
+      {
+        return;
+      }
+
       if (IsShooting)
       {
         if (cooldown-- <= 0)
@@ -92,6 +97,18 @@ namespace Shooter
       }
     }
 
+
+    public override void Display(int xOff, int yOff)
+    {
+      if (!IsAlive)
+      {
+        return;
+      }
+
+      base.Display(xOff, yOff);
+    }
+
+
     public void Fire()
     {
       // TODO: Spawn bullets.
@@ -99,9 +116,23 @@ namespace Shooter
     }
 
 
+    public void Die(EntityManager context)
+    {
+      if (!IsAlive)
+      {
+        return;
+      }
+
+      isAlive = false;
+      context.StartGameOver();
+      context.Add(new Explosion(X, Y));
+    }
+
 
     public bool IsMovingLeft;
+
     public bool IsMovingRight;
+
     public bool IsShooting
     {
       get { return isShooting; }
@@ -112,7 +143,12 @@ namespace Shooter
       }
     }
 
+    public bool IsAlive { get { return isAlive; } }
+
+    private bool isAlive = true;
+
     private bool isShooting;
+
     private int cooldown = 0;
 
     private const double speed = 4.0;
@@ -156,14 +192,18 @@ namespace Shooter
     }
 
 
+    public void StartGameOver()
+    {
+      Shooter.StartGameOver();
+    }
+
+
     public IList<Entity> Entities = new List<Entity>();
   }
 
 
   public class Shooter : IDisposable
   {
-    const byte KEY_ESC = 27;
-
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;
 
@@ -181,6 +221,11 @@ namespace Shooter
     static double timeStamp = CurrentSeconds;
 
     static Avatar avatar = new Avatar();
+
+    static bool isGameOver = false;
+
+    // How many ticks does the game keep going after game over.
+    static int gameOverCounter = 40;
 
 
     public static void Main(string[] args)
@@ -258,14 +303,31 @@ namespace Shooter
     }
 
 
+    public static void StartGameOver()
+    {
+      isGameOver = true;
+    }
+
+
     static void MainLoop()
     {
       while (isRunning)
       {
         if (TimeToUpdate)
         {
-          entities.Update();
+          Update();
           Display();
+        }
+      }
+    }
+
+
+    static void Update()
+    {
+      entities.Update();
+      if (isGameOver) {
+        if (gameOverCounter-- <= 0) {
+          isRunning = false;
         }
       }
     }
@@ -278,7 +340,7 @@ namespace Shooter
         switch (key)
         {
         case Glfw.GLFW_KEY_ESC:
-          isRunning = false;
+          avatar.Die(entities);
           break;
         case 'E':
           int x, y;
