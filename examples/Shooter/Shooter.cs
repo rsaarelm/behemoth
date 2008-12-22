@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 using Tao.OpenGl;
 using Tao.Glfw;
 using Tao.DevIl;
@@ -9,16 +11,111 @@ using Tao.PhysFs;
 
 namespace Shooter
 {
+  abstract class Entity
+  {
+    public virtual void Display(int xOffset, int yOffset)
+    {
+      Shooter.DrawSprite(X + xOffset, Y + yOffset, Frame);
+    }
+
+
+    public virtual void Update(EntityManager context)
+    {
+    }
+
+
+    public int X;
+    public int Y;
+    public int Frame;
+  }
+
+
+  class Explosion : Entity
+  {
+    public Explosion(int x, int y)
+    {
+      X = x;
+      Y = y;
+      Frame = startFrame;
+      coolDown = rate;
+    }
+
+
+    public override void Update(EntityManager context)
+    {
+      if (coolDown-- <= 0)
+      {
+        coolDown = rate;
+        Frame++;
+        if (Frame == endFrame)
+        {
+          context.Remove(this);
+        }
+      }
+    }
+
+
+    private const int rate = 6;
+    private const int startFrame = 8;
+    private const int endFrame = 12;
+    private int coolDown;
+  }
+
+
+  class EntityManager
+  {
+    public void Update()
+    {
+      // Clone the entity list so the update operations can modify the
+      // original list without breaking iteration.
+      foreach (Entity e in new List<Entity>(Entities))
+      {
+        e.Update(this);
+      }
+    }
+
+
+    public void Display(int xOff, int yOff)
+    {
+      foreach (Entity e in Entities)
+      {
+        e.Display(xOff, yOff);
+      }
+    }
+
+
+    public void Add(Entity entity)
+    {
+      Entities.Add(entity);
+    }
+
+
+    public void Remove(Entity entity)
+    {
+      Entities.Remove(entity);
+    }
+
+
+    public IList<Entity> Entities = new List<Entity>();
+  }
+
+
   public class Shooter : IDisposable
   {
     const byte KEY_ESC = 27;
+
+    const int pixelWidth = 320;
+    const int pixelHeight = 240;
+
+    const int fps = 30;
 
     static uint texture;
 
     static bool isRunning = true;
 
-    static int pixelWidth = 320;
-    static int pixelHeight = 240;
+    static EntityManager entities = new EntityManager();
+
+    static double timeStamp = CurrentSeconds;
 
 
     public static void Main(string[] args)
@@ -57,6 +154,7 @@ namespace Shooter
 
       Glfw.glfwSetWindowSizeCallback(new Glfw.GLFWwindowsizefun(Resize));
       Glfw.glfwSetWindowCloseCallback(new Glfw.GLFWwindowclosefun(Close));
+      Glfw.glfwSetKeyCallback(new Glfw.GLFWkeyfun(Keypress));
 
     }
 
@@ -65,7 +163,7 @@ namespace Shooter
     {
       Gl.glEnable(Gl.GL_TEXTURE_2D);
       Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
-      Gl.glClearColor(0f, 1.0f, 1.0f, 1f);
+      Gl.glClearColor(0f, 0.0f, 0.0f, 1f);
       Gl.glShadeModel(Gl.GL_SMOOTH);
       Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
       Gl.glEnable(Gl.GL_BLEND);
@@ -97,14 +195,31 @@ namespace Shooter
     {
       while (isRunning)
       {
-        Glfw.glfwPollEvents();
-
-        if (Glfw.glfwGetKey(Glfw.GLFW_KEY_ESC) == Glfw.GLFW_PRESS)
+        if (TimeToUpdate)
         {
-          isRunning = false;
+          entities.Update();
+          Display();
         }
+      }
+    }
 
-        Display();
+
+    static void Keypress(int key, int action)
+    {
+      if (action == Glfw.GLFW_PRESS)
+      {
+        switch (key)
+        {
+        case Glfw.GLFW_KEY_ESC:
+          isRunning = false;
+          break;
+        case 'E':
+          int x, y;
+          RandomPoint(out x, out y);
+
+          entities.Add(new Explosion(x, y));
+          break;
+        }
       }
     }
 
@@ -115,20 +230,51 @@ namespace Shooter
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
 
-      Gl.glPushMatrix();
+      double second = CurrentSeconds;
 
-      double second = (double)DateTime.Now.Ticks / 1e7;
-
-      DrawSprite(160 + (float)(100 * Math.Sin(second)), 120, (int)(second * 10) % 8);
+      DrawSprite(160 + (float)(100 * Math.Sin(second)), 120, (int)((second * 10) % 8));
       DrawSprite(160, 104, 16);
 
-      Gl.glPopMatrix();
+      entities.Display(0, 0);
 
       Glfw.glfwSwapBuffers();
     }
 
 
-    static void DrawSprite(float x, float y, int frame)
+    /// Return whether it's time for the next frame with the current FPS. A
+    /// side effect of returning true is moving the frame tracking logic to
+    /// the next frame, so make sure to cache the result.
+    public static bool TimeToUpdate
+    {
+      get
+      {
+        double interval = 1.0 / fps;
+        if (CurrentSeconds - timeStamp > interval)
+        {
+          timeStamp += interval;
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    }
+
+
+    public static double CurrentSeconds { get { return (double)DateTime.Now.Ticks / 1e7; } }
+
+
+    public static void RandomPoint(out int x, out int y)
+    {
+      Random rng = new Random();
+
+      x = rng.Next(0, pixelWidth);
+      y = rng.Next(0, pixelHeight);
+    }
+
+
+    public static void DrawSprite(float x, float y, int frame)
     {
       const int rows = 8;
       const int columns = 8;
