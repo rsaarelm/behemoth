@@ -26,9 +26,31 @@ namespace Shooter
     }
 
 
+    public void SetHitBox(int x, int y, int w, int h)
+    {
+      hitBoxX = x;
+      hitBoxY = y;
+      hitBoxW = w;
+      hitBoxH = h;
+    }
+
+
+    public bool Intersects(Entity other)
+    {
+      return Geom.RectanglesIntersect(
+        hitBoxX, hitBoxY, hitBoxW, hitBoxH,
+        other.hitBoxX, other.hitBoxY, other.hitBoxW, other.hitBoxH);
+    }
+
+
     public double X;
     public double Y;
     public int Frame;
+
+    private int hitBoxX = 0;
+    private int hitBoxY = 0;
+    private int hitBoxW = Shooter.spriteWidth;
+    private int hitBoxH = Shooter.spriteHeight;
   }
 
 
@@ -71,6 +93,8 @@ namespace Shooter
       Y = 8.0;
       X = Shooter.pixelWidth / 2 - Shooter.spriteWidth / 2;
       Frame = 16;
+
+      SetHitBox(6, 5, 4, 7);
     }
 
 
@@ -85,7 +109,7 @@ namespace Shooter
       {
         if (cooldown-- <= 0)
         {
-          Fire();
+          Fire(context);
         }
       }
 
@@ -111,9 +135,10 @@ namespace Shooter
     }
 
 
-    public void Fire()
+    public void Fire(EntityManager context)
     {
-      // TODO: Spawn bullets.
+      context.Add(new AvatarShot(X - 4, Y + 3));
+      context.Add(new AvatarShot(X + 5, Y + 3));
       cooldown = firingRate;
     }
 
@@ -154,9 +179,33 @@ namespace Shooter
     private int cooldown = 0;
 
     private const double speed = 4.0;
-    private const int firingRate = 4;
+    private const int firingRate = 2;
     private const double minX = 0.0;
     private const double maxX = Shooter.pixelWidth - Shooter.spriteWidth;
+  }
+
+
+  class AvatarShot : Entity
+  {
+    public AvatarShot(double x, double y)
+    {
+      X = x;
+      Y = y;
+      Frame = 12;
+      SetHitBox(6, 6, 3, 4);
+    }
+
+    public override void Update(EntityManager context)
+    {
+      Y += speed;
+
+      if (Y > Shooter.pixelHeight + Shooter.spriteHeight)
+      {
+        context.Remove(this);
+      }
+    }
+
+    private const double speed = 5.0;
   }
 
 
@@ -360,6 +409,9 @@ namespace Shooter
         break;
       case Glfw.GLFW_KEY_RIGHT:
         avatar.IsMovingRight = action == Glfw.GLFW_PRESS;
+        break;
+      case ' ':
+        avatar.IsShooting = action == Glfw.GLFW_PRESS;
         break;
       }
     }
