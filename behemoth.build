@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="Behemoth" default="build">
-  
+
   <!-- Settings -->
   <property name="project.version" value="0.1.1"/>
   <property name="build.dir"
@@ -43,6 +43,7 @@
     <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
       <sources>
         <include name="Behemoth.Alg/Alg.cs"/>
+        <include name="Behemoth.Alg/Geom.cs"/>
       </sources>
     </csc>
   </target>
@@ -75,7 +76,7 @@
 
   <!-- Shooter demo -->
   <target name="Shooter.exe" depends="init,Shooter.zip">
-    <csc target="exe" 
+    <csc target="exe"
          output="${build.dir}/Shooter.exe"
          unsafe="true">
       <sources>
@@ -86,6 +87,8 @@
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.DevIl.dll"/>
         <include name="${build.dir}/Tao.PhysFs.dll"/>
+
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
       </references>
     </csc>
   </target>
