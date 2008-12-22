@@ -23,7 +23,6 @@
     <nunit2>
       <formatter type="Plain"/>
       <test assemblyname="${build.dir}/Behemoth.Alg.Test.dll"/>
-
     </nunit2>
   </target>
 
@@ -52,7 +51,8 @@
   <target name="Behemoth.Alg.Test.dll" depends="Behemoth.Alg.dll">
     <csc target="library" output="${build.dir}/Behemoth.Alg.Test.dll">
       <sources>
-        <include name="tests/Behemoth.Alg/Alg.cs"/>
+        <include name="tests/Behemoth.Alg/TestAlg.cs"/>
+        <include name="tests/Behemoth.Alg/TestGeom.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Behemoth.Alg.dll"/>

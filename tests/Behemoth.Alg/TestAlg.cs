@@ -7,11 +7,11 @@ using Behemoth.Alg;
 
 namespace Behemoth.Alg
 {
-  [TestFixture()]
+  [TestFixture]
   public class TestAlg
   {
     [Test]
-    public void Concat()
+    public void TestConcat()
     {
       Assert.AreEqual(Alg.L<int>(), Alg.Concat(Alg.L(Alg.L<int>(), Alg.L<int>())));
       Assert.AreEqual(Alg.L(1, 2), Alg.Concat(Alg.L(Alg.L<int>(), Alg.L(1, 2))));
