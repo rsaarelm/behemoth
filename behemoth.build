@@ -89,7 +89,8 @@
   <!-- Shooter demo -->
   <target name="Shooter.exe" depends="init,Shooter.zip">
     <csc target="exe"
-         output="${build.dir}/Shooter.exe">
+         output="${build.dir}/Shooter.exe"
+         unsafe="true">
       <sources>
         <include name="examples/Shooter/Shooter.cs"/>
       </sources>
