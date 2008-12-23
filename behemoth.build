@@ -33,8 +33,7 @@
 
 
   <target name="examples"
-          depends="DummyApp.exe,
-                   Shooter.exe,
+          depends="Shooter.exe,
                    "/>
 
 
@@ -57,18 +56,6 @@
       <references>
         <include name="${build.dir}/Behemoth.Alg.dll"/>
         <include name="${libs.dir}/nunit.framework.dll"/>
-      </references>
-    </csc>
-  </target>
-
-
-  <target name="DummyApp.exe" depends="Behemoth.Alg.dll">
-    <csc target="exe" output="${build.dir}/DummyApp.exe">
-      <sources>
-        <include name="examples/DummyApp/DummyApp.cs"/>
-      </sources>
-      <references>
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
       </references>
     </csc>
   </target>
