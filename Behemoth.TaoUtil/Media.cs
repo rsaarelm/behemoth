@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using Tao.DevIl;
@@ -26,6 +27,27 @@ namespace Behemoth.TaoUtil
       Il.ilInit();
       // XXX: Not really sure what the "init" parameter is for here, just copying the examples.
       Fs.PHYSFS_init("init");
+      Alut.alutInit();
+    }
+
+
+    public static void UninitFacilities()
+    {
+      foreach (int buffer in soundBuffers)
+      {
+        int buf = buffer;
+        Al.alDeleteBuffers(1, ref buf);
+      }
+      soundBuffers.Clear();
+
+      foreach (int source in soundSources)
+      {
+        int s = source;
+        Al.alDeleteSources(1, ref s);
+      }
+      soundSources.Clear();
+
+      Alut.alutExit();
     }
 
 
@@ -59,13 +81,11 @@ namespace Behemoth.TaoUtil
     /// </summary>
     public static uint LoadGlTexture(string filename, int texFlags, int ilImageType)
     {
-      int imageId = LoadPfsImage(filename, ilImageType);
+      int imageId = LoadImage(filename, ilImageType);
       ConvertToTextureImage(imageId);
 
       int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
       int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
-
-      Console.WriteLine("Image size: "+width+" "+height);
 
       uint result = MakeGlTexture(Il.ilGetData(), width, height, texFlags);
 
@@ -133,7 +153,7 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Load a DevIL image from a named PhysFS file.
     /// </summary>
-    public static int LoadPfsImage(string filename, int ilImageType)
+    public static int LoadImage(string filename, int ilImageType)
     {
       byte[] data = GetPfsFileData(filename);
 
@@ -146,7 +166,6 @@ namespace Behemoth.TaoUtil
         throw new IOException("Failed to load image "+filename);
       }
 
-      Console.WriteLine("ImageId: "+imageId);
       Il.ilSave(Il.IL_PNG, "/tmp/test.png");
 
       return imageId;
@@ -156,9 +175,9 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Load a DevIL image from a named PhysFS Png file.
     /// </summary>
-    public static int LoadPfsImage(string filename)
+    public static int LoadImage(string filename)
     {
-      return LoadPfsImage(filename, Il.IL_PNG);
+      return LoadImage(filename, Il.IL_PNG);
     }
 
 
@@ -168,6 +187,96 @@ namespace Behemoth.TaoUtil
     public static void DeleteImage(int imageId)
     {
       Il.ilDeleteImages(1, ref imageId);
+    }
+
+    // TODO: Freeing the buffers and sources for sounds.
+
+    /// <summary>
+    /// Load a sound from PhysFs into OpenAL.
+    /// </summary>
+    public static int LoadSound(string filename)
+    {
+      int buffer;
+      // Generate an OpenAL buffer
+      Al.alGenBuffers(1, out buffer);
+      if (Al.alGetError() != Al.AL_NO_ERROR) {
+        throw new ApplicationException("Couldn't generate OpenAL buffer.");
+      }
+
+      int format;
+      int size;
+      float frequency;
+
+      IntPtr data;
+      long dataSize;
+
+      GetPfsFileData(filename, out data, out dataSize);
+
+      data = Alut.alutLoadMemoryFromFileImage(
+        data, (int)dataSize,
+        out format, out size, out frequency);
+
+      if (data == IntPtr.Zero) {
+        throw new IOException("Failed to load sound "+filename);
+      }
+
+      Al.alBufferData(buffer, format, data, size, (int)frequency);
+
+      soundBuffers.Add(buffer);
+
+      return buffer;
+    }
+
+
+    /// <summary>
+    /// Play a sound using default settings.
+    /// </summary>
+    public static void PlaySound(int buffer)
+    {
+      // Before we make new ones, clean up old sources that've stopped playing.
+
+      // XXX: This might be better done in a thread, the connection between
+      // clearing old sources and playing a new sound isn't terribly well
+      // motivated.
+      ClearStoppedSources();
+
+      if (Al.alIsBuffer(buffer) == 0)
+      {
+        throw new ArgumentException("Not a valid OpenAL buffer.", "buffer");
+      }
+
+      int source;
+      Al.alGenSources(1, out source);
+      if (Al.alGetError() != Al.AL_NO_ERROR) {
+        throw new ApplicationException("Couldn't generate OpenAL sound source.");
+      }
+
+      soundSources.Add(source);
+
+      Al.alSourcei(source, Al.AL_BUFFER, buffer);
+      Al.alSourcePlay(source);
+    }
+
+
+    static bool IsStoppedSource(int source)
+    {
+      int state;
+      Al.alGetSourcei(source, Al.AL_SOURCE_STATE, out state);
+      return state == Al.AL_STOPPED;
+    }
+
+
+    static void ClearStoppedSources()
+    {
+      foreach (int source in new List<int>(soundSources))
+      {
+        if (IsStoppedSource(source))
+        {
+          int s = source;
+          Al.alDeleteSources(1, ref s);
+          soundSources.Remove(source);
+        }
+      }
     }
 
 
@@ -207,5 +316,9 @@ namespace Behemoth.TaoUtil
       Fs.PHYSFS_close(file);
       return data;
     }
+
+    private static List<int> soundBuffers = new List<int>();
+    private static List<int> soundSources = new List<int>();
+
   }
 }

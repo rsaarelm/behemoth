@@ -137,6 +137,7 @@ namespace Shooter
 
     public void Fire(EntityManager context)
     {
+      Media.PlaySound(Shooter.playerShotFx);
       context.Add(new AvatarShot(X - 4, Y + 3));
       context.Add(new AvatarShot(X + 5, Y + 3));
       cooldown = firingRate;
@@ -150,6 +151,7 @@ namespace Shooter
         return;
       }
 
+      Media.PlaySound(Shooter.playerExplodeFx);
       isAlive = false;
       context.StartGameOver();
       context.Add(new Explosion(X, Y));
@@ -260,6 +262,8 @@ namespace Shooter
 
     public void Die(EntityManager context)
     {
+      Media.PlaySound(Shooter.enemyExplodeFx);
+
       context.Add(new Explosion(X, Y));
       context.Remove(this);
     }
@@ -322,7 +326,7 @@ namespace Shooter
   }
 
 
-  public class Shooter : IDisposable
+  public class Shooter
   {
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;
@@ -349,6 +353,11 @@ namespace Shooter
 
     static Random rng = new Random();
 
+    public static int playerShotFx;
+    public static int playerExplodeFx;
+    public static int enemyExplodeFx;
+
+
     public static void Main(string[] args)
     {
       Init();
@@ -371,6 +380,11 @@ namespace Shooter
       InitGl();
 
       texture = Media.LoadGlTexture("sprites.png", 0);
+
+      playerShotFx = Media.LoadSound("pew.wav");
+      playerExplodeFx = Media.LoadSound("player_explode.wav");
+      enemyExplodeFx = Media.LoadSound("enemy_explode.wav");
+
 
       entities.Add(avatar);
     }
@@ -429,13 +443,21 @@ namespace Shooter
 
     static void MainLoop()
     {
-      while (isRunning)
-      {
-        if (TimeToUpdate)
+      try {
+        while (isRunning)
         {
-          Update();
-          Display();
+          if (TimeToUpdate)
+          {
+            Update();
+            Display();
+          }
         }
+      }
+      finally
+      {
+        Glfw.glfwCloseWindow();
+        Glfw.glfwTerminate();
+        Media.UninitFacilities();
       }
     }
 
@@ -572,13 +594,6 @@ namespace Shooter
       Gl.glEnd();
 
       Gl.glPopMatrix();
-    }
-
-
-    public void Dispose()
-    {
-      Glfw.glfwCloseWindow();
-      Glfw.glfwTerminate();
     }
   }
 }
