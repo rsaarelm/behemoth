@@ -204,7 +204,7 @@ namespace Shooter
         var enemy = o as Enemy;
         if (enemy != null && this.Intersects(enemy))
         {
-          enemy.Die(context);
+          enemy.Hurt(context);
         }
       }
 
@@ -228,6 +228,19 @@ namespace Shooter
       Y = y;
       DX = dx;
       DY = dy;
+    }
+
+
+    public override void Display(int xOffset, int yOffset)
+    {
+      Shooter.DrawSprite(
+        (int)X + xOffset, (int)Y + yOffset,
+        damageBlink > 1 ? blinkFrame : Frame);
+
+      if (damageBlink > 0)
+      {
+        damageBlink--;
+      }
     }
 
 
@@ -260,6 +273,19 @@ namespace Shooter
     }
 
 
+    public void Hurt(EntityManager context)
+    {
+      if (life-- < 0)
+      {
+        Die(context);
+      }
+      if (damageBlink == 0)
+      {
+        damageBlink = 2;
+      }
+    }
+
+
     public void Die(EntityManager context)
     {
       Media.PlaySound(Shooter.enemyExplodeFx);
@@ -276,9 +302,15 @@ namespace Shooter
     public double DY;
 
     private int frameCount = 0;
-    static int startFrame = 0;
-    static int numFrames = 8;
-    static int frameDelay = 4;
+
+    private int life = 10;
+
+    private int damageBlink = 0;
+
+    const int startFrame = 0;
+    const int numFrames = 8;
+    const int frameDelay = 4;
+    const int blinkFrame = 14;
   }
 
 
@@ -471,7 +503,7 @@ namespace Shooter
         }
       }
 
-      if (rng.Next(10) == 0)
+      if (rng.Next(5) == 0)
       {
         SpawnEnemy();
       }
@@ -553,10 +585,11 @@ namespace Shooter
 
     public static void SpawnEnemy()
     {
-      int x, y;
-      RandomPoint(out x, out y);
+      double x = pixelWidth / 2 - spriteWidth / 2;
+      x += (rng.NextDouble() - 0.5) * pixelWidth * 2.0;
 
-      entities.Add(new Enemy(x, pixelHeight + spriteHeight, 0.0, -2.0));
+      double dx = 6.0 * (rng.NextDouble() - 0.5);
+      entities.Add(new Enemy(x, pixelHeight + spriteHeight, dx, -4.0));
     }
 
 
