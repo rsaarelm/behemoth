@@ -60,6 +60,7 @@ namespace Behemoth.TaoUtil
     public static uint LoadGlTexture(string filename, int texFlags, int ilImageType)
     {
       int imageId = LoadPfsImage(filename, ilImageType);
+      ConvertToTextureImage(imageId);
 
       int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
       int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);

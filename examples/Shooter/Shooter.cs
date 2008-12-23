@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using Tao.OpenGl;
 using Tao.Glfw;
@@ -10,6 +9,7 @@ using Tao.DevIl;
 using Tao.PhysFs;
 
 using Behemoth.Alg;
+using Behemoth.TaoUtil;
 
 namespace Shooter
 {
@@ -359,21 +359,18 @@ namespace Shooter
 
     static void Init()
     {
-      Il.ilInit();
-
-      Fs.PHYSFS_init("init");
-
-      Fs.PHYSFS_addToSearchPath("Shooter.zip", 1);
+      Media.InitFacilities();
+      Media.AddPhysFsPath("Shooter.zip");
 
       // Make the zip file found from build subdir too, so that it's easy to
       // run the exe from the project root dir.
-      Fs.PHYSFS_addToSearchPath(Path.Combine("build", "Shooter.zip"), 1);
+      Media.AddPhysFsPath("build", "Shooter.zip");
 
       InitGlfw();
 
       InitGl();
 
-      texture = LoadTexture("sprites.png");
+      texture = Media.LoadGlTexture("sprites.png", 0);
 
       entities.Add(avatar);
     }
@@ -578,101 +575,10 @@ namespace Shooter
     }
 
 
-    static uint MakeRgbaTexture(IntPtr pixels, int w, int h, bool clampEdge)
-    {
-      uint textureHandle;
-
-      bool filterTexture = false;
-
-      var filtering = filterTexture ? Gl.GL_LINEAR : Gl.GL_NEAREST;
-
-      // Setup new texture.
-      Gl.glGenTextures(1, out textureHandle);
-      Gl.glPixelStorei(Gl.GL_UNPACK_ALIGNMENT, 1);
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureHandle);
-
-      // Set texture parameters.
-      Gl.glTexParameteri(
-        Gl.GL_TEXTURE_2D,
-        Gl.GL_TEXTURE_WRAP_S,
-        (clampEdge ? Gl.GL_CLAMP : Gl.GL_REPEAT));
-      Gl.glTexParameteri(
-        Gl.GL_TEXTURE_2D,
-        Gl.GL_TEXTURE_WRAP_T,
-        (clampEdge ? Gl.GL_CLAMP : Gl.GL_REPEAT));
-
-      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, filtering);
-      Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, filtering);
-
-      // Create the texture.
-      Gl.glTexImage2D(
-        Gl.GL_TEXTURE_2D, 0, Gl.GL_RGBA, w, h, 0,
-        Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, pixels);
-
-      return textureHandle;
-    }
-
-
-    // Load an image from PhysFS using DevIL and turn it into an OpenGL texture.
-    static uint LoadTexture(string filename)
-    {
-      int imageId = LoadImage(filename);
-
-      // Flip to compensate for the Y axis flip when moving to OpenGL coordinates.
-      Ilu.iluFlipImage();
-
-      Il.ilConvertImage(Il.IL_RGBA, Il.IL_UNSIGNED_BYTE);
-      int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
-      int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
-
-      uint result = MakeRgbaTexture(Il.ilGetData(), width, height, true);
-
-      // XXX: Mixing abstraction layers, there's a sublayer for creating IL
-      // images but they are deleted here at a higher layer.
-      Il.ilDeleteImages(1, ref imageId);
-
-      return result;
-    }
-
-
-    unsafe static int LoadImage(string filename)
-    {
-      int imageId;
-      Il.ilGenImages(1, out imageId);
-      Il.ilBindImage(imageId);
-
-      if (Fs.PHYSFS_exists(filename) == 0)
-      {
-        IOError("File "+filename+" not found.");
-      }
-
-      IntPtr file = Fs.PHYSFS_openRead(filename);
-      long fileSize = Fs.PHYSFS_fileLength(file);
-      byte[] fileData;
-      Fs.PHYSFS_read(file, out fileData, 1, (uint)fileSize);
-      Fs.PHYSFS_close(file);
-
-      // XXX: Only loads PNG.
-      IntPtr dataPtr = (IntPtr)Marshal.UnsafeAddrOfPinnedArrayElement(fileData, 0);
-      if (!Il.ilLoadL(Il.IL_PNG, dataPtr, (int)fileSize))
-      {
-        IOError("Failed to load PNG image "+filename);
-      }
-
-      return imageId;
-    }
-
-
     public void Dispose()
     {
       Glfw.glfwCloseWindow();
       Glfw.glfwTerminate();
-    }
-
-
-    static void IOError(string msg)
-    {
-      throw new IOException(msg);
     }
   }
 }
