@@ -50,6 +50,7 @@
       <sources>
         <include name="Behemoth.Alg/Alg.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
+        <include name="Behemoth.Alg/Tile.cs"/>
       </sources>
     </csc>
   </target>

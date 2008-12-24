@@ -50,5 +50,14 @@ namespace Behemoth.Alg
       result.AddRange(args);
       return result;
     }
+
+
+    /// <summary>
+    /// Create an array from the parameters. Useful for writing list literals.
+    /// </summary>
+    public static T[] A<T>(params T[] args)
+    {
+      return (T[])args.Clone();
+    }
   }
 }
