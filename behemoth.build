@@ -48,7 +48,10 @@
   <target name="Behemoth.Alg.dll" depends="init">
     <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
       <sources>
+        <include name="Behemoth.Alg/IField2.cs"/>
+
         <include name="Behemoth.Alg/Alg.cs"/>
+        <include name="Behemoth.Alg/Field2.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
       </sources>
