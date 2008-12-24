@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.IO;
 
 using Tao.DevIl;
@@ -222,6 +223,8 @@ namespace Behemoth.TaoUtil
 
       Al.alBufferData(buffer, format, data, size, (int)frequency);
 
+      FreePfsData(data);
+
       soundBuffers[filename] = buffer;
 
       return buffer;
@@ -308,6 +311,12 @@ namespace Behemoth.TaoUtil
       size = Fs.PHYSFS_fileLength(file);
       Fs.PHYSFS_read(file, out data, 1, (uint)size);
       Fs.PHYSFS_close(file);
+    }
+
+
+    public static void FreePfsData(IntPtr data)
+    {
+      Marshal.FreeHGlobal(data);
     }
 
 
