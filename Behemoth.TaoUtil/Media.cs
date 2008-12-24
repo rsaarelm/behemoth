@@ -33,7 +33,7 @@ namespace Behemoth.TaoUtil
 
     public static void UninitFacilities()
     {
-      foreach (int buffer in soundBuffers)
+      foreach (int buffer in soundBuffers.Values)
       {
         int buf = buffer;
         Al.alDeleteBuffers(1, ref buf);
@@ -194,7 +194,7 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Load a sound from PhysFs into OpenAL.
     /// </summary>
-    public static int LoadSound(string filename)
+    static int LoadSound(string filename)
     {
       int buffer;
       // Generate an OpenAL buffer
@@ -222,7 +222,7 @@ namespace Behemoth.TaoUtil
 
       Al.alBufferData(buffer, format, data, size, (int)frequency);
 
-      soundBuffers.Add(buffer);
+      soundBuffers[filename] = buffer;
 
       return buffer;
     }
@@ -231,7 +231,7 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Play a sound using default settings.
     /// </summary>
-    public static void PlaySound(int buffer)
+    static void PlaySound(int buffer)
     {
       // Before we make new ones, clean up old sources that've stopped playing.
 
@@ -255,6 +255,19 @@ namespace Behemoth.TaoUtil
 
       Al.alSourcei(source, Al.AL_BUFFER, buffer);
       Al.alSourcePlay(source);
+    }
+
+
+    /// <summary>
+    /// Play a sound from a file, loading it first if necessary.
+    /// </summary>
+    public static void PlaySound(string filename)
+    {
+      if (!soundBuffers.ContainsKey(filename))
+      {
+        LoadSound(filename);
+      }
+      PlaySound(soundBuffers[filename]);
     }
 
 
@@ -317,8 +330,7 @@ namespace Behemoth.TaoUtil
       return data;
     }
 
-    private static List<int> soundBuffers = new List<int>();
+    private static Dictionary<string, int> soundBuffers = new Dictionary<string, int>();
     private static List<int> soundSources = new List<int>();
-
   }
 }

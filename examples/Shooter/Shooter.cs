@@ -385,9 +385,9 @@ namespace Shooter
 
     static Random rng = new Random();
 
-    public static int playerShotFx;
-    public static int playerExplodeFx;
-    public static int enemyExplodeFx;
+    public const string playerShotFx = "pew.wav";
+    public const string playerExplodeFx = "player_explode.wav";
+    public const string enemyExplodeFx = "enemy_explode.wav";
 
 
     public static void Main(string[] args)
@@ -412,11 +412,6 @@ namespace Shooter
       InitGl();
 
       texture = Media.LoadGlTexture("sprites.png", 0);
-
-      playerShotFx = Media.LoadSound("pew.wav");
-      playerExplodeFx = Media.LoadSound("player_explode.wav");
-      enemyExplodeFx = Media.LoadSound("enemy_explode.wav");
-
 
       entities.Add(avatar);
     }
