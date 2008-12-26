@@ -219,6 +219,11 @@ namespace Behemoth.TaoUtil
     /// </summary>
     public static void PlaySound(string filename)
     {
+      if (!UseSound)
+      {
+        return;
+      }
+
       if (!soundBuffers.ContainsKey(filename))
       {
         soundBuffers[filename] = LoadSound(filename);
