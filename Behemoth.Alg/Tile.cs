@@ -21,5 +21,23 @@ namespace Behemoth.Alg
         }
       }
     }
+
+
+    /// <summary>
+    /// Calculate the maximum dimensions of an ascii table.
+    /// </summary>
+    public static void AsciiTableDims(
+      string[] lines, out int width, out int height)
+    {
+      height = lines.Length;
+      if (lines.Length == 0)
+      {
+        width = 0;
+      }
+      else
+      {
+        width = lines[Alg.MinIndex(lines, str => -str.Length)].Length;
+      }
+    }
   }
 }

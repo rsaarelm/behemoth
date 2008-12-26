@@ -42,6 +42,7 @@
 
   <target name="examples"
           depends="Shooter.exe,
+                   Behetris.exe,
                    "/>
 
 
@@ -121,6 +122,26 @@
         <include name="**/*"/>
       </fileset>
     </zip>
+  </target>
+
+
+  <!-- Behetris game -->
+  <target name="Behetris.exe" depends="libs">
+    <csc target="exe"
+         output="${build.dir}/Behetris.exe">
+      <sources>
+        <include name="examples/Behetris/Behetris.cs"/>
+      </sources>
+      <references>
+        <include name="${build.dir}/Tao.DevIl.dll"/>
+        <include name="${build.dir}/Tao.OpenGl.dll"/>
+        <include name="${build.dir}/Tao.PhysFs.dll"/>
+        <include name="${build.dir}/Tao.Sdl.dll"/>
+
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
+      </references>
+    </csc>
   </target>
 
 

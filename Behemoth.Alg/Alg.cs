@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Behemoth.Alg
@@ -58,6 +59,38 @@ namespace Behemoth.Alg
     public static T[] A<T>(params T[] args)
     {
       return (T[])args.Clone();
+    }
+
+
+    /// <summary>
+    /// Return the index of the element for which the measure function returns
+    /// the smallest value.
+    /// </summary>
+    /// <returns>
+    /// The index of the value with the smallest measure, or -1 if the list of
+    /// items is empty.
+    /// </returns>
+    public static int MinIndex<T, U>(IList<U> items, Func<U, T> measure)
+      where T : IComparable<T>
+    {
+      if (items.Count == 0)
+      {
+        return -1;
+      }
+
+      int result = 0;
+      T currentVal = measure(items[0]);
+
+      for (int i = 1; i < items.Count; i++)
+      {
+        T newVal = measure(items[i]);
+        if (newVal.CompareTo(currentVal) < 0) {
+          currentVal = newVal;
+          result = i;
+        }
+      }
+
+      return result;
     }
   }
 }
