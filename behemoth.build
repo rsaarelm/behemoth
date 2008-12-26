@@ -9,7 +9,7 @@
             value="${project::get-base-directory()}/3rdparty"/>
   <!-- The program that gets run with "nant run" -->
   <property name="currentprogram"
-            value="Shooter.exe"/>x
+            value="Shooter.exe"/>
 
   <target name="build" depends="libs,examples"/>
 
