@@ -66,12 +66,15 @@
        output="${build.dir}/Behemoth.TaoUtil.dll">
       <sources>
         <include name="Behemoth.TaoUtil/Media.cs"/>
+        <include name="Behemoth.TaoUtil/App.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Tao.DevIl.dll"/>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.PhysFs.dll"/>
         <include name="${build.dir}/Tao.Sdl.dll"/>
+
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
       </references>
     </csc>
   </target>
@@ -92,7 +95,7 @@
 
 
   <!-- Shooter demo -->
-  <target name="Shooter.exe" depends="init,Shooter.zip">
+  <target name="Shooter.exe" depends="libs,Shooter.zip">
     <csc target="exe"
          output="${build.dir}/Shooter.exe">
       <sources>
