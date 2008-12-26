@@ -383,6 +383,10 @@ namespace Shooter
 
     static Random rng = new Random();
 
+    static List<Vec3<double>> starfield = new List<Vec3<double>>();
+
+    static double pixelScale;
+
     public const string playerShotFx = "pew.wav";
     public const string playerExplodeFx = "player_explode.wav";
     public const string enemyExplodeFx = "enemy_explode.wav";
@@ -413,6 +417,8 @@ namespace Shooter
       texture = Media.LoadGlTexture("sprites.png", 0);
 
       entities.Add(avatar);
+
+      InitStarfield();
     }
 
 
@@ -441,6 +447,9 @@ namespace Shooter
       int x, y, width, height;
       Geom.MakeScaledViewport(
         pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
+
+      pixelScale = width / pixelWidth;
+
       Gl.glViewport(x, y, width, height);
 
       Gl.glMatrixMode(Gl.GL_PROJECTION);
@@ -448,6 +457,15 @@ namespace Shooter
       Glu.gluOrtho2D(0, pixelWidth, 0, pixelHeight);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
+    }
+
+
+    static void InitStarfield()
+    {
+      for (int i = 0; i < 1000; i++)
+      {
+        starfield.Add(new Vec3<double>(rng.Next(-pixelWidth, pixelWidth), rng.Next(1000), rng.Next(100)));
+      }
     }
 
 
@@ -563,6 +581,8 @@ namespace Shooter
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
 
+      DrawStarfield(starfield, CurrentSeconds * 100);
+
       entities.Display(0, 0);
 
       Sdl.SDL_GL_SwapBuffers();
@@ -621,6 +641,8 @@ namespace Shooter
       float x1 = x0 + 1.0f / (float)columns;
       float y1 = y0 + 1.0f / (float)rows;
 
+      Gl.glColor3f(1.0f, 1.0f, 1.0f);
+
       Gl.glPushMatrix();
 
       Gl.glTranslatef(x, y, 0.0f);
@@ -644,6 +666,63 @@ namespace Shooter
       Gl.glEnd();
 
       Gl.glPopMatrix();
+    }
+
+
+    public static void DrawRect(double x, double y, double w, double h, byte r, byte g, byte b)
+    {
+      // Clear the bound texture.
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+
+      Gl.glColor3f((float)r / 256, (float)g / 256, (float)b / 256);
+
+      Gl.glBegin(Gl.GL_QUADS);
+
+      Gl.glVertex3f((float)x, (float)y, 0.0f);
+
+      Gl.glVertex3f((float)(x + w), (float)y, 0.0f);
+
+      Gl.glVertex3f((float)(x + w), (float)(y + h), 0.0f);
+
+      Gl.glVertex3f((float)x, (float)(y + h), 0.0f);
+
+      Gl.glEnd();
+    }
+
+
+    /// <summary>
+    /// Draw a vertically scrolling starfield
+    /// </summary>
+    public static void DrawStarfield(IEnumerable<Vec3<double>> points, double t)
+    {
+      const double span = 1000.0;
+      const float depthFactor = 100.0f;
+
+
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+
+      Gl.glColor3f(1.0f, 1.0f, 1.0f);
+
+      // TODO: Do we need point scaling?
+
+      Gl.glPointSize((float)pixelScale);
+
+      // TODO: Apply offset
+      Gl.glBegin(Gl.GL_POINTS);
+
+      foreach (Vec3<double> point in points)
+      {
+        Gl.glVertex3f(
+          (float)(pixelWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),
+          (float)(point.Y - t % span) * depthFactor / (depthFactor + (float)point.Z),
+          0.0f);
+        Gl.glVertex3f(
+          (float)(pixelWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),
+          (float)(point.Y + span - t % span) * depthFactor / (depthFactor + (float)point.Z),
+          0.0f);
+      }
+
+      Gl.glEnd();
     }
   }
 }
