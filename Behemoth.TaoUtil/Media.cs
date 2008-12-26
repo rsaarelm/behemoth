@@ -31,8 +31,6 @@ namespace Behemoth.TaoUtil
       // XXX: Not really sure what the "init" parameter is for here, just copying the examples.
       Fs.PHYSFS_init("init");
 
-      Sdl.SDL_Init(Sdl.SDL_INIT_AUDIO);
-
       if (UseSound)
       {
         if (SdlMixer.Mix_OpenAudio(44100, (short)SdlMixer.MIX_DEFAULT_FORMAT, 2, 512) != 0)
@@ -51,8 +49,6 @@ namespace Behemoth.TaoUtil
         SdlMixer.Mix_FreeChunk(buffer);
       }
       soundBuffers.Clear();
-
-      Sdl.SDL_Quit();
     }
 
 

@@ -99,7 +99,6 @@
       </sources>
       <references>
         <include name="${build.dir}/Tao.DevIl.dll"/>
-        <include name="${build.dir}/Tao.Glfw.dll"/>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.PhysFs.dll"/>
         <include name="${build.dir}/Tao.Sdl.dll"/>

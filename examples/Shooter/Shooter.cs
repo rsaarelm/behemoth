@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 
 using Tao.OpenGl;
-using Tao.Glfw;
+using Tao.Sdl;
 
 using Behemoth.Alg;
 using Behemoth.TaoUtil;
@@ -398,6 +398,7 @@ namespace Shooter
 
     static void Init()
     {
+      Sdl.SDL_Init(Sdl.SDL_INIT_EVERYTHING);
       Media.InitFacilities();
       Media.AddPhysFsPath("Shooter.zip");
 
@@ -405,7 +406,7 @@ namespace Shooter
       // run the exe from the project root dir.
       Media.AddPhysFsPath("build", "Shooter.zip");
 
-      InitGlfw();
+      InitSdl();
 
       InitGl();
 
@@ -415,16 +416,12 @@ namespace Shooter
     }
 
 
-    static void InitGlfw()
+    static void InitSdl()
     {
-      Glfw.glfwInit();
-      Glfw.glfwOpenWindow(800, 600, 8, 8, 8, 8, 16, 0, Glfw.GLFW_WINDOW);
-      Glfw.glfwSetWindowTitle("Behemoth Shooter");
+      Sdl.SDL_WM_SetCaption("Behemoth Shooter", "");
+      Sdl.SDL_GL_SetAttribute(Sdl.SDL_GL_DOUBLEBUFFER, 1);
 
-      Glfw.glfwSetWindowSizeCallback(new Glfw.GLFWwindowsizefun(Resize));
-      Glfw.glfwSetWindowCloseCallback(new Glfw.GLFWwindowclosefun(Close));
-      Glfw.glfwSetKeyCallback(new Glfw.GLFWkeyfun(Keypress));
-
+      Resize(800, 600);
     }
 
 
@@ -450,13 +447,7 @@ namespace Shooter
       Gl.glLoadIdentity();
       Glu.gluOrtho2D(0, pixelWidth, 0, pixelHeight);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
-    }
-
-
-    static int Close()
-    {
-      isRunning = false;
-      return 0;
+      Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
     }
 
 
@@ -471,6 +462,7 @@ namespace Shooter
       try {
         while (isRunning)
         {
+          ReadInput();
           if (TimeToUpdate)
           {
             Update();
@@ -480,10 +472,72 @@ namespace Shooter
       }
       finally
       {
-        Glfw.glfwCloseWindow();
-        Glfw.glfwTerminate();
         Media.UninitFacilities();
+        Sdl.SDL_Quit();
       }
+    }
+
+
+    static void ReadInput()
+    {
+      Sdl.SDL_Event evt;
+
+      while (Sdl.SDL_PollEvent(out evt) != 0)
+      {
+        switch (evt.type)
+        {
+        case Sdl.SDL_QUIT:
+          Quit();
+          break;
+
+        case Sdl.SDL_KEYDOWN:
+          switch (evt.key.keysym.sym)
+          {
+          case Sdl.SDLK_ESCAPE:
+            Quit();
+            break;
+          case Sdl.SDLK_LEFT:
+            avatar.IsMovingLeft = true;
+            break;
+          case Sdl.SDLK_RIGHT:
+            avatar.IsMovingRight = true;
+            break;
+          case Sdl.SDLK_SPACE:
+            avatar.IsShooting = true;
+            break;
+          }
+          break;
+
+        case Sdl.SDL_KEYUP:
+          switch (evt.key.keysym.sym)
+          {
+          case Sdl.SDLK_LEFT:
+            avatar.IsMovingLeft = false;
+            break;
+          case Sdl.SDLK_RIGHT:
+            avatar.IsMovingRight = false;
+            break;
+          case Sdl.SDLK_SPACE:
+            avatar.IsShooting = false;
+            break;
+          }
+          break;
+
+        case Sdl.SDL_VIDEORESIZE:
+          Resize(evt.resize.w, evt.resize.h);
+          break;
+
+        case Sdl.SDL_VIDEOEXPOSE:
+          // Might want some kind of repaint here?
+          break;
+        }
+      }
+    }
+
+
+    static void Quit()
+    {
+      isRunning = false;
     }
 
 
@@ -503,36 +557,6 @@ namespace Shooter
     }
 
 
-    static void Keypress(int key, int action)
-    {
-      if (action == Glfw.GLFW_PRESS)
-      {
-        switch (key)
-        {
-        case Glfw.GLFW_KEY_ESC:
-          avatar.Die(entities);
-          break;
-        case 'E':
-          SpawnEnemy();
-          break;
-        }
-      }
-
-      switch (key)
-      {
-      case Glfw.GLFW_KEY_LEFT:
-        avatar.IsMovingLeft = action == Glfw.GLFW_PRESS;
-        break;
-      case Glfw.GLFW_KEY_RIGHT:
-        avatar.IsMovingRight = action == Glfw.GLFW_PRESS;
-        break;
-      case ' ':
-        avatar.IsShooting = action == Glfw.GLFW_PRESS;
-        break;
-      }
-    }
-
-
     static void Display()
     {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
@@ -541,7 +565,7 @@ namespace Shooter
 
       entities.Display(0, 0);
 
-      Glfw.glfwSwapBuffers();
+      Sdl.SDL_GL_SwapBuffers();
     }
 
 
