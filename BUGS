@@ -1,6 +1,0 @@
-* OpenAL library prints warnings at exit
-
-    AL lib: ALc.c:1253: exit() 1 device(s) and 1 context(s) NOT deleted
-    AL lib: alBuffer.c:1097: exit() 2 Buffer(s) NOT deleted
-
-The same problem seems to exist with the OpenAl examples that come with Tao.

@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 using Tao.OpenGl;
 using Tao.Glfw;
-using Tao.DevIl;
-using Tao.PhysFs;
 
 using Behemoth.Alg;
 using Behemoth.TaoUtil;

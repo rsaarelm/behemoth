@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using System.IO;
 
 using Tao.DevIl;
-using Tao.OpenAl;
 using Tao.OpenGl;
 using Tao.PhysFs;
+using Tao.Sdl;
 
 namespace Behemoth.TaoUtil
 {
@@ -19,6 +19,8 @@ namespace Behemoth.TaoUtil
     public const int TEX_CLAMP_EDGE = 1 << 0;
     public const int TEX_USE_FILTERING = 1 << 1;
 
+    // Settings
+    public static bool UseSound = true;
 
     /// <summary>
     /// Init the media handling facilities.
@@ -28,27 +30,29 @@ namespace Behemoth.TaoUtil
       Il.ilInit();
       // XXX: Not really sure what the "init" parameter is for here, just copying the examples.
       Fs.PHYSFS_init("init");
-      Alut.alutInit();
+
+      Sdl.SDL_Init(Sdl.SDL_INIT_AUDIO);
+
+      if (UseSound)
+      {
+        if (SdlMixer.Mix_OpenAudio(44100, (short)SdlMixer.MIX_DEFAULT_FORMAT, 2, 512) != 0)
+        {
+          Console.WriteLine("Couldn't start audio.");
+          UseSound = false;
+        }
+      }
     }
 
 
     public static void UninitFacilities()
     {
-      foreach (int buffer in soundBuffers.Values)
+      foreach (IntPtr buffer in soundBuffers.Values)
       {
-        int buf = buffer;
-        Al.alDeleteBuffers(1, ref buf);
+        SdlMixer.Mix_FreeChunk(buffer);
       }
       soundBuffers.Clear();
 
-      foreach (int source in soundSources)
-      {
-        int s = source;
-        Al.alDeleteSources(1, ref s);
-      }
-      soundSources.Clear();
-
-      Alut.alutExit();
+      Sdl.SDL_Quit();
     }
 
 
@@ -190,74 +194,27 @@ namespace Behemoth.TaoUtil
       Il.ilDeleteImages(1, ref imageId);
     }
 
-    // TODO: Freeing the buffers and sources for sounds.
 
     /// <summary>
-    /// Load a sound from PhysFs into OpenAL.
+    /// Load a sound from PhysFs into SDL Mixer.
     /// </summary>
-    static int LoadSound(string filename)
+    static IntPtr LoadSound(string filename)
     {
-      int buffer;
-      // Generate an OpenAL buffer
-      Al.alGenBuffers(1, out buffer);
-      if (Al.alGetError() != Al.AL_NO_ERROR) {
-        throw new ApplicationException("Couldn't generate OpenAL buffer.");
+      IntPtr rwop = GetPfsFileRwop(filename);
+      IntPtr chunk = SdlMixer.Mix_LoadWAV_RW(rwop, 1);
+      if (chunk == IntPtr.Zero) {
+        throw new ApplicationException("Error loading sound "+filename);
       }
-
-      int format;
-      int size;
-      float frequency;
-
-      IntPtr data;
-      long dataSize;
-
-      GetPfsFileData(filename, out data, out dataSize);
-
-      data = Alut.alutLoadMemoryFromFileImage(
-        data, (int)dataSize,
-        out format, out size, out frequency);
-
-      if (data == IntPtr.Zero) {
-        throw new IOException("Failed to load sound "+filename);
-      }
-
-      Al.alBufferData(buffer, format, data, size, (int)frequency);
-
-      FreePfsData(data);
-
-      soundBuffers[filename] = buffer;
-
-      return buffer;
+      return chunk;
     }
 
 
     /// <summary>
-    /// Play a sound using default settings.
+    /// Play a sound using SDL Mixer.
     /// </summary>
-    static void PlaySound(int buffer)
+    static void PlaySound(IntPtr chunk)
     {
-      // Before we make new ones, clean up old sources that've stopped playing.
-
-      // XXX: This might be better done in a thread, the connection between
-      // clearing old sources and playing a new sound isn't terribly well
-      // motivated.
-      ClearStoppedSources();
-
-      if (Al.alIsBuffer(buffer) == 0)
-      {
-        throw new ArgumentException("Not a valid OpenAL buffer.", "buffer");
-      }
-
-      int source;
-      Al.alGenSources(1, out source);
-      if (Al.alGetError() != Al.AL_NO_ERROR) {
-        throw new ApplicationException("Couldn't generate OpenAL sound source.");
-      }
-
-      soundSources.Add(source);
-
-      Al.alSourcei(source, Al.AL_BUFFER, buffer);
-      Al.alSourcePlay(source);
+      SdlMixer.Mix_PlayChannel(-1, chunk, 0);
     }
 
 
@@ -268,31 +225,9 @@ namespace Behemoth.TaoUtil
     {
       if (!soundBuffers.ContainsKey(filename))
       {
-        LoadSound(filename);
+        soundBuffers[filename] = LoadSound(filename);
       }
       PlaySound(soundBuffers[filename]);
-    }
-
-
-    static bool IsStoppedSource(int source)
-    {
-      int state;
-      Al.alGetSourcei(source, Al.AL_SOURCE_STATE, out state);
-      return state == Al.AL_STOPPED;
-    }
-
-
-    static void ClearStoppedSources()
-    {
-      foreach (int source in new List<int>(soundSources))
-      {
-        if (IsStoppedSource(source))
-        {
-          int s = source;
-          Al.alDeleteSources(1, ref s);
-          soundSources.Remove(source);
-        }
-      }
     }
 
 
@@ -302,12 +237,7 @@ namespace Behemoth.TaoUtil
     public static void GetPfsFileData(
       string filename, out IntPtr data, out long size)
     {
-      if (Fs.PHYSFS_exists(filename) == 0)
-      {
-        throw new IOException("File "+filename+" not found.");
-      }
-
-      IntPtr file = Fs.PHYSFS_openRead(filename);
+      IntPtr file = PfsOpenRead(filename);
       size = Fs.PHYSFS_fileLength(file);
       Fs.PHYSFS_read(file, out data, 1, (uint)size);
       Fs.PHYSFS_close(file);
@@ -326,12 +256,7 @@ namespace Behemoth.TaoUtil
     public static byte[] GetPfsFileData(
       string filename)
     {
-      if (Fs.PHYSFS_exists(filename) == 0)
-      {
-        throw new IOException("File "+filename+" not found.");
-      }
-
-      IntPtr file = Fs.PHYSFS_openRead(filename);
+      IntPtr file = PfsOpenRead(filename);
       long size = Fs.PHYSFS_fileLength(file);
       byte[] data;
       Fs.PHYSFS_read(file, out data, 1, (uint)size);
@@ -339,7 +264,33 @@ namespace Behemoth.TaoUtil
       return data;
     }
 
-    private static Dictionary<string, int> soundBuffers = new Dictionary<string, int>();
-    private static List<int> soundSources = new List<int>();
+
+    /// <summary>
+    /// Load a PhysFS file into a SDL RWops structure.
+    /// </summary>
+    public static IntPtr GetPfsFileRwop(string filename)
+    {
+      byte[] data = GetPfsFileData(filename);
+      return Sdl.SDL_RWFromMem(data, data.Length);
+    }
+
+
+    /// <summary>
+    /// Open a PhysFS file for reading.
+    /// </summary>
+    private static IntPtr PfsOpenRead(string filename)
+    {
+      if (Fs.PHYSFS_exists(filename) == 0)
+      {
+        throw new IOException("File "+filename+" not found.");
+      }
+
+      IntPtr file = Fs.PHYSFS_openRead(filename);
+
+      return file;
+    }
+
+    private static Dictionary<string, IntPtr> soundBuffers =
+      new Dictionary<string, IntPtr>();
   }
 }

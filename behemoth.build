@@ -68,9 +68,9 @@
       </sources>
       <references>
         <include name="${build.dir}/Tao.DevIl.dll"/>
-        <include name="${build.dir}/Tao.OpenAl.dll"/>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.PhysFs.dll"/>
+        <include name="${build.dir}/Tao.Sdl.dll"/>
       </references>
     </csc>
   </target>
@@ -100,9 +100,9 @@
       <references>
         <include name="${build.dir}/Tao.DevIl.dll"/>
         <include name="${build.dir}/Tao.Glfw.dll"/>
-        <include name="${build.dir}/Tao.OpenAl.dll"/>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.PhysFs.dll"/>
+        <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Alg.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
