@@ -32,10 +32,12 @@ namespace Behemoth.Alg
       }
     }
 
+
     public void Clear()
     {
       rows.Clear();
     }
+
 
     public void Clear(int x, int y)
     {
@@ -51,6 +53,12 @@ namespace Behemoth.Alg
         }
       }
     }
+
+
+    /// <summary>
+    /// The value that will be returned for cells that haven't been set.
+    /// </summary>
+    public T DefaultValue = default(T);
 
     private Dictionary<int, Dictionary<int, T>> rows = new Dictionary<int, Dictionary<int, T>>();
   }
