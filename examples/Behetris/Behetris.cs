@@ -55,12 +55,35 @@ namespace Behetris
           "  # ",
           "  # "),
       };
+
+      // Set field edges to impassable.
+      for (int y = -10; y < fieldH + 1; y++)
+      {
+        field[-1, y] = -1;
+        field[fieldW, y] = -1;
+      }
+      for (int x = 0; x < fieldW; x++)
+      {
+        field[x, fieldH] = -1;
+      }
+
+      SpawnBlock();
     }
 
 
     public override void Update()
     {
       tick++;
+      if (speedDrop)
+      {
+        StepBlock();
+      }
+      else if (dropCounter-- < 0)
+      {
+        StepBlock();
+        dropCounter = dropSpeed;
+      }
+      CheckClears();
     }
 
 
@@ -83,12 +106,30 @@ namespace Behetris
         }
       }
 
+      DrawBlock(CurrentBlock, blockX, blockY);
     }
 
 
     private void DrawCell(int type, int x, int y)
     {
       DrawRect(x * 8 + 8, PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
+    }
+
+
+    // Draw blocks that haven't dropped yet.
+    private void DrawBlock(Block block, int x, int y)
+    {
+      for (int blockY = 0; blockY < block.Height; blockY++)
+      {
+        for (int blockX = 0; blockX < block.Width; blockX++)
+        {
+          if (block[blockX, blockY] != 0)
+          {
+            DrawCell(block[blockX, blockY], x + blockX, y + blockY);
+          }
+        }
+      }
+
     }
 
 
@@ -141,17 +182,211 @@ namespace Behetris
           case Sdl.SDLK_ESCAPE:
             Quit();
             break;
+          case Sdl.SDLK_LEFT:
+            MoveBlock(-1);
+            break;
+          case Sdl.SDLK_RIGHT:
+            MoveBlock(1);
+            break;
+          case Sdl.SDLK_UP:
+            RotateBlock(1);
+            break;
+          case Sdl.SDLK_DOWN:
+            speedDrop = true;
+            break;
+
           }
           break;
 
+        case Sdl.SDL_KEYUP:
+          switch (evt.key.keysym.sym)
+          {
+          case Sdl.SDLK_DOWN:
+            speedDrop = false;
+            break;
+          }
+          break;
 
         case Sdl.SDL_VIDEORESIZE:
           Resize(evt.resize.w, evt.resize.h);
           break;
         }
       }
-
     }
+
+
+    private void SpawnBlock()
+    {
+      currentBlockIdx = rng.Next(blocks.Length);
+      currentBlockRot = 0;
+      blockX = 4;
+      blockY = -4;
+    }
+
+
+    private bool MoveBlock(int dir)
+    {
+      if (speedDrop)
+      {
+        return false;
+      }
+      if (dir < 0 && BlockFits(CurrentBlock, blockX - 1, blockY))
+      {
+        blockX -= 1;
+        return true;
+      }
+      else if (dir > 0 && BlockFits(CurrentBlock, blockX + 1, blockY))
+      {
+        blockX += 1;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+
+    private bool RotateBlock(int dir)
+    {
+      if (speedDrop)
+      {
+        return false;
+      }
+
+      int newBlockRot;
+
+      if (dir < 0)
+      {
+        newBlockRot = (currentBlockRot + 3) % 4;
+      }
+      else if (dir > 0)
+      {
+        newBlockRot = (currentBlockRot + 1) % 4;
+      }
+      else
+      {
+        return false;
+      }
+
+      if (BlockFits(blocks[currentBlockIdx][newBlockRot], blockX, blockY))
+      {
+        currentBlockRot = newBlockRot;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+
+    /// <summary>
+    /// Move the current block down one step.
+    /// </summary>
+    /// <returns>
+    /// True if the block was dropped, false if it became part of the field.
+    /// </returns>
+    private bool StepBlock()
+    {
+      if (BlockFits(CurrentBlock, blockX, blockY + 1))
+      {
+        blockY += 1;
+        return true;
+      }
+      else
+      {
+        FuseBlock();
+        return false;
+      }
+    }
+
+
+    private void FuseBlock()
+    {
+      PasteBlock(CurrentBlock, blockX, blockY);
+      speedDrop = false;
+      if (Overflow)
+      {
+        GameOver();
+      }
+      else
+      {
+        SpawnBlock();
+      }
+    }
+
+
+    public bool Overflow
+    {
+      get
+      {
+        for (int x = 0; x < fieldW; x++)
+        {
+          if (field[x, -1] != 0)
+          {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+
+
+    private void GameOver()
+    {
+      // TODO: Don't quit instantly, countdown to exit.
+      Console.WriteLine("Ha-ha.");
+      IsRunning = false;
+    }
+
+
+    private void ClearLine(int lineY)
+    {
+      for (int y = lineY - 1; y >= -1; y--)
+      {
+        for (int x = 0; x < fieldW; x++)
+        {
+          field[x, y + 1] = field[x, y];
+        }
+      }
+    }
+
+
+    private int LineCount(int lineY)
+    {
+      int result = 0;
+      for (int x = 0; x < fieldW; x++)
+      {
+        if (field[x, lineY] != 0)
+        {
+          result++;
+        }
+      }
+      return result;
+    }
+
+
+    private bool IsFullLine(int lineY)
+    {
+      return LineCount(lineY) == fieldW;
+    }
+
+
+    private void CheckClears()
+    {
+      for (int y = fieldH - 1; y >= 0; y--)
+      {
+        if (IsFullLine(y))
+        {
+          ClearLine(y);
+        }
+      }
+    }
+
+
+    Block CurrentBlock
+    { get { return blocks[currentBlockIdx][currentBlockRot]; } }
 
 
     public static void Main(string[] args)
@@ -165,7 +400,20 @@ namespace Behetris
     // Field and dimensions of the Behetris well.
     private Field2<int> field = new Field2<int>();
 
-    Block[][] blocks;
+    private Block[][] blocks;
+
+    private int currentBlockIdx;
+    private int currentBlockRot;
+    private int blockX;
+    private int blockY;
+
+    private int dropSpeed = 30;
+    private int dropCounter = 0;
+
+    private Random rng = new Random();
+
+    private bool speedDrop = false;
+
 
     const int fieldW = 10;
     const int fieldH = 18;
@@ -237,8 +485,6 @@ namespace Behetris
 
     private int width;
     private int height;
-
-    private Random rng = new Random();
 
     private Field2<int> shape = new Field2<int>();
   }
