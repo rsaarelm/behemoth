@@ -412,10 +412,6 @@ namespace Shooter
 
       InitSdl();
 
-      InitGl();
-
-      texture = Media.LoadGlTexture("sprites.png", 0);
-
       entities.Add(avatar);
 
       InitStarfield();
@@ -427,7 +423,7 @@ namespace Shooter
       Sdl.SDL_WM_SetCaption("Behemoth Shooter", "");
       Sdl.SDL_GL_SetAttribute(Sdl.SDL_GL_DOUBLEBUFFER, 1);
 
-      Resize(800, 600);
+      Resize(pixelWidth * 2, pixelHeight * 2);
     }
 
 
@@ -447,6 +443,12 @@ namespace Shooter
       int x, y, width, height;
 
       Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
+      // Resetting video mode seems to reset OpenGL stuff as well.
+      InitGl();
+      // And buffered textures.
+      // XXX: Reloading from file is really wasteful, should just cache the
+      // pixel data in memory.
+      texture = Media.LoadGlTexture("sprites.png", 0);
 
       Geom.MakeScaledViewport(
         pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
