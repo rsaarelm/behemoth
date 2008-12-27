@@ -445,6 +445,9 @@ namespace Shooter
     static void Resize(int w, int h)
     {
       int x, y, width, height;
+
+      Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
+
       Geom.MakeScaledViewport(
         pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
 
@@ -456,7 +459,6 @@ namespace Shooter
       Gl.glLoadIdentity();
       Glu.gluOrtho2D(0, pixelWidth, 0, pixelHeight);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
-      Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
     }
 
 
