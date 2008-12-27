@@ -167,8 +167,6 @@ namespace Behemoth.TaoUtil
         throw new IOException("Failed to load image "+filename);
       }
 
-      Il.ilSave(Il.IL_PNG, "/tmp/test.png");
-
       return imageId;
     }
 
