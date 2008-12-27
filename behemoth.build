@@ -11,6 +11,10 @@
   <property name="currentprogram"
             value="Behetris.exe"/>
 
+  <if test="${platform::is-win32()}">
+    <property name="nant.settings.currentframework" value="net-3.5"/>
+  </if>
+
   <target name="build" depends="libs,examples"/>
 
 
