@@ -80,6 +80,9 @@ namespace Behemoth.TaoUtil
     public void Resize(int w, int h)
     {
       int x, y, width, height;
+
+      Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
+
       Geom.MakeScaledViewport(
         pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
 
@@ -88,8 +91,6 @@ namespace Behemoth.TaoUtil
       Gl.glViewport(x, y, width, height);
 
       PixelProjection();
-
-      Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
     }
 
 
