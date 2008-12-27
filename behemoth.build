@@ -5,8 +5,14 @@
   <property name="project.version" value="0.1.1"/>
   <property name="build.dir"
             value="${project::get-base-directory()}/build"/>
+  <property name="dist.dir"
+            value="${project::get-base-directory()}/dist"/>
   <property name="libs.dir"
             value="${project::get-base-directory()}/3rdparty"/>
+  <!-- XXX: Really ugly expression for getting a nice yyyymmdd timestamp. -->
+  <property name="timestamp"
+            value="${datetime::get-year(datetime::now())}${datetime::get-month(datetime::now())}${datetime::get-day(datetime::now())}"/>
+
   <!-- The program that gets run with "nant run" -->
   <property name="currentprogram"
             value="Behetris.exe"/>
@@ -14,6 +20,7 @@
   <if test="${platform::is-win32()}">
     <property name="nant.settings.currentframework" value="net-3.5"/>
   </if>
+
 
   <target name="build" depends="libs,examples"/>
 
@@ -48,6 +55,17 @@
           depends="Shooter.exe,
                    Behetris.exe,
                    "/>
+
+
+  <target name="dist"
+          depends="clean,build">
+    <!-- XXX: Really ugly expression for getting a nice timestamp. -->
+    <zip zipfile="${dist.dir}/behemoth-${timestamp}.zip">
+      <fileset basedir="${build.dir}" prefix="behemoth-${timestamp}">
+        <include name="**/*"/>
+      </fileset>
+    </zip>
+  </target>
 
 
   <target name="Behemoth.Alg.dll" depends="init">
@@ -151,6 +169,7 @@
 
   <target name="init">
     <mkdir dir="${build.dir}"/>
+    <mkdir dir="${dist.dir}"/>
 
     <!-- Copy 3rdparty dlls into build dir -->
     <copy todir="${build.dir}">
