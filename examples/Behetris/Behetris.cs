@@ -71,7 +71,7 @@ namespace Behetris
     }
 
 
-    public override void Update()
+    protected override void Update()
     {
       tick++;
       if (speedDrop)
@@ -87,7 +87,7 @@ namespace Behetris
     }
 
 
-    public override void Display()
+    protected override void Display()
     {
       // XXX: Magic numbers. Not caring much now, since this stuff is limited
       // to display logic.
@@ -164,7 +164,7 @@ namespace Behetris
     }
 
 
-    public override void ReadInput()
+    protected override void ReadInput()
     {
       Sdl.SDL_Event evt;
 

@@ -13,9 +13,9 @@ namespace Shooter
 {
   abstract class Entity
   {
-    public virtual void Display(int xOffset, int yOffset)
+    public virtual void Display(Shooter shooter, int xOffset, int yOffset)
     {
-      Shooter.DrawSprite((int)X + xOffset, (int)Y + yOffset, Frame);
+      shooter.DrawSprite((int)X + xOffset, (int)Y + yOffset, Frame);
     }
 
 
@@ -122,14 +122,14 @@ namespace Shooter
     }
 
 
-    public override void Display(int xOff, int yOff)
+    public override void Display(Shooter shooter, int xOff, int yOff)
     {
       if (!IsAlive)
       {
         return;
       }
 
-      base.Display(xOff, yOff);
+      base.Display(shooter, xOff, yOff);
     }
 
 
@@ -229,9 +229,9 @@ namespace Shooter
     }
 
 
-    public override void Display(int xOffset, int yOffset)
+    public override void Display(Shooter shooter, int xOffset, int yOffset)
     {
-      Shooter.DrawSprite(
+      shooter.DrawSprite(
         (int)X + xOffset, (int)Y + yOffset,
         damageBlink > 1 ? blinkFrame : Frame);
 
@@ -314,6 +314,12 @@ namespace Shooter
 
   class EntityManager
   {
+    public EntityManager(Shooter shooter)
+    {
+      ShooterApp = shooter;
+    }
+
+
     public void Update()
     {
       // Clone the entity list so the update operations can modify the
@@ -325,11 +331,11 @@ namespace Shooter
     }
 
 
-    public void Display(int xOff, int yOff)
+    public void Display(Shooter shooter, int xOff, int yOff)
     {
       foreach (Entity e in Entities)
       {
-        e.Display(xOff, yOff);
+        e.Display(shooter, xOff, yOff);
       }
     }
 
@@ -348,15 +354,17 @@ namespace Shooter
 
     public void StartGameOver()
     {
-      Shooter.StartGameOver();
+      ShooterApp.StartGameOver();
     }
 
 
     public IList<Entity> Entities = new List<Entity>();
+
+    public Shooter ShooterApp;
   }
 
 
-  public class Shooter
+  public class Shooter : App
   {
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;
@@ -364,54 +372,49 @@ namespace Shooter
     public const int spriteWidth = 16;
     public const int spriteHeight = 16;
 
-    const int fps = 30;
-
-    static TextureCache textureCache = new TextureCache(new ImageCache(), 0);
-    static string texture = "sprites.png";
-
-    static bool isRunning = true;
-
-    static EntityManager entities = new EntityManager();
-
-    static double timeStamp = CurrentSeconds;
-
-    static Avatar avatar = new Avatar();
-
-    static bool isGameOver = false;
-
-    // How many ticks does the game keep going after game over.
-    static int gameOverCounter = 40;
-
-    static Random rng = new Random();
-
-    static List<Vec3<double>> starfield = new List<Vec3<double>>();
-
-    static double pixelScale;
-
     public const string playerShotFx = "pew.wav";
     public const string playerExplodeFx = "player_explode.wav";
     public const string enemyExplodeFx = "enemy_explode.wav";
 
 
+    const string spriteTexture = "sprites.png";
+
+    EntityManager entities;
+
+    Avatar avatar = new Avatar();
+
+    bool isGameOver = false;
+
+    // How many ticks does the game keep going after game over.
+    int gameOverCounter = 40;
+
+    Random rng = new Random();
+
+    List<Vec3<double>> starfield = new List<Vec3<double>>();
+
+
+
     public static void Main(string[] args)
     {
-      Init();
-
-      MainLoop();
+      new Shooter().MainLoop();
     }
 
 
-    static void Init()
+    public Shooter() : base (pixelWidth, pixelHeight, "Behemoth Shooter")
     {
-      Sdl.SDL_Init(Sdl.SDL_INIT_EVERYTHING);
-      Media.InitFacilities();
-      Media.AddPhysFsPath("Shooter.zip");
+    }
 
+
+    protected override void Init()
+    {
+      base.Init();
+
+      Media.AddPhysFsPath("Shooter.zip");
       // Make the zip file found from build subdir too, so that it's easy to
       // run the exe from the project root dir.
       Media.AddPhysFsPath("build", "Shooter.zip");
 
-      InitSdl();
+      entities = new EntityManager(this);
 
       entities.Add(avatar);
 
@@ -419,51 +422,8 @@ namespace Shooter
     }
 
 
-    static void InitSdl()
-    {
-      Sdl.SDL_WM_SetCaption("Behemoth Shooter", "");
-      Sdl.SDL_GL_SetAttribute(Sdl.SDL_GL_DOUBLEBUFFER, 1);
 
-      Resize(pixelWidth * 2, pixelHeight * 2);
-    }
-
-
-    static void InitGl()
-    {
-      Gl.glEnable(Gl.GL_TEXTURE_2D);
-      Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
-      Gl.glClearColor(0f, 0.0f, 0.0f, 1f);
-      Gl.glShadeModel(Gl.GL_SMOOTH);
-      Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
-      Gl.glEnable(Gl.GL_BLEND);
-    }
-
-
-    static void Resize(int w, int h)
-    {
-      int x, y, width, height;
-
-      Sdl.SDL_SetVideoMode(w, h, 32, Sdl.SDL_RESIZABLE | Sdl.SDL_OPENGL);
-      // Resetting video mode seems to reset OpenGL stuff as well.
-      InitGl();
-      // And buffered textures.
-      textureCache.Clear();
-
-      Geom.MakeScaledViewport(
-        pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
-
-      pixelScale = width / pixelWidth;
-
-      Gl.glViewport(x, y, width, height);
-
-      Gl.glMatrixMode(Gl.GL_PROJECTION);
-      Gl.glLoadIdentity();
-      Glu.gluOrtho2D(0, pixelWidth, 0, pixelHeight);
-      Gl.glMatrixMode(Gl.GL_MODELVIEW);
-    }
-
-
-    static void InitStarfield()
+    void InitStarfield()
     {
       for (int i = 0; i < 1000; i++)
       {
@@ -472,39 +432,13 @@ namespace Shooter
     }
 
 
-    public static void StartGameOver()
+    public void StartGameOver()
     {
       isGameOver = true;
     }
 
 
-    static void MainLoop()
-    {
-      try {
-        while (isRunning)
-        {
-          ReadInput();
-          if (TimeToUpdate)
-          {
-            Update();
-            Display();
-          }
-        }
-      }
-      finally
-      {
-        // The cache must be disposed before other things are shut down,
-        // otherwise its finalizer will try to call closed facilities adn
-        // causes a segfault.
-        textureCache.Dispose();
-
-        Media.UninitFacilities();
-        Sdl.SDL_Quit();
-      }
-    }
-
-
-    static void ReadInput()
+    protected override void ReadInput()
     {
       Sdl.SDL_Event evt;
 
@@ -561,18 +495,12 @@ namespace Shooter
     }
 
 
-    static void Quit()
-    {
-      isRunning = false;
-    }
-
-
-    static void Update()
+    protected override void Update()
     {
       entities.Update();
       if (isGameOver) {
         if (gameOverCounter-- <= 0) {
-          isRunning = false;
+          Quit();
         }
       }
 
@@ -583,52 +511,28 @@ namespace Shooter
     }
 
 
-    static void Display()
+    protected override void Display()
     {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
 
-      DrawStarfield(starfield, CurrentSeconds * 100);
+      Gfx.DrawStarfield(starfield, CurrentSeconds * 100, PixelScale, PixelWidth);
 
-      entities.Display(0, 0);
+      entities.Display(this, 0, 0);
 
       Sdl.SDL_GL_SwapBuffers();
     }
 
 
-    /// Return whether it's time for the next frame with the current FPS. A
-    /// side effect of returning true is moving the frame tracking logic to
-    /// the next frame, so make sure to cache the result.
-    public static bool TimeToUpdate
-    {
-      get
-      {
-        double interval = 1.0 / fps;
-        if (CurrentSeconds - timeStamp > interval)
-        {
-          timeStamp += interval;
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    }
-
-
-    public static double CurrentSeconds { get { return (double)DateTime.Now.Ticks / 1e7; } }
-
-
-    public static void RandomPoint(out int x, out int y)
+    public void RandomPoint(out int x, out int y)
     {
       x = rng.Next(0, pixelWidth - spriteWidth);
       y = rng.Next(0, pixelHeight - spriteHeight);
     }
 
 
-    public static void SpawnEnemy()
+    public void SpawnEnemy()
     {
       double x = pixelWidth / 2 - spriteWidth / 2;
       x += (rng.NextDouble() - 0.5) * pixelWidth * 2.0;
@@ -638,99 +542,9 @@ namespace Shooter
     }
 
 
-    public static void DrawSprite(float x, float y, int frame)
+    public void DrawSprite(float x, float y, int frame)
     {
-      const int rows = 8;
-      const int columns = 8;
-
-      float x0 = (float)(frame % columns) / (float)columns;
-      float y0 = (float)((columns + frame) / rows) / (float)rows;
-
-      float x1 = x0 + 1.0f / (float)columns;
-      float y1 = y0 - 1.0f / (float)rows;
-
-      Gl.glColor3f(1.0f, 1.0f, 1.0f);
-
-      Gl.glPushMatrix();
-
-      Gl.glTranslatef(x, y, 0.0f);
-
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureCache[texture]);
-
-      Gl.glBegin(Gl.GL_QUADS);
-
-      Gl.glTexCoord2f(x0, y0);
-      Gl.glVertex3f(0.0f, 0.0f, 0.0f);
-
-      Gl.glTexCoord2f(x1, y0);
-      Gl.glVertex3f(spriteWidth, 0.0f, 0.0f);
-
-      Gl.glTexCoord2f(x1, y1);
-      Gl.glVertex3f(spriteWidth, spriteHeight, 0.0f);
-
-      Gl.glTexCoord2f(x0, y1);
-      Gl.glVertex3f(0.0f, spriteHeight, 0.0f);
-
-      Gl.glEnd();
-
-      Gl.glPopMatrix();
-    }
-
-
-    public static void DrawRect(double x, double y, double w, double h, byte r, byte g, byte b)
-    {
-      // Clear the bound texture.
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-
-      Gl.glColor3f((float)r / 256, (float)g / 256, (float)b / 256);
-
-      Gl.glBegin(Gl.GL_QUADS);
-
-      Gl.glVertex3f((float)x, (float)y, 0.0f);
-
-      Gl.glVertex3f((float)(x + w), (float)y, 0.0f);
-
-      Gl.glVertex3f((float)(x + w), (float)(y + h), 0.0f);
-
-      Gl.glVertex3f((float)x, (float)(y + h), 0.0f);
-
-      Gl.glEnd();
-    }
-
-
-    /// <summary>
-    /// Draw a vertically scrolling starfield
-    /// </summary>
-    public static void DrawStarfield(IEnumerable<Vec3<double>> points, double t)
-    {
-      const double span = 1000.0;
-      const float depthFactor = 100.0f;
-
-
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-
-      Gl.glColor3f(1.0f, 1.0f, 1.0f);
-
-      // TODO: Do we need point scaling?
-
-      Gl.glPointSize((float)pixelScale);
-
-      // TODO: Apply offset
-      Gl.glBegin(Gl.GL_POINTS);
-
-      foreach (Vec3<double> point in points)
-      {
-        Gl.glVertex3f(
-          (float)(pixelWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),
-          (float)(point.Y - t % span) * depthFactor / (depthFactor + (float)point.Z),
-          0.0f);
-        Gl.glVertex3f(
-          (float)(pixelWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),
-          (float)(point.Y + span - t % span) * depthFactor / (depthFactor + (float)point.Z),
-          0.0f);
-      }
-
-      Gl.glEnd();
+      Gfx.DrawSprite(x, y, frame, spriteWidth, spriteHeight, Textures[spriteTexture], 8, 8);
     }
   }
 }
