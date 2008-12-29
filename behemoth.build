@@ -74,6 +74,7 @@
         <include name="Behemoth.Alg/IField2.cs"/>
 
         <include name="Behemoth.Alg/Alg.cs"/>
+        <include name="Behemoth.Alg/Cache.cs"/>
         <include name="Behemoth.Alg/Field2.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
