@@ -1,0 +1,66 @@
+Behemoth is .NET software. You need either the Micrsoft .NET runtime version
+3.5 or higher or Mono version 2.0 or higher.
+
+Building Behemoth
+=================
+
+Linux
+-----
+
+Install Mono runtime, Mono C# 3.0 compiler and NAnt to build.
+
+You are assumed to have X Windows with working OpenGL.
+
+Install the required native libraries using package management:
+
+- DevIL
+- PhysFS
+- SDL
+- SDL_mixer
+
+Build the software with NAnt.
+
+Windows
+-------
+
+Some of the native library dlls are harder to find on Windows, so they are
+included in the `3rdparty/` subdirectory.
+
+Make sure your .NET Runtime is version 3.5 or higher. Get a version 3.5 or
+higher .NET SDK from Microsoft. You can also try using Mono on Windows, this
+might require modifying the build file.
+
+Get NAnt version 0.86 or higher from <http://nant.sourceforge.net/>. Try to
+build the project.
+
+Mac OS X
+--------
+
+Not tested, but might work like Linux.
+
+Troubleshooting
+===============
+
+NAnt error on the net-3.5 build option on Windows
+-------------------------------------------------
+
+Go to the `bin/` subfolder in the NAnt installation folder, and edit the file
+`NAnt.exe.config`. Change the line
+
+    key="SOFTWARE\Microsoft\Microsoft SDKs\Windows\v6.0a\WinSDKNetFxTools\InstallationFolder"
+
+to
+
+    key="SOFTWARE\Microsoft\Microsoft SDKs\Windows\v6.1\WinSDKNetFxTools\InstallationFolder"
+
+A native library isn't found
+----------------------------
+
+Finding the native libraries required by the Tao dll files is described in the
+corresponding `.dll.config` file of each dll. Look at the names of the native
+library files that are searched for your OS. The file installed on your system
+might have a different name, eg. `foo.so.1` when the config file is looking
+for `foo.so.0`. In this case edit the config file to point to `foo.so.1`.
+Instead of editing the config file, making a symlink called `foo.so.0` in the
+`3rdparty/` subdir pointing to the installed `foo.so.1` might also work.
+
