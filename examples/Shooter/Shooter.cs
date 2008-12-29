@@ -366,7 +366,8 @@ namespace Shooter
 
     const int fps = 30;
 
-    static uint texture;
+    static TextureCache textureCache = new TextureCache(new ImageCache(), 0);
+    static string texture = "sprites.png";
 
     static bool isRunning = true;
 
@@ -446,9 +447,7 @@ namespace Shooter
       // Resetting video mode seems to reset OpenGL stuff as well.
       InitGl();
       // And buffered textures.
-      // XXX: Reloading from file is really wasteful, should just cache the
-      // pixel data in memory.
-      texture = Media.LoadGlTexture("sprites.png", 0);
+      textureCache.Clear();
 
       Geom.MakeScaledViewport(
         pixelWidth, pixelHeight, w, h, out x, out y, out width, out height);
@@ -494,6 +493,11 @@ namespace Shooter
       }
       finally
       {
+        // The cache must be disposed before other things are shut down,
+        // otherwise its finalizer will try to call closed facilities adn
+        // causes a segfault.
+        textureCache.Dispose();
+
         Media.UninitFacilities();
         Sdl.SDL_Quit();
       }
@@ -651,7 +655,7 @@ namespace Shooter
 
       Gl.glTranslatef(x, y, 0.0f);
 
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture);
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureCache[texture]);
 
       Gl.glBegin(Gl.GL_QUADS);
 

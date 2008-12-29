@@ -12,14 +12,14 @@ namespace Behemoth.TaoUtil
     protected override IntPtr Load(string name)
     {
       // Load the initial data.
-      IntPtr texturePtr =
+      IntPtr imagePtr =
         SdlImage.IMG_Load_RW(Media.GetPfsFileRwop(name), 1);
 
       // Make a copy that's converted to a texture-friendly format.
-      IntPtr result = Media.SdlSurfaceTo32Bit(texturePtr);
+      IntPtr result = Media.SdlSurfaceTo32Bit(imagePtr);
 
       // Free the initial data.
-      Sdl.SDL_FreeSurface(texturePtr);
+      Sdl.SDL_FreeSurface(imagePtr);
 
       return result;
     }

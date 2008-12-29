@@ -78,7 +78,7 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Make an OpenGL texture from an image loaded from PhysFS.
     /// </summary>
-    public static uint LoadGlTexture(string filename, int texFlags)
+    public static int LoadGlTexture(string filename, int texFlags)
     {
       IntPtr texturePtr =
         SdlImage.IMG_Load_RW(GetPfsFileRwop(filename), 1);
@@ -88,7 +88,7 @@ namespace Behemoth.TaoUtil
 
       Sdl.SDL_Surface texture = GetSdlSurface(texture32BitPtr);
 
-      uint result = MakeGlTexture(
+      int result = MakeGlTexture(
         texture.pixels, texture.w, texture.h, texFlags);
 
       Sdl.SDL_FreeSurface(texture32BitPtr);
@@ -100,9 +100,9 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Make an OpenGL texture from pixel data.
     /// </summary>
-    public static uint MakeGlTexture(IntPtr pixels, int w, int h, int texFlags)
+    public static int MakeGlTexture(IntPtr pixels, int w, int h, int texFlags)
     {
-      uint textureHandle;
+      int textureHandle;
 
       var clamp = (texFlags & TEX_CLAMP_EDGE) != 0 ? Gl.GL_CLAMP : Gl.GL_REPEAT;
       var filtering = (texFlags & TEX_USE_FILTERING) != 0 ? Gl.GL_LINEAR : Gl.GL_NEAREST;
@@ -231,9 +231,15 @@ namespace Behemoth.TaoUtil
     }
 
 
-    private static Sdl.SDL_Surface GetSdlSurface(IntPtr surfacePtr)
+    public static Sdl.SDL_Surface GetSdlSurface(IntPtr surfacePtr)
     {
       return (Sdl.SDL_Surface)Marshal.PtrToStructure(surfacePtr, typeof(Sdl.SDL_Surface));
+    }
+
+
+    public static Sdl.SDL_PixelFormat GetPixelFormat(Sdl.SDL_Surface surface)
+    {
+      return (Sdl.SDL_PixelFormat)Marshal.PtrToStructure(surface.format, typeof(Sdl.SDL_PixelFormat));
     }
 
 
@@ -241,7 +247,7 @@ namespace Behemoth.TaoUtil
     /// Convert a SDL surface into 32 bit format. Frees the old surface and
     /// allocates a new one.
     /// </summary>
-    private unsafe static IntPtr SdlSurfaceTo32Bit(IntPtr sdlSurfacePtr)
+    public unsafe static IntPtr SdlSurfaceTo32Bit(IntPtr sdlSurfacePtr)
     {
       Sdl.SDL_PixelFormat format = PixelFormat32Bit;
       return Sdl.SDL_ConvertSurface(

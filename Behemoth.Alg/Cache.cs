@@ -8,12 +8,19 @@ namespace Behemoth.Alg
   /// <summary>
   /// A cache for some type of loadable resource.
   /// </summary>
-  public abstract class Cache<T> : IDisposable
+  public abstract class Cache<T> : ICache<T>
   {
+    public T this[string name]
+    {
+      get { return Get(name); }
+      set { Add(name, value); }
+    }
+
+
     /// <summary>
     /// Request an item from the cache. Load the item if it isn't cached yet.
     /// </summary>
-    public T Get(string name)
+    private T Get(string name)
     {
       if (disposed)
       {
@@ -34,7 +41,7 @@ namespace Behemoth.Alg
     /// Manually add a new named item in the cache, freeing any existing item
     /// cached to the same name.
     /// </summary>
-    public void Add(string name, T item)
+    private void Add(string name, T item)
     {
       if (disposed)
       {
@@ -69,7 +76,7 @@ namespace Behemoth.Alg
     public long TotalSize { get { return totalSize; } }
 
 
-    public void Dispose()
+    public virtual void Dispose()
     {
       Dispose(true);
       // Drop this from the finalization queue since things should already be

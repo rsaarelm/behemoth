@@ -71,6 +71,7 @@
   <target name="Behemoth.Alg.dll" depends="init">
     <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
       <sources>
+        <include name="Behemoth.Alg/ICache.cs"/>
         <include name="Behemoth.Alg/IField2.cs"/>
 
         <include name="Behemoth.Alg/Alg.cs"/>
@@ -90,8 +91,10 @@
        unsafe="true"
        output="${build.dir}/Behemoth.TaoUtil.dll">
       <sources>
-        <include name="Behemoth.TaoUtil/Media.cs"/>
         <include name="Behemoth.TaoUtil/App.cs"/>
+        <include name="Behemoth.TaoUtil/ImageCache.cs"/>
+        <include name="Behemoth.TaoUtil/Media.cs"/>
+        <include name="Behemoth.TaoUtil/TextureCache.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
