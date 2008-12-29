@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 
-using Tao.DevIl;
 using Tao.OpenGl;
 using Tao.PhysFs;
 using Tao.Sdl;
@@ -27,7 +26,6 @@ namespace Behemoth.TaoUtil
     /// </summary>
     public static void InitFacilities()
     {
-      Il.ilInit();
       // XXX: Not really sure what the "init" parameter is for here, just copying the examples.
       Fs.PHYSFS_init("init");
 
@@ -80,28 +78,22 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Make an OpenGL texture from an image loaded from PhysFS.
     /// </summary>
-    public static uint LoadGlTexture(string filename, int texFlags, int ilImageType)
-    {
-      int imageId = LoadImage(filename, ilImageType);
-      ConvertToTextureImage(imageId);
-
-      int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
-      int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
-
-      uint result = MakeGlTexture(Il.ilGetData(), width, height, texFlags);
-
-      DeleteImage(imageId);
-
-      return result;
-    }
-
-
-    /// <summary>
-    /// Make an OpenGL texture from a Png image loaded from PhysFS.
-    /// </summary>
     public static uint LoadGlTexture(string filename, int texFlags)
     {
-      return LoadGlTexture(filename, texFlags, Il.IL_PNG);
+      IntPtr texturePtr =
+        SdlImage.IMG_Load_RW(GetPfsFileRwop(filename), 1);
+
+      IntPtr texture32BitPtr = SdlSurfaceTo32Bit(texturePtr);
+      Sdl.SDL_FreeSurface(texturePtr);
+
+      Sdl.SDL_Surface texture = GetSdlSurface(texture32BitPtr);
+
+      uint result = MakeGlTexture(
+        texture.pixels, texture.w, texture.h, texFlags);
+
+      Sdl.SDL_FreeSurface(texture32BitPtr);
+
+      return result;
     }
 
 
@@ -137,58 +129,7 @@ namespace Behemoth.TaoUtil
 
 
     /// <summary>
-    /// Convert a DevIL image onto one that can be used as an OpenGL texture.
-    /// </summary>
-    public static void ConvertToTextureImage(int ilImageId)
-    {
-      Il.ilBindImage(ilImageId);
-
-      // Flip to compensate for the Y axis flip when moving to OpenGL coordinates.
-      Ilu.iluFlipImage();
-
-      // Convert to 32 bits.
-      Il.ilConvertImage(Il.IL_RGBA, Il.IL_UNSIGNED_BYTE);
-    }
-
-
-    /// <summary>
     /// Load a DevIL image from a named PhysFS file.
-    /// </summary>
-    public static int LoadImage(string filename, int ilImageType)
-    {
-      byte[] data = GetPfsFileData(filename);
-
-      int imageId;
-      Il.ilGenImages(1, out imageId);
-      Il.ilBindImage(imageId);
-
-      if (!Il.ilLoadL(ilImageType, data, data.Length))
-      {
-        throw new IOException("Failed to load image "+filename);
-      }
-
-      return imageId;
-    }
-
-
-    /// <summary>
-    /// Load a DevIL image from a named PhysFS Png file.
-    /// </summary>
-    public static int LoadImage(string filename)
-    {
-      return LoadImage(filename, Il.IL_PNG);
-    }
-
-
-    /// <summary>
-    /// Delete a DevIL image.
-    /// </summary>
-    public static void DeleteImage(int imageId)
-    {
-      Il.ilDeleteImages(1, ref imageId);
-    }
-
-
     /// <summary>
     /// Load a sound from PhysFs into SDL Mixer.
     /// </summary>
@@ -288,6 +229,79 @@ namespace Behemoth.TaoUtil
 
       return file;
     }
+
+
+    private static Sdl.SDL_Surface GetSdlSurface(IntPtr surfacePtr)
+    {
+      return (Sdl.SDL_Surface)Marshal.PtrToStructure(surfacePtr, typeof(Sdl.SDL_Surface));
+    }
+
+
+    /// <summary>
+    /// Convert a SDL surface into 32 bit format. Frees the old surface and
+    /// allocates a new one.
+    /// </summary>
+    private unsafe static IntPtr SdlSurfaceTo32Bit(IntPtr sdlSurfacePtr)
+    {
+      Sdl.SDL_PixelFormat format = PixelFormat32Bit;
+      return Sdl.SDL_ConvertSurface(
+        sdlSurfacePtr,
+        (IntPtr)(&format),
+        0);
+    }
+
+
+    private static Sdl.SDL_PixelFormat PixelFormat32Bit
+    {
+      get
+      {
+        byte rloss = 0, gloss = 0, bloss = 0, aloss = 0;
+        byte rshift, gshift, bshift, ashift;
+        uint rmask, gmask, bmask, amask;
+
+        byte bitsPerPixel = 32;
+        byte bytesPerPixel = 4;
+        int colorkey = 0;
+        byte alpha = 0;
+
+        if (Sdl.SDL_BYTEORDER == Sdl.SDL_BIG_ENDIAN)
+        {
+          rshift = 24;
+          gshift = 16;
+          bshift = 8;
+          ashift = 0;
+
+          rmask = 0xff000000;
+          gmask = 0x00ff0000;
+          bmask = 0x0000ff00;
+          amask = 0x000000ff;
+        }
+        else
+        {
+          rshift = 0;
+          gshift = 8;
+          bshift = 16;
+          ashift = 24;
+
+          rmask = 0x000000ff;
+          gmask = 0x0000ff00;
+          bmask = 0x00ff0000;
+          amask = 0xff000000;
+        }
+
+        var result = new Sdl.SDL_PixelFormat(
+          IntPtr.Zero,
+          bitsPerPixel, bytesPerPixel,
+          rloss, gloss, bloss, aloss,
+          rshift, gshift, bshift, ashift,
+          (int)rmask, (int)gmask, (int)bmask, (int)amask,
+          colorkey,
+          alpha);
+
+        return result;
+      }
+    }
+
 
     private static Dictionary<string, IntPtr> soundBuffers =
       new Dictionary<string, IntPtr>();

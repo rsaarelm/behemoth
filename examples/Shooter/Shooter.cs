@@ -640,10 +640,10 @@ namespace Shooter
       const int columns = 8;
 
       float x0 = (float)(frame % columns) / (float)columns;
-      float y0 = 1.0f - (float)((frame + columns) / rows) / (float)rows;
+      float y0 = (float)((columns + frame) / rows) / (float)rows;
 
       float x1 = x0 + 1.0f / (float)columns;
-      float y1 = y0 + 1.0f / (float)rows;
+      float y1 = y0 - 1.0f / (float)rows;
 
       Gl.glColor3f(1.0f, 1.0f, 1.0f);
 
