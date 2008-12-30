@@ -92,5 +92,26 @@ namespace Behemoth.Alg
 
       return result;
     }
+
+
+    /// <summary>
+    /// Clamp a value between two bounds.
+    /// </summary>
+    public static T Clamp<T>(T min, T val, T max)
+      where T : IComparable<T>
+    {
+      if (min.CompareTo(val) > 0)
+      {
+        return min;
+      }
+      else if (val.CompareTo(max) > 0)
+      {
+        return max;
+      }
+      else
+      {
+        return val;
+      }
+    }
   }
 }

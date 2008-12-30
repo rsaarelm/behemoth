@@ -114,7 +114,10 @@ namespace Behemoth.TaoUtil
     }
 
 
-    protected abstract void Update();
+    protected virtual void Update()
+    {
+      tick++;
+    }
 
 
     protected abstract void Display();

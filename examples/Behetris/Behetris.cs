@@ -21,39 +21,41 @@ namespace Behetris
       blocks = new Block[][] {
         Block.MakeSet(
           1,
-          "##",
-          "##"),
+          "    ",
+          " ## ",
+          " ## ",
+          "    "),
         Block.MakeSet(
           2,
-          " # ",
-          " ##",
+          "   ",
+          "###",
           " # "),
         Block.MakeSet(
           3,
-          " # ",
-          " # ",
-          " ##"),
-        Block.MakeSet(
-          4,
-          " # ",
-          " # ",
-          "## "),
-        Block.MakeSet(
-          5,
-          " # ",
-          "## ",
-          "#  "),
-        Block.MakeSet(
-          6,
-          " # ",
-          " ##",
+          "   ",
+          "###",
           "  #"),
         Block.MakeSet(
+          4,
+          "   ",
+          "###",
+          "#  "),
+        Block.MakeSet(
+          5,
+          "   ",
+          "## ",
+          " ##"),
+        Block.MakeSet(
+          6,
+          "   ",
+          " ##",
+          "## "),
+        Block.MakeSet(
           7,
-          "  # ",
-          "  # ",
-          "  # ",
-          "  # "),
+          "    ",
+          "####",
+          "    ",
+          "    "),
       };
 
       // Set field edges to impassable.
@@ -73,7 +75,8 @@ namespace Behetris
 
     protected override void Update()
     {
-      tick++;
+      base.Update();
+
       if (speedDrop)
       {
         StepBlock();
@@ -83,6 +86,13 @@ namespace Behetris
         StepBlock();
         dropCounter = dropSpeed;
       }
+
+      if (steerCounter-- < 0)
+      {
+        steerCounter = steerSpeed;
+        MoveBlock(steerDir);
+      }
+
       CheckClears();
     }
 
@@ -107,7 +117,23 @@ namespace Behetris
       }
 
       DrawBlock(CurrentBlock, blockX, blockY);
+      DrawFuseBlock();
+
     }
+
+
+    private void DrawFuseBlock()
+    {
+      if (BlinkOn)
+      {
+        int fuseX, fuseY;
+        BlockFusePos(out fuseX, out fuseY);
+        DrawBlock(CurrentBlock, fuseX, fuseY);
+      }
+    }
+
+
+    private bool BlinkOn { get { return (Tick / 4) % 2 == 0; } }
 
 
     private void DrawCell(int type, int x, int y)
@@ -183,10 +209,10 @@ namespace Behetris
             Quit();
             break;
           case Sdl.SDLK_LEFT:
-            MoveBlock(-1);
+            Steer(-1);
             break;
           case Sdl.SDLK_RIGHT:
-            MoveBlock(1);
+            Steer(1);
             break;
           case Sdl.SDLK_UP:
             RotateBlock(1);
@@ -204,6 +230,12 @@ namespace Behetris
           case Sdl.SDLK_DOWN:
             speedDrop = false;
             break;
+          case Sdl.SDLK_LEFT:
+            Unsteer(-1);
+            break;
+          case Sdl.SDLK_RIGHT:
+            Unsteer(1);
+            break;
           }
           break;
 
@@ -215,12 +247,43 @@ namespace Behetris
     }
 
 
+    private void Steer(int dir)
+    {
+      Debug.Assert(-1 <= dir && dir <= 1);
+      steerDir = Alg.Clamp(-1, steerDir + dir, 1);
+      // Looks like we started moving. Make the next move instantaneous.
+      if (dir != 0 && steerDir != 0)
+      {
+        steerCounter = 0;
+      }
+    }
+
+
+    private void Unsteer(int dir)
+    {
+      if (steerDir == dir)
+      {
+        steerDir = 0;
+      }
+      else
+      {
+        Steer(-dir);
+      }
+    }
+
+
     private void SpawnBlock()
     {
       currentBlockIdx = rng.Next(blocks.Length);
       currentBlockRot = 0;
-      blockX = 4;
-      blockY = -4;
+      blockX = 3;
+      blockY = 0;
+      dropCounter = dropSpeed;
+
+      if (!BlockFits(CurrentBlock, blockX, blockY))
+      {
+        GameOver();
+      }
     }
 
 
@@ -244,6 +307,22 @@ namespace Behetris
       {
         return false;
       }
+    }
+
+
+    private void BlockFusePos(out int fuseX, out int fuseY)
+    {
+      fuseX = blockX;
+      for (int y = blockY; y < fieldH; y++)
+      {
+        if (!BlockFits(CurrentBlock, blockX, y + 1))
+        {
+          fuseY = y;
+          return;
+        }
+      }
+      Debug.Assert(false, "Shouldn't end up here.");
+      fuseY = blockY;
     }
 
 
@@ -395,8 +474,6 @@ namespace Behetris
     }
 
 
-    private int tick = 0;
-
     // Field and dimensions of the Behetris well.
     private Field2<int> field = new Field2<int>();
 
@@ -410,10 +487,13 @@ namespace Behetris
     private int dropSpeed = 30;
     private int dropCounter = 0;
 
+    private int steerSpeed = 5;
+    private int steerCounter = 0;
+    private int steerDir = 0;
+
     private Random rng = new Random();
 
     private bool speedDrop = false;
-
 
     const int fieldW = 10;
     const int fieldH = 18;
