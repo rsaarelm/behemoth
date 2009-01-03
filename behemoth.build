@@ -80,6 +80,7 @@
         <include name="Behemoth.Alg/Field2.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
         <include name="Behemoth.Alg/Guid.cs"/>
+        <include name="Behemoth.Alg/MemUtil.cs"/>
         <include name="Behemoth.Alg/Properties.cs"/>
         <include name="Behemoth.Alg/SchemaProperties.cs"/>
         <include name="Behemoth.Alg/TestUtil.cs"/>
@@ -118,6 +119,7 @@
       <sources>
         <include name="tests/Behemoth.Alg/TestAlg.cs"/>
         <include name="tests/Behemoth.Alg/TestGeom.cs"/>
+        <include name="tests/Behemoth.Alg/TestMemUtil.cs"/>
         <include name="tests/Behemoth.Alg/TestProperties.cs"/>
       </sources>
       <references>
