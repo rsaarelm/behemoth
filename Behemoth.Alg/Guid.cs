@@ -8,15 +8,15 @@ namespace Behemoth.Alg
   [Serializable]
   public class Guid
   {
-    public string Get(string prefix)
+    public string Next(string prefix)
     {
       return prefix + "#" + counter++;
     }
 
 
-    public string Get()
+    public string Next()
     {
-      return Get("");
+      return Next("");
     }
 
 

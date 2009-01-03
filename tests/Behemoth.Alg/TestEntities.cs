@@ -8,9 +8,6 @@ using Behemoth.Alg;
 
 namespace Behemoth.Alg
 {
-  using ComponentFamily = String;
-
-
   [TestFixture]
   public class TestEntities
   {
@@ -18,20 +15,20 @@ namespace Behemoth.Alg
     public void TestEntitySetup()
     {
       // Create some components.
-      Component ticker = new TickComponent();
+      Component stats = new StatsComponent();
       Component pos = new PosComponent();
 
       // Create an entity, it starts with nothing but an id.
       Entity ent = new Entity("1")
         // Give it some components (using a handly fluent interface idiom).
-        .Set(ticker)
+        .Set(stats)
         .Set(pos);
 
       // Read the components back. Thanks to generic magic, we don't need to
       // refer to component families explicitly at all.
-      TickComponent ticker2;
-      Assert.IsTrue(ent.TryGet(out ticker2));
-      Assert.AreEqual(ticker, ticker2);
+      StatsComponent stats2;
+      Assert.IsTrue(ent.TryGet(out stats2));
+      Assert.AreEqual(stats, stats2);
 
       PosComponent pos2;
       Assert.IsTrue(ent.TryGet(out pos2));
@@ -65,30 +62,56 @@ namespace Behemoth.Alg
         // itself properly.
       }
     }
+
+
+    [Test]
+    public void TestEntityTemplates()
+    {
+      // Mostly just demoing how you're supposed to use the template system.
+
+      // Use a guid dispenser to give entities unique IDs.
+      Guid guids = new Guid();
+
+      // Set up some entity templates built from component templates.
+      EntityTemplate brogmoidTemplate = new EntityTemplate()
+        .AddComponent(new StatsTemplate(6, 2, 4))
+        .AddComponent(new RandomPosTemplate());
+
+      EntityTemplate grueTemplate = new EntityTemplate()
+        .AddComponent(new StatsTemplate(4, 6, 8))
+        .AddComponent(new RandomPosTemplate());
+
+      // Use the templates to build entities.
+      Entity brogmoid1 = brogmoidTemplate.Make(guids.Next());
+      Entity brogmoid2 = brogmoidTemplate.Make(guids.Next());
+      Entity grue1 = grueTemplate.Make(guids.Next());
+
+      Assert.AreEqual(6, brogmoid1.Get<StatsComponent>().Might);
+      Assert.AreEqual(6, brogmoid2.Get<StatsComponent>().Might);
+      Assert.AreEqual(8, grue1.Get<StatsComponent>().Speed);
+
+    }
   }
 
 
   [Serializable]
-  class TickComponent : Component
+  class StatsComponent : Component
   {
-    new public static ComponentFamily GetFamily()
+    new public static String GetFamily()
     {
-      return "tick";
+      return "stats";
     }
 
-    public int Tick()
-    {
-      return tick++;
-    }
-
-    int tick = 0;
+    public int Might;
+    public int Craft;
+    public int Speed;
   }
 
 
   [Serializable]
   class PosComponent : Component
   {
-    new public static ComponentFamily GetFamily()
+    new public static String GetFamily()
     {
       return "pos";
     }
@@ -102,5 +125,52 @@ namespace Behemoth.Alg
   class BadComponent : Component
   {
     // The GetFamily method isn't defined. Description above on how this causes trouble.
+  }
+
+
+  class StatsTemplate : ComponentTemplate
+  {
+    public StatsTemplate(int might, int craft, int speed)
+    {
+      this.might = might;
+      this.craft = craft;
+      this.speed = speed;
+    }
+
+
+    public override String Family { get { return StatsComponent.GetFamily(); } }
+
+
+    protected override Component BuildComponent(Entity entity)
+    {
+      StatsComponent result = new StatsComponent();
+      result.Might = might;
+      result.Craft = craft;
+      result.Speed = speed;
+      return result;
+    }
+
+
+    private int might;
+    private int craft;
+    private int speed;
+  }
+
+
+  class RandomPosTemplate : ComponentTemplate
+  {
+    public override String Family { get { return PosComponent.GetFamily(); } }
+
+
+    protected override Component BuildComponent(Entity entity)
+    {
+      PosComponent result = new PosComponent();
+      Random random = new Random();
+      result.X = random.Next(80);
+      result.Y = random.Next(80);
+
+      return result;
+    }
+
   }
 }

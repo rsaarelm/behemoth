@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Behemoth.Alg
 {
-  using ComponentFamily = String;
-
   [Serializable]
   public class Entity
   {
@@ -17,23 +15,30 @@ namespace Behemoth.Alg
     public bool TryGet<T>(out T component)
       where T : Component
     {
-      ComponentFamily type = Component.FamilyOf<T>();
+      component = Get<T>();
+      return component != null;
+    }
+
+
+    public T Get<T>()
+      where T : Component
+    {
+      String type = Component.FamilyOf<T>();
 
       if (components.ContainsKey(type))
       {
-        component = (T)components[type];
-        return true;
+        return (T)components[type];
       }
       else
       {
-        return false;
+        return null;
       }
     }
 
 
     public Entity Set(Component c)
     {
-      ComponentFamily type = c.Family;
+      String type = c.Family;
 
       components[type] = c;
 
@@ -52,7 +57,7 @@ namespace Behemoth.Alg
 
     private string id;
 
-    private IDictionary<ComponentFamily, Component> components =
-      new Dictionary<ComponentFamily, Component>();
+    private IDictionary<String, Component> components =
+      new Dictionary<String, Component>();
   }
 }

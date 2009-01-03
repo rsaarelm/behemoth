@@ -2,23 +2,21 @@ using System;
 
 namespace Behemoth.Alg
 {
-  using ComponentFamily = String;
-
   [Serializable]
   public class Component
   {
-    public ComponentFamily Family { get { return FamilyOf(this.GetType()); } }
+    public String Family { get { return FamilyOf(this.GetType()); } }
 
 
-    public static ComponentFamily FamilyOf<T>()
+    public static String FamilyOf<T>()
       where T : Component
     {
       return FamilyOf(typeof(T));
     }
 
-    public static ComponentFamily FamilyOf(Type type)
+    public static String FamilyOf(Type type)
     {
-      var result = (ComponentFamily)MemUtil.InheritedStaticMethod(type, "GetFamily", null);
+      var result = (String)MemUtil.InheritedStaticMethod(type, "GetFamily", null);
       if (result == null)
       {
         throw new ApplicationException(
@@ -33,12 +31,12 @@ namespace Behemoth.Alg
     /// not rooted in a subfamily that defines a static family lookup method.
     /// Causes a run-time error when called.
     /// </summary>
-    public static ComponentFamily GetFamily()
+    public static String GetFamily()
     {
       throw new ApplicationException("GetFamily lookup fell back to root Component class.");
     }
 
 
-    protected ComponentFamily family;
+    protected String family;
   }
 }
