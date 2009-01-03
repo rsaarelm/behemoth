@@ -113,5 +113,38 @@ namespace Behemoth.Alg
         return val;
       }
     }
+
+
+    /// <summary>
+    /// Creates a type-checking predicate.
+    /// </summary>
+    public static Func<Object, string> TypeP(Type type)
+    {
+      return val => {
+        Type valType = val.GetType();
+        return valType == type ? null :
+        "Expected type "+type+", got "+valType+".";
+      };
+    }
+
+
+    /// <summary>
+    /// Joins two constraint-style predicates into a new constraint which
+    /// fails if either of the subconstraints fails.
+    /// </summary>
+    /// <remarks>
+    /// The resulting predicate short-circuits if predicate lhs fails.
+    /// </remarks>
+    public static Func<T, string> Join<T>(Func<T, string> lhs, Func<T, string> rhs)
+    {
+      return val => {
+        string ret;
+        ret = lhs(val);
+        if (ret != null) { return ret; }
+        ret = rhs(val);
+        if (ret != null) { return ret; }
+        return null;
+      };
+    }
   }
 }

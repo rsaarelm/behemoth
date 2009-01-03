@@ -79,6 +79,7 @@
         <include name="Behemoth.Alg/Field2.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
         <include name="Behemoth.Alg/Properties.cs"/>
+        <include name="Behemoth.Alg/SchemaProperties.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
         <include name="Behemoth.Alg/Vec3.cs"/>
       </sources>

@@ -30,9 +30,13 @@ namespace Behemoth.Alg
 
       Assert.IsFalse(props.ContainsKey("xyzzy"));
 
-//      Assert.Throws(
-//        typeof(KeyNotFoundException),
-//        delegate { return props["xyzzy"]; });
+      try
+      {
+        Assert.AreEqual(666, props["xyzzy"]);
+        Assert.Fail("Exception not triggered.");
+      }
+      catch (KeyNotFoundException)
+      {}
 
       props["xyzzy"] = 666;
 
@@ -50,6 +54,7 @@ namespace Behemoth.Alg
       Assert.IsFalse(props2.ContainsKey("quux"));
     }
 
+
     [Test]
     public void TestInheritAndChange()
     {
@@ -63,6 +68,7 @@ namespace Behemoth.Alg
       Assert.AreEqual(777, props2["xyzzy"]);
     }
 
+
     [Test]
     public void TestInheritAndHide()
     {
@@ -73,10 +79,20 @@ namespace Behemoth.Alg
 
       // The original mustn't change.
       Assert.AreEqual(666, props["xyzzy"]);
-//      Assert.Throws(
-//        typeof(KeyNotFoundException),
-//        delegate { return props2["xyzzy"]; });
+
+      try
+      {
+        Assert.AreEqual(666, props2["xyzzy"]);
+        Assert.Fail("Exception not triggered.");
+      }
+      catch (KeyNotFoundException)
+      {}
+
+      // Setting a value must cancel hiding.
+      props2["xyzzy"] = 777;
+      Assert.AreEqual(777, props2["xyzzy"]);
     }
+
 
     [Test]
     public void TestUnset()
@@ -100,17 +116,77 @@ namespace Behemoth.Alg
       DatePublished,
     }
 
+
     [Test]
     public void TestKeyEnum()
     {
-      var props = new Properties<KeySet, Object>();
-
-      props[KeySet.Title] = "The C Programming Language";
-      props[KeySet.ISBN] = "0131103628";
-      props[KeySet.DatePublished] = new DateTime(1988, 4, 1);
+      var props = new Properties<KeySet, Object>().Add(
+        KeySet.Title, "The C Programming Language",
+        KeySet.ISBN, "0131103628",
+        KeySet.DatePublished, new DateTime(1988, 4, 1));
 
       Assert.AreEqual("0131103628", props[KeySet.ISBN]);
     }
 
+
+    [Test]
+    public void TestConstraints()
+    {
+      var props = new SchemaProperties<string, Object>();
+      props.SetConstraint("intKey", Alg.TypeP(typeof(int)));
+
+      props["fooKey"] = "bar";
+      props["intKey"] = 123;
+
+      try
+      {
+        // Can't use non-integer keys.
+        props["intKey"] = "quux";
+        Assert.Fail("Exception not triggered.");
+      }
+      catch (ArgumentException)
+      {}
+    }
+
+
+    [Test]
+    public void TestComplexConstraints()
+    {
+      var props = new SchemaProperties<string, Object>();
+      props.SetConstraint("intKey", Alg.TypeP(typeof(int)));
+
+      props.AddConstraint("intKey", val => (int)val > 10 ? "Too large!" : null);
+      props.AddConstraint("intKey", val => (int)val < 0 ? "Too small!" : null);
+
+      props["intKey"] = 5;
+
+      try
+      {
+        // Can't use non-integer keys.
+        props["intKey"] = "quux";
+        Assert.Fail("Exception not triggered.");
+      }
+      catch (ArgumentException)
+      {}
+
+      try
+      {
+        // Range constraint 1
+        props["intKey"] = 15;
+        Assert.Fail("Exception not triggered.");
+      }
+      catch (ArgumentException)
+      {}
+
+      try
+      {
+        // Range constraint 2
+        props["intKey"] = -10;
+        Assert.Fail("Exception not triggered.");
+      }
+      catch (ArgumentException)
+      {}
+
+    }
   }
 }

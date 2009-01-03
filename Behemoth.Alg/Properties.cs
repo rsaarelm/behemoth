@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace Behemoth.Alg
 {
+  /// <summary>
+  /// A class for a general, inheritable set of properties.
+  /// </summary>
+  /// <seealso href="http://steve-yegge.blogspot.com/2008/10/universal-design-pattern.html">
+  /// Steve Yegge: The Universal Design Pattern
+  /// </seealso>
   public class Properties<TKey, TValue>
   {
     /// <summary>
@@ -18,7 +24,31 @@ namespace Behemoth.Alg
     /// </summary>
     public Properties(Properties<TKey, TValue> parent)
     {
-      this.parent = parent;
+      Parent = parent;
+    }
+
+
+    /// <summary>
+    /// Add a set of key-value pairs as flat parameter data.
+    /// </summary>
+    /// <returns>
+    /// Reference to this object, so that the method can be used with a fluent
+    /// interface idiom.
+    /// </returns>
+    public Properties<TKey, TValue> Add(params Object[] contents)
+    {
+      if (contents.Length % 2 != 0)
+      {
+        throw new ArgumentException(
+          "List length not even; key not matched by value.",
+          "contents");
+      }
+      for (int i = 0; i < contents.Length / 2; i++)
+      {
+        this[(TKey)contents[i * 2]] = (TValue)contents[i * 2 + 1];
+      }
+
+      return this;
     }
 
 
@@ -62,34 +92,31 @@ namespace Behemoth.Alg
     {
       get
       {
-        if (key == null)
-        {
-          throw new ArgumentNullException("key");
-        }
-        if (hiddenKeys.Contains(key))
-        {
-          throw new KeyNotFoundException(key.ToString());
-        }
-        else if (data.ContainsKey(key))
-        {
-          return data[key];
-        }
-        else if (parent != null)
-        {
-          return parent[key];
-        }
-        else
-        {
-          throw new KeyNotFoundException(key.ToString());
-        }
+        return Get(key);
       }
       set
       {
-        if (hiddenKeys.Contains(key))
-        {
-          hiddenKeys.Remove(key);
-        }
-        data[key] = value;
+        Set(key, value);
+      }
+    }
+
+
+    /// <summary>
+    /// Return the value for a key if the key is set, otherwise do nothing.
+    /// </summary>
+    /// <returns>
+    /// Whether the key was found and the value was provided.
+    /// </returns>
+    public bool TryGet(TKey key, out TValue val)
+    {
+      if (ContainsKey(key))
+      {
+        val = this[key];
+        return true;
+      }
+      else
+      {
+        return false;
       }
     }
 
@@ -116,14 +143,51 @@ namespace Behemoth.Alg
     }
 
 
-    public Properties<TKey, TValue> Parent
+    public virtual Properties<TKey, TValue> Parent
     {
       get { return parent; }
       set { parent = value; }
     }
 
 
-    private Properties<TKey, TValue> parent = null;
+    public virtual TValue Get(TKey key)
+    {
+      if (key == null)
+      {
+        throw new ArgumentNullException("key");
+      }
+      if (hiddenKeys.Contains(key))
+      {
+        throw new KeyNotFoundException(key.ToString());
+      }
+      else if (data.ContainsKey(key))
+      {
+        return data[key];
+      }
+      else if (parent != null)
+      {
+        return parent[key];
+      }
+      else
+      {
+        throw new KeyNotFoundException(key.ToString());
+      }
+    }
+
+
+    public virtual Properties<TKey, TValue> Set(TKey key, TValue val)
+    {
+      if (hiddenKeys.Contains(key))
+      {
+        hiddenKeys.Remove(key);
+      }
+      data[key] = val;
+      return this;
+    }
+
+
+    protected Properties<TKey, TValue> parent = null;
+
     private IDictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();
     private HashSet<TKey> hiddenKeys = new HashSet<TKey>();
   }
