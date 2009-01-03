@@ -78,6 +78,7 @@
         <include name="Behemoth.Alg/Cache.cs"/>
         <include name="Behemoth.Alg/Field2.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
+        <include name="Behemoth.Alg/Properties.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
         <include name="Behemoth.Alg/Vec3.cs"/>
       </sources>
@@ -113,6 +114,7 @@
       <sources>
         <include name="tests/Behemoth.Alg/TestAlg.cs"/>
         <include name="tests/Behemoth.Alg/TestGeom.cs"/>
+        <include name="tests/Behemoth.Alg/TestProperties.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Behemoth.Alg.dll"/>
