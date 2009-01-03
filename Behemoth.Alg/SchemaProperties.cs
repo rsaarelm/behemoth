@@ -50,7 +50,9 @@ namespace Behemoth.Alg
         string errorMsg = pred(val);
         if (errorMsg != null)
         {
-          throw new ArgumentException(errorMsg, "val");
+          throw new ArgumentException(
+            "Constraint failed for "+val.ToString()+" -> "+
+            key.ToString()+": " + errorMsg, "val");
         }
       }
 
