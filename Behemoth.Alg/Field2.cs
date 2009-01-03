@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Behemoth.Alg
 {
+  [Serializable]
   public class Field2<T> : IField2<T>
   {
     // This is a very simple and probably ineffective dictionary-based field

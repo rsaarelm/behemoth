@@ -1,3 +1,5 @@
+using System;
+
 namespace Behemoth.Alg
 {
   /// <summary>
@@ -6,6 +8,7 @@ namespace Behemoth.Alg
   /// <typeparam name="T">
   /// Type of the vector elements.
   /// </typeparam>
+  [Serializable]
   public struct Vec3<T>
   {
     public T X;
