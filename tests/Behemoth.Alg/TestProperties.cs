@@ -133,7 +133,7 @@ namespace Behemoth.Alg
     public void TestConstraints()
     {
       var props = new SchemaProperties<string, Object>();
-      props.SetConstraint("intKey", Alg.TypeP(typeof(int)));
+      props.SetConstraint("intKey", Alg.TypeP<Object>(typeof(int)));
 
       props["fooKey"] = "bar";
       props["intKey"] = 123;
@@ -153,7 +153,9 @@ namespace Behemoth.Alg
     public void TestComplexConstraints()
     {
       var props = new SchemaProperties<string, Object>();
-      props.SetConstraint("intKey", Alg.TypeP(typeof(int)));
+
+      // Use the shortcut for defining type properties.
+      props.SetConstraint("intKey", typeof(int));
 
       props.AddConstraint("intKey", val => (int)val > 10 ? "Too large!" : null);
       props.AddConstraint("intKey", val => (int)val < 0 ? "Too small!" : null);

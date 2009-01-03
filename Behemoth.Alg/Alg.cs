@@ -118,7 +118,7 @@ namespace Behemoth.Alg
     /// <summary>
     /// Creates a type-checking predicate.
     /// </summary>
-    public static Func<Object, string> TypeP(Type type)
+    public static Func<T, string> TypeP<T>(Type type)
     {
       return val => {
         Type valType = val.GetType();

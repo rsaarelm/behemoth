@@ -70,6 +70,15 @@ namespace Behemoth.Alg
 
 
     /// <summary>
+    /// Shortcut for setting a type constraint.
+    /// </summary>
+    public void SetConstraint(TKey key, Type type)
+    {
+      SetConstraint(key, Alg.TypeP<TValue>(type));
+    }
+
+
+    /// <summary>
     /// Sets a new constraint if a key doesn't have any constraints yet.
     /// Otherwise sets the key's constraint as a conjunction of the existing
     /// and the new constraint.
