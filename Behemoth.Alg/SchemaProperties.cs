@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Behemoth.Alg
 {
@@ -7,6 +8,7 @@ namespace Behemoth.Alg
   /// A version of the Properties class which uses typing schemas on the
   /// fields.
   /// </summary>
+  // XXX: Not serializable because of the lambdas.
   public class SchemaProperties<TKey, TValue> : Properties<TKey, TValue>
   {
     /// <summary>

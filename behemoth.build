@@ -82,6 +82,7 @@
         <include name="Behemoth.Alg/Guid.cs"/>
         <include name="Behemoth.Alg/Properties.cs"/>
         <include name="Behemoth.Alg/SchemaProperties.cs"/>
+        <include name="Behemoth.Alg/TestUtil.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
         <include name="Behemoth.Alg/Vec3.cs"/>
       </sources>

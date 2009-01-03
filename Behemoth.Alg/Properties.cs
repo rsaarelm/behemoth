@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Behemoth.Alg
 {
@@ -9,6 +10,7 @@ namespace Behemoth.Alg
   /// <seealso href="http://steve-yegge.blogspot.com/2008/10/universal-design-pattern.html">
   /// Steve Yegge: The Universal Design Pattern
   /// </seealso>
+  [Serializable]
   public class Properties<TKey, TValue>
   {
     /// <summary>
@@ -58,7 +60,7 @@ namespace Behemoth.Alg
     /// </summary>
     public bool ContainsKey(TKey key)
     {
-      if (hiddenKeys.Contains(key))
+      if (hiddenKeys.ContainsKey(key))
       {
         return false;
       }
@@ -128,7 +130,7 @@ namespace Behemoth.Alg
     public void Hide(TKey key)
     {
       data.Remove(key);
-      hiddenKeys.Add(key);
+      hiddenKeys[key] = true;
     }
 
 
@@ -156,7 +158,7 @@ namespace Behemoth.Alg
       {
         throw new ArgumentNullException("key");
       }
-      if (hiddenKeys.Contains(key))
+      if (hiddenKeys.ContainsKey(key))
       {
         throw new KeyNotFoundException(key.ToString());
       }
@@ -177,7 +179,7 @@ namespace Behemoth.Alg
 
     public virtual Properties<TKey, TValue> Set(TKey key, TValue val)
     {
-      if (hiddenKeys.Contains(key))
+      if (hiddenKeys.ContainsKey(key))
       {
         hiddenKeys.Remove(key);
       }
@@ -189,6 +191,6 @@ namespace Behemoth.Alg
     protected Properties<TKey, TValue> parent = null;
 
     private IDictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();
-    private HashSet<TKey> hiddenKeys = new HashSet<TKey>();
+    private IDictionary<TKey, bool> hiddenKeys = new Dictionary<TKey, bool>();
   }
 }

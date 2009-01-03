@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using NUnit.Framework;
 
@@ -188,7 +189,17 @@ namespace Behemoth.Alg
       }
       catch (ArgumentException)
       {}
+    }
 
+    [Test]
+    public void TestSerialization()
+    {
+      var props = new Properties<string, int>();
+      props["xyzzy"] = 666;
+
+      var props2 = TestUtil.RoundtripSerialize(props);
+
+      Assert.AreEqual(666, props2["xyzzy"]);
     }
   }
 }
