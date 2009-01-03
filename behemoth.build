@@ -15,7 +15,7 @@
 
   <!-- The program that gets run with "nant run" -->
   <property name="currentprogram"
-            value="Behetris.exe"/>
+            value="Rpg.exe"/>
 
   <if test="${platform::is-win32()}">
     <property name="nant.settings.currentframework" value="net-3.5"/>
@@ -54,6 +54,7 @@
   <target name="examples"
           depends="Shooter.exe,
                    Behetris.exe,
+                   Rpg.exe,
                    "/>
 
 
@@ -171,6 +172,37 @@
       </references>
     </csc>
   </target>
+
+
+  <!-- Rpg demo -->
+  <target name="Rpg.exe" depends="libs,Rpg.zip">
+    <csc target="exe"
+         output="${build.dir}/Rpg.exe">
+      <sources>
+        <include name="examples/Rpg/Rpg.cs"/>
+      </sources>
+      <references>
+        <include name="${build.dir}/Tao.OpenGl.dll"/>
+        <include name="${build.dir}/Tao.Sdl.dll"/>
+
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
+      </references>
+    </csc>
+  </target>
+
+
+  <!-- Data files for rpg demo -->
+  <target name="Rpg.zip" depends="init">
+    <zip zipfile="${build.dir}/Rpg.zip">
+      <fileset basedir="examples/Rpg/data">
+        <include name="**/*"/>
+      </fileset>
+    </zip>
+  </target>
+
+
+
 
 
   <target name="init">
