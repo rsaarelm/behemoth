@@ -15,9 +15,9 @@ namespace Behemoth.Alg
     public void TestStaticMethodLookup()
     {
       Assert.AreEqual(
-        1, (int)MemUtil.InheritedStaticMethod(typeof(Derived21), "Foo", null));
+        1, (int)MemUtil.CallInheritedStaticMethod(typeof(Derived21), "Foo", null));
       Assert.AreEqual(
-        2, (int)MemUtil.InheritedStaticMethod(typeof(Derived11), "Foo", null));
+        2, (int)MemUtil.CallInheritedStaticMethod(typeof(Derived11), "Foo", null));
     }
   }
 
