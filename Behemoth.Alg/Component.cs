@@ -37,6 +37,52 @@ namespace Behemoth.Alg
     }
 
 
+    /// <summary>
+    /// The entity this component is currently attached to. Null if none.
+    /// </summary>
+    public Entity Entity { get { return entity; } }
+
+
+    /// <summary>
+    /// Sets the entity the component is attached to.
+    /// </summary>
+    /// <remarks>
+    /// Use Entity.Set to manage components. Do not call this directly.
+    /// </remarks>
+    internal void Attach(Entity entity)
+    {
+      this.entity = entity;
+      InnerAttach(entity);
+    }
+
+
+    /// <summary>
+    /// Sets the component to be detached from an entity.
+    /// </summary>
+    /// <remarks>
+    /// Use Entity.Set to manage components. Do not call this directly.
+    /// </remarks>
+    internal void Detach()
+    {
+      InnerDetach();
+      this.entity = null;
+    }
+
+
+    /// <summary>
+    /// Component-specific hook for attaching to entities.
+    /// </summary>
+    protected virtual void InnerAttach(Entity entity) {}
+
+
+    /// <summary>
+    /// Component-specific hook for detaching from entities.
+    /// </summary>
+    protected virtual void InnerDetach() {}
+
+
     protected String family;
+
+    private Entity entity;
   }
 }

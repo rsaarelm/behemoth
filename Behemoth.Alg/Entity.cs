@@ -38,11 +38,31 @@ namespace Behemoth.Alg
 
     public Entity Set(Component c)
     {
+      if (c == null)
+      {
+        throw new ArgumentNullException("c");
+      }
+
       String type = c.Family;
 
+      if (components.ContainsKey(type)) {
+        components[type].Detach();
+      }
+
       components[type] = c;
+      c.Attach(this);
 
       return this;
+    }
+
+
+    public void Clear(String type)
+    {
+      if (components.ContainsKey(type)) {
+        components[type].Detach();
+      }
+
+      components.Remove(type);
     }
 
 

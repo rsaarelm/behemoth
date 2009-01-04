@@ -18,6 +18,9 @@ namespace Behemoth.Alg
       Component stats = new StatsComponent();
       Component pos = new PosComponent();
 
+      Assert.AreEqual(null, stats.Entity);
+      Assert.AreEqual(null, pos.Entity);
+
       // Create an entity, it starts with nothing but an id.
       Entity ent = new Entity("1")
         // Give it some components (using a handly fluent interface idiom).
@@ -33,6 +36,10 @@ namespace Behemoth.Alg
       PosComponent pos2;
       Assert.IsTrue(ent.TryGet(out pos2));
       Assert.AreEqual(pos, pos2);
+
+      Assert.AreEqual(ent, stats.Entity);
+      Assert.AreEqual(ent, pos.Entity);
+
 
       // Now for a somewhat subtle pitfall from the generic magic:
       try
@@ -61,6 +68,26 @@ namespace Behemoth.Alg
         // This also crashes, since the component type fails to describe
         // itself properly.
       }
+
+      // Checking for null components.
+      try
+      {
+        ent.Set(null);
+        Assert.Fail("Exception didn't happen.");
+      }
+      catch(ArgumentNullException)
+      {
+      }
+
+      // Removing a component.
+      ent.Clear(pos.Family);
+
+      Assert.IsTrue(ent.TryGet(out stats2));
+
+      Assert.IsFalse(ent.TryGet(out pos2));
+
+      Assert.AreEqual(ent, stats.Entity);
+      Assert.AreEqual(null, pos.Entity);
     }
 
 
