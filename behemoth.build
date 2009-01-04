@@ -193,6 +193,7 @@
          output="${build.dir}/Rpg.exe">
       <sources>
         <include name="examples/Rpg/CoreComponent.cs"/>
+        <include name="examples/Rpg/Query.cs"/>
         <include name="examples/Rpg/Rpg.cs"/>
         <include name="examples/Rpg/Terrain.cs"/>
         <include name="examples/Rpg/World.cs"/>

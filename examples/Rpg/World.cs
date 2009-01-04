@@ -1,7 +1,8 @@
 using System;
-using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 using Behemoth.Alg;
 
@@ -55,6 +56,23 @@ namespace Rpg
       }
     }
 
+
+    public IEnumerable<Entity> EntitiesIn(Vec3I pos)
+    {
+      // XXX: Iterating through every entity. May be very inefficient.
+      return
+        from e in Entities where Query.Pos(e) == pos select e;
+    }
+
+
+    public IEnumerable<Entity> EntitiesInRect(int x, int y, int z, int width, int height)
+    {
+      // XXX: Iterating through every entity. May be very inefficient.
+      return
+        from e in Entities
+        where Query.IsInRect(e, x, y, z, width, height)
+        select e;
+    }
 
     public Field3<Terrain> Space { get { return space; } }
 

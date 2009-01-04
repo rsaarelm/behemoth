@@ -153,34 +153,13 @@ namespace Rpg
       // XXX: Iterating through every entity. Good optimization would be for
       // example to provide a Z-coordinate based entity index since pretty
       // much all of the current logic operates on a single Z layer.
-      var entitiesToDraw =
-        from e in world.Entities
-        where IsInRect(e, xOff, yOff, center.Z, cols, rows)
-        select e;
-
+      var entitiesToDraw = world.EntitiesInRect(xOff, yOff, center.Z, cols, rows);
 
       // Here we could sort entitiesToDraw by any priority preferences.
 
       foreach (var entity in entitiesToDraw)
       {
         DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
-      }
-    }
-
-
-    public static bool IsInRect(Entity e, int x, int y, int z, int w, int h)
-    {
-      CoreComponent core;
-      if (e.TryGet(out core))
-      {
-        return core.Pos.Z == z &&
-          Geom.IsInRectangle(
-            core.Pos.X, core.Pos.Y,
-            x, y, w, h);
-      }
-      else
-      {
-        return false;
       }
     }
 
