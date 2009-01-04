@@ -74,6 +74,7 @@
       <sources>
         <include name="Behemoth.Alg/ICache.cs"/>
         <include name="Behemoth.Alg/IField2.cs"/>
+        <include name="Behemoth.Alg/IField3.cs"/>
 
         <include name="Behemoth.Alg/Alg.cs"/>
         <include name="Behemoth.Alg/Cache.cs"/>
@@ -82,6 +83,7 @@
         <include name="Behemoth.Alg/Entity.cs"/>
         <include name="Behemoth.Alg/EntityTemplate.cs"/>
         <include name="Behemoth.Alg/Field2.cs"/>
+        <include name="Behemoth.Alg/Field3.cs"/>
         <include name="Behemoth.Alg/Geom.cs"/>
         <include name="Behemoth.Alg/Guid.cs"/>
         <include name="Behemoth.Alg/MemUtil.cs"/>

@@ -21,7 +21,7 @@ namespace Behemoth.Alg
             return row[x];
           }
         }
-        return default(T);
+        return DefaultValue;
       }
 
       set
@@ -55,6 +55,9 @@ namespace Behemoth.Alg
         }
       }
     }
+
+
+    public bool IsEmpty { get { return rows.Count == 0; } }
 
 
     /// <summary>
