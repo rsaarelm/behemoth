@@ -63,6 +63,28 @@ namespace Behemoth.Alg
 
 
     /// <summary>
+    /// Create a dictionary from the given argument list. Each pair of
+    /// consequent elements is interpreted as one key-value pair. Useful for
+    /// writing literals.
+    /// </summary>
+    public static IDictionary<K, V> Dict<K, V>(params Object[] args)
+    {
+      if (args.Length % 2 != 0)
+      {
+        throw new ArgumentException("Incomplete key-value pair in arguments.", "args");
+      }
+
+      IDictionary<K, V> result = new Dictionary<K, V>();
+      for (int i = 0; i < args.Length / 2; i++)
+      {
+        result[(K)args[i * 2]] = (V)args[i * 2 + 1];
+      }
+
+      return result;
+    }
+
+
+    /// <summary>
     /// Return the index of the element for which the measure function returns
     /// the smallest value.
     /// </summary>
