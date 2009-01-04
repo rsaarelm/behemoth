@@ -128,13 +128,13 @@ namespace Rpg
     }
 
 
-    public Vec3<int> PlayerPos { get { return Player.Get<CoreComponent>().Pos; } }
+    public Vec3I PlayerPos { get { return Player.Get<CoreComponent>().Pos; } }
 
 
     public Entity Player { get { return (Entity)world.Globals["player"]; } }
 
 
-    void DrawWorld(Vec3<int> center)
+    void DrawWorld(Vec3I center)
     {
       int cols = pixelWidth / spriteWidth;
       int rows = pixelHeight / spriteHeight;

@@ -390,7 +390,7 @@ namespace Shooter
 
     Random rng = new Random();
 
-    List<Vec3<double>> starfield = new List<Vec3<double>>();
+    List<Vec3> starfield = new List<Vec3>();
 
 
 
@@ -427,7 +427,7 @@ namespace Shooter
     {
       for (int i = 0; i < 1000; i++)
       {
-        starfield.Add(new Vec3<double>(rng.Next(-pixelWidth, pixelWidth), rng.Next(1000), rng.Next(100)));
+        starfield.Add(new Vec3(rng.Next(-pixelWidth, pixelWidth), rng.Next(1000), rng.Next(100)));
       }
     }
 

@@ -102,7 +102,7 @@ namespace Behemoth.TaoUtil
     /// Draw a vertically scrolling starfield
     /// </summary>
     public static void DrawStarfield(
-      IEnumerable<Vec3<double>> points, double t,
+      IEnumerable<Vec3> points, double t,
       double pointSize, double screenWidth)
     {
       const double span = 1000.0;
@@ -117,7 +117,7 @@ namespace Behemoth.TaoUtil
 
       Gl.glBegin(Gl.GL_POINTS);
 
-      foreach (Vec3<double> point in points)
+      foreach (var point in points)
       {
         Gl.glVertex3f(
           (float)(screenWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),

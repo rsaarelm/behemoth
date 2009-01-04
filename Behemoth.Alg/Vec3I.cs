@@ -3,17 +3,17 @@ using System;
 namespace Behemoth.Alg
 {
   /// <summary>
-  /// 3-dimensional floating point vectors.
+  /// 3-dimensional integer vectors.
   /// </summary>
   [Serializable]
-  public struct Vec3
+  public struct Vec3I
   {
-    public double X;
-    public double Y;
-    public double Z;
+    public int X;
+    public int Y;
+    public int Z;
 
 
-    public Vec3(double x, double y, double z)
+    public Vec3I(int x, int y, int z)
     {
       X = x;
       Y = y;
@@ -23,7 +23,7 @@ namespace Behemoth.Alg
 
     public override bool Equals(Object obj)
     {
-      return obj is Vec3 && this == (Vec3)obj;
+      return obj is Vec3I && this == (Vec3I)obj;
     }
 
 
@@ -33,13 +33,13 @@ namespace Behemoth.Alg
     }
 
 
-    public static bool operator==(Vec3 lhs, Vec3 rhs)
+    public static bool operator==(Vec3I lhs, Vec3I rhs)
     {
       return lhs.X == rhs.X && lhs.Y == rhs.Y && lhs.Z == rhs.Z;
     }
 
 
-    public static bool operator!=(Vec3 lhs, Vec3 rhs)
+    public static bool operator!=(Vec3I lhs, Vec3I rhs)
     {
       return !(lhs == rhs);
     }

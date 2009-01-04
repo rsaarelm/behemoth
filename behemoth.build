@@ -93,6 +93,7 @@
         <include name="Behemoth.Alg/TestUtil.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
         <include name="Behemoth.Alg/Vec3.cs"/>
+        <include name="Behemoth.Alg/Vec3I.cs"/>
       </sources>
     </csc>
   </target>
