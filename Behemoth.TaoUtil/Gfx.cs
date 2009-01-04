@@ -16,13 +16,14 @@ namespace Behemoth.TaoUtil
     public static void DrawSprite(
       float x, float y, int frame,
       float spriteWidth, float spriteHeight,
-      int sheetTexture, int sheetRows, int sheetColumns)
+      int sheetTexture, int sheetRows, int sheetColumns,
+      int xFlip, int yFlip)
     {
-      float x0 = (float)(frame % sheetColumns) / (float)sheetColumns;
-      float y0 = (float)((sheetColumns + frame) / sheetRows) / (float)sheetRows;
+      float x0 = (float)(frame % sheetColumns) / (float)sheetColumns + (float)xFlip / (float)sheetColumns;
+      float y0 = (float)((sheetColumns + frame) / sheetRows) / (float)sheetRows - (float)yFlip / (float)sheetRows;
 
-      float x1 = x0 + 1.0f / (float)sheetColumns;
-      float y1 = y0 - 1.0f / (float)sheetRows;
+      float x1 = x0 + (1.0f - 2.0f * xFlip) / (float)sheetColumns;
+      float y1 = y0 - (1.0f - 2.0f * yFlip) / (float)sheetRows;
 
       Gl.glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -50,6 +51,51 @@ namespace Behemoth.TaoUtil
 
       Gl.glPopMatrix();
     }
+
+
+    /// <summary>
+    /// Draw a sprite from a sheet of sprites as a texture mapped quad.
+    /// </summary>
+    public static void DrawSprite(
+      float x, float y, int frame,
+      float spriteWidth, float spriteHeight,
+      int sheetTexture, int sheetRows, int sheetColumns)
+    {
+      DrawSprite(x, y, frame, spriteWidth, spriteHeight,
+                 sheetTexture, sheetColumns, sheetColumns,
+                 0, 0);
+    }
+
+
+    /// <summary>
+    /// Draw a sprite from a sheet of sprites as a texture mapped quad
+    /// mirrored along the vertical axis.
+    /// </summary>
+    public static void DrawMirroredSprite(
+      float x, float y, int frame,
+      float spriteWidth, float spriteHeight,
+      int sheetTexture, int sheetRows, int sheetColumns)
+    {
+      DrawSprite(x, y, frame, spriteWidth, spriteHeight,
+                 sheetTexture, sheetColumns, sheetColumns,
+                 1, 0);
+    }
+
+
+    /// <summary>
+    /// Draw a sprite from a sheet of sprites as a texture mapped quad
+    /// mirrored along the horizontal axis.
+    /// </summary>
+    public static void DrawFlippedSprite(
+      float x, float y, int frame,
+      float spriteWidth, float spriteHeight,
+      int sheetTexture, int sheetRows, int sheetColumns)
+    {
+      DrawSprite(x, y, frame, spriteWidth, spriteHeight,
+                 sheetTexture, sheetColumns, sheetColumns,
+                 0, 1);
+    }
+
 
 
     /// <summary>
