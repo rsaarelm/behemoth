@@ -58,7 +58,7 @@ namespace Rpg
 
       Tile.AsciiTableIter(
         SetCharTerrain, Alg.A(
-          "##|..........==...##",
+          "##|..........==...|#",
           "||.A..&.......==...#",
           "............*.==..##",
           "........*.....=..###",
@@ -189,8 +189,8 @@ namespace Rpg
     private Field2<byte> terrain = new Field2<byte>();
 
 
-    public const int pixelWidth = 320;
-    public const int pixelHeight = 240;
+    public const int pixelWidth = 480;
+    public const int pixelHeight = 360;
 
     public const int spriteWidth = 16;
     public const int spriteHeight = 16;
