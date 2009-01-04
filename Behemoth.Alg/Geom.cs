@@ -65,5 +65,14 @@ namespace Behemoth.Alg
                x2 + w2 < x1 ||
                y2 + h2 < y1);
     }
+
+
+    public static bool IsInRectangle(
+      double x, double y,
+      double rectX, double rectY, double rectW, double rectH)
+    {
+      return x >= rectX && x >= rectY &&
+        x < rectX + rectW && x < rectY + rectH;
+    }
   }
 }
