@@ -28,6 +28,9 @@ namespace Behemoth.Alg
     }
 
 
+    public string Name = "";
+
+
     private IList<ComponentTemplate> components = new List<ComponentTemplate>();
   }
 }

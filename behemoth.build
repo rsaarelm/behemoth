@@ -191,6 +191,8 @@
          output="${build.dir}/Rpg.exe">
       <sources>
         <include name="examples/Rpg/Rpg.cs"/>
+        <include name="examples/Rpg/Terrain.cs"/>
+        <include name="examples/Rpg/World.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Tao.OpenGl.dll"/>

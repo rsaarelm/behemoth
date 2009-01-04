@@ -121,7 +121,7 @@ namespace Rpg
       {
         for (int x = 0; x < pixelWidth / spriteWidth; x++)
         {
-          DrawSprite(x * spriteWidth, y * spriteHeight, terrain[x, y]);
+          DrawSprite(x * spriteWidth, y * spriteHeight, world.Space[x, y, 0].Type);
         }
       }
     }
@@ -138,55 +138,62 @@ namespace Rpg
 
     void SetCharTerrain(char ch, int x, int y)
     {
+      int z = 0;
       y = 14 - y;
+      Sprite spr = Sprite.Ground;
+
       switch (ch)
       {
       case '.':
-        terrain[x, y] = (byte)Sprite.Ground;
+        spr = Sprite.Ground;
         break;
       case ',':
-        terrain[x, y] = (byte)Sprite.Grass;
+        spr = Sprite.Grass;
         break;
       case '#':
-        terrain[x, y] = (byte)Sprite.CaveTop;
+        spr = Sprite.CaveTop;
         break;
       case '|':
-        terrain[x, y] = (byte)Sprite.CaveEdge;
+        spr = Sprite.CaveEdge;
         break;
       case 'q':
-        terrain[x, y] = (byte)Sprite.WallTop;
+        spr = Sprite.WallTop;
         break;
       case 'a':
-        terrain[x, y] = (byte)Sprite.WallEdge;
+        spr = Sprite.WallEdge;
         break;
       case 'T':
-        terrain[x, y] = (byte)Sprite.TreeTop;
+        spr = Sprite.TreeTop;
         break;
       case 'I':
-        terrain[x, y] = (byte)Sprite.TreeBottom;
+        spr = Sprite.TreeBottom;
         break;
       case '%':
-        terrain[x, y] = (byte)Sprite.Shrub;
+        spr = Sprite.Shrub;
         break;
       case '*':
-        terrain[x, y] = (byte)Sprite.Rocks;
+        spr = Sprite.Rocks;
         break;
       case '&':
-        terrain[x, y] = (byte)Sprite.Glyph;
+        spr = Sprite.Glyph;
         break;
       case '=':
-        terrain[x, y] = (byte)Sprite.Water;
+        spr = Sprite.Water;
         break;
       case 'A':
-        terrain[x, y] = (byte)Sprite.Stalagmite;
+        spr = Sprite.Stalagmite;
         break;
       default:
         break;
       }
+
+      world.Space[x, y, z] = new Terrain((byte)spr);
     }
 
 
     private Field2<byte> terrain = new Field2<byte>();
+
+    private World world = new World();
 
 
     public const int pixelWidth = 480;
