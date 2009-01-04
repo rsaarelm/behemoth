@@ -1,7 +1,9 @@
 using System;
-using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+
 
 using Tao.OpenGl;
 using Tao.Sdl;
@@ -74,10 +76,15 @@ namespace Rpg
           "..aaaa.............I",
           "..............%...,."));
 
-      terrain[3, 2] = (byte)Sprite.Fighter;
+      Entity pc = world.MakeEntity("avatar");
+      CoreComponent core = new CoreComponent();
+      pc.Set(core);
+      core.Icon = (int)Sprite.Fighter;
+      core.SetPos(3, 2, 0);
 
-      terrain[4, 3] = (byte)Sprite.Gib;
+      world.Add(pc);
 
+      world.Globals["player"] = pc;
     }
 
 
@@ -117,22 +124,109 @@ namespace Rpg
 
     protected override void Display()
     {
-      for (int y = 0; y < pixelHeight / spriteHeight; y++)
+      DrawWorld(PlayerPos);
+    }
+
+
+    public Vec3<int> PlayerPos { get { return Player.Get<CoreComponent>().Pos; } }
+
+
+    public Entity Player { get { return (Entity)world.Globals["player"]; } }
+
+
+    void DrawWorld(Vec3<int> center)
+    {
+      int cols = pixelWidth / spriteWidth;
+      int rows = pixelHeight / spriteHeight;
+
+      int xOff = center.X - cols / 2;
+      int yOff = center.Y - rows / 2;
+
+      for (int y = 0; y < rows; y++)
       {
-        for (int x = 0; x < pixelWidth / spriteWidth; x++)
+        for (int x = 0; x < cols; x++)
         {
-          DrawSprite(x * spriteWidth, y * spriteHeight, world.Space[x, y, 0].Type);
+          DrawSprite(x * spriteWidth, y * spriteHeight, world.Space[xOff + x, yOff + y, center.Z].Type);
         }
+      }
+
+      // XXX: Iterating through every entity. Good optimization would be for
+      // example to provide a Z-coordinate based entity index since pretty
+      // much all of the current logic operates on a single Z layer.
+      var entitiesToDraw =
+        from e in world.Entities
+        where IsInRect(e, xOff, yOff, center.Z, cols, rows)
+        select e;
+
+
+      // Here we could sort entitiesToDraw by any priority preferences.
+
+      foreach (var entity in entitiesToDraw)
+      {
+        DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
       }
     }
 
 
-    public void DrawSprite(float x, float y, int frame)
+    public static bool IsInRect(Entity e, int x, int y, int z, int w, int h)
+    {
+      CoreComponent core;
+      if (e.TryGet(out core))
+      {
+        return core.Pos.Z == z &&
+          Geom.IsInRectangle(
+            core.Pos.X, core.Pos.Y,
+            x, y, w, h);
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+
+    void DrawSprite(float x, float y, int frame)
     {
       Gfx.DrawSprite(
         x, y, frame,
         spriteWidth, spriteHeight, Textures[spriteTexture],
         16, 16);
+    }
+
+
+    void DrawMirroredSprite(float x, float y, int frame)
+    {
+      Gfx.DrawMirroredSprite(
+        x, y, frame,
+        spriteWidth, spriteHeight, Textures[spriteTexture],
+        16, 16);
+    }
+
+
+    public static bool IsFacingLeft(int facing)
+    {
+      return facing >= 4;
+    }
+
+
+    public void DrawEntity(Entity e, float xOff, float yOff)
+    {
+      CoreComponent core;
+      if (e.TryGet(out core))
+      {
+        int frame = core.Icon + (core.ActionPose ? 1 : 0);
+        float x = -xOff + spriteWidth * core.Pos.X;
+        float y = -yOff + spriteHeight * core.Pos.Y;
+
+        if (IsFacingLeft(core.Facing))
+        {
+          DrawMirroredSprite(x, y, frame);
+        }
+        else
+        {
+          DrawSprite(x, y, frame);
+        }
+      }
     }
 
 
@@ -190,8 +284,6 @@ namespace Rpg
       world.Space[x, y, z] = new Terrain((byte)spr);
     }
 
-
-    private Field2<byte> terrain = new Field2<byte>();
 
     private World world = new World();
 

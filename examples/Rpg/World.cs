@@ -17,13 +17,14 @@ namespace Rpg
     {
       string id = guids.Next(template.Name);
       Entity result = template.Make(id);
-      entities[id] = result;
+
       return result;
     }
 
 
     /// <summary>
-    /// Make a new empty entity in the world.
+    /// Build a new empty entity. The entity isn't added to the world yet, but
+    /// does get a valid Id.
     /// </summary>
     /// <params name="prefix">
     /// A mnemonic prefix string for the entity's guid.
@@ -32,8 +33,17 @@ namespace Rpg
     {
       string id = guids.Next(prefix);
       Entity result = new Entity(id);
-      entities[id] = result;
       return result;
+    }
+
+
+    public void Add(Entity entity)
+    {
+      if (entities.ContainsKey(entity.Id))
+      {
+        throw new ArgumentException("Entity already present in world", "entity");
+      }
+      Register(entity);
     }
 
 
@@ -58,6 +68,23 @@ namespace Rpg
     public Properties<String, Object> Globals { get { return globals; } }
 
 
+    private void Register(Entity entity)
+    {
+      CoreComponent core;
+      if (entity.TryGet(out core)) {
+        core.World = this;
+      }
+      else
+      {
+        Console.WriteLine(
+          "Warning: Registering entity without a core component. "+
+          "It won't be able to refer back to World.");
+      }
+
+      entities[entity.Id] = entity;
+    }
+
+
     // XXX: Use something like Mersenne Twister instead of the default rng.
     private Random rng = new Random();
 
@@ -68,4 +95,5 @@ namespace Rpg
 
     private Properties<String, Object> globals = new Properties<String, Object>();
   }
+
 }
