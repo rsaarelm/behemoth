@@ -78,6 +78,7 @@
 
         <include name="Behemoth.Alg/Alg.cs"/>
         <include name="Behemoth.Alg/Cache.cs"/>
+        <include name="Behemoth.Alg/Color.cs"/>
         <include name="Behemoth.Alg/Component.cs"/>
         <include name="Behemoth.Alg/ComponentTemplate.cs"/>
         <include name="Behemoth.Alg/Entity.cs"/>
@@ -126,6 +127,7 @@
     <csc target="library" output="${build.dir}/Behemoth.Alg.Test.dll">
       <sources>
         <include name="tests/Behemoth.Alg/TestAlg.cs"/>
+        <include name="tests/Behemoth.Alg/TestColor.cs"/>
         <include name="tests/Behemoth.Alg/TestEntities.cs"/>
         <include name="tests/Behemoth.Alg/TestGeom.cs"/>
         <include name="tests/Behemoth.Alg/TestMemUtil.cs"/>
