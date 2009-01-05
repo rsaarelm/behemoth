@@ -14,10 +14,10 @@ namespace Behemoth.TaoUtil
     /// Draw a sprite from a sheet of sprites as a texture mapped quad.
     /// </summary>
     public static void DrawSprite(
-      float x, float y, int frame,
-      float spriteWidth, float spriteHeight,
+      double x, double y, int frame,
+      double spriteWidth, double spriteHeight,
       int sheetTexture, int sheetRows, int sheetColumns,
-      int xFlip, int yFlip)
+      int xFlip, int yFlip, Color color)
     {
       float x0 = (float)(frame % sheetColumns) / (float)sheetColumns + (float)xFlip / (float)sheetColumns;
       float y0 = (float)((sheetColumns + frame) / sheetRows) / (float)sheetRows - (float)yFlip / (float)sheetRows;
@@ -25,11 +25,11 @@ namespace Behemoth.TaoUtil
       float x1 = x0 + (1.0f - 2.0f * xFlip) / (float)sheetColumns;
       float y1 = y0 - (1.0f - 2.0f * yFlip) / (float)sheetRows;
 
-      Gl.glColor3f(1.0f, 1.0f, 1.0f);
+      GlColor(color);
 
       Gl.glPushMatrix();
 
-      Gl.glTranslatef(x, y, 0.0f);
+      Gl.glTranslatef((float)x, (float)y, 0.0f);
 
       Gl.glBindTexture(Gl.GL_TEXTURE_2D, sheetTexture);
 
@@ -39,13 +39,13 @@ namespace Behemoth.TaoUtil
       Gl.glVertex3f(0.0f, 0.0f, 0.0f);
 
       Gl.glTexCoord2f(x1, y0);
-      Gl.glVertex3f(spriteWidth, 0.0f, 0.0f);
+      Gl.glVertex3f((float)spriteWidth, 0.0f, 0.0f);
 
       Gl.glTexCoord2f(x1, y1);
-      Gl.glVertex3f(spriteWidth, spriteHeight, 0.0f);
+      Gl.glVertex3f((float)spriteWidth, (float)spriteHeight, 0.0f);
 
       Gl.glTexCoord2f(x0, y1);
-      Gl.glVertex3f(0.0f, spriteHeight, 0.0f);
+      Gl.glVertex3f(0.0f, (float)spriteHeight, 0.0f);
 
       Gl.glEnd();
 
@@ -57,13 +57,13 @@ namespace Behemoth.TaoUtil
     /// Draw a sprite from a sheet of sprites as a texture mapped quad.
     /// </summary>
     public static void DrawSprite(
-      float x, float y, int frame,
-      float spriteWidth, float spriteHeight,
+      double x, double y, int frame,
+      double spriteWidth, double spriteHeight,
       int sheetTexture, int sheetRows, int sheetColumns)
     {
       DrawSprite(x, y, frame, spriteWidth, spriteHeight,
                  sheetTexture, sheetColumns, sheetColumns,
-                 0, 0);
+                 0, 0, Color.White);
     }
 
 
@@ -72,13 +72,13 @@ namespace Behemoth.TaoUtil
     /// mirrored along the vertical axis.
     /// </summary>
     public static void DrawMirroredSprite(
-      float x, float y, int frame,
-      float spriteWidth, float spriteHeight,
+      double x, double y, int frame,
+      double spriteWidth, double spriteHeight,
       int sheetTexture, int sheetRows, int sheetColumns)
     {
       DrawSprite(x, y, frame, spriteWidth, spriteHeight,
                  sheetTexture, sheetColumns, sheetColumns,
-                 1, 0);
+                 1, 0, Color.White);
     }
 
 
@@ -87,13 +87,13 @@ namespace Behemoth.TaoUtil
     /// mirrored along the horizontal axis.
     /// </summary>
     public static void DrawFlippedSprite(
-      float x, float y, int frame,
-      float spriteWidth, float spriteHeight,
+      double x, double y, int frame,
+      double spriteWidth, double spriteHeight,
       int sheetTexture, int sheetRows, int sheetColumns)
     {
       DrawSprite(x, y, frame, spriteWidth, spriteHeight,
                  sheetTexture, sheetColumns, sheetColumns,
-                 0, 1);
+                 0, 1, Color.White);
     }
 
 
@@ -106,7 +106,7 @@ namespace Behemoth.TaoUtil
       double pointSize, double screenWidth)
     {
       const double span = 1000.0;
-      const float depthFactor = 100.0f;
+      const double depthFactor = 100.0;
 
 
       Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
@@ -120,17 +120,45 @@ namespace Behemoth.TaoUtil
       foreach (var point in points)
       {
         Gl.glVertex3f(
-          (float)(screenWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),
-          (float)(point.Y - t % span) * depthFactor / (depthFactor + (float)point.Z),
+          (float)((screenWidth / 2 + point.X) * depthFactor / (depthFactor + point.Z)),
+          (float)((point.Y - t % span) * depthFactor / (depthFactor + point.Z)),
           0.0f);
         Gl.glVertex3f(
-          (float)(screenWidth / 2 + point.X) * depthFactor / (depthFactor + (float)point.Z),
-          (float)(point.Y + span - t % span) * depthFactor / (depthFactor + (float)point.Z),
+          (float)((screenWidth / 2 + point.X) * depthFactor / (depthFactor + point.Z)),
+          (float)((point.Y + span - t % span) * depthFactor / (depthFactor + point.Z)),
           0.0f);
       }
 
       Gl.glEnd();
     }
 
+
+    public static void DrawChar(
+      char ch, double x, double y, double size, int sheetTexture, Color color)
+    {
+      int frame = (int)ch;
+      if (frame > 0xff)
+      {
+        throw new ArgumentException("Can't render chars above 255.", "ch");
+      }
+
+      DrawSprite(x, y, frame, size, size, sheetTexture, 16, 16, 0, 0, color);
+    }
+
+
+    public static void DrawString(
+      String str, double x, double y, double size, int sheetTexture, Color color)
+    {
+      for (int i = 0; i < str.Length; i++)
+      {
+        DrawChar(str[i], x + i * size, y, size, sheetTexture, color);
+      }
+    }
+
+
+    public static void GlColor(Color color)
+    {
+      Gl.glColor4f((float)color.R / 256.0f, (float)color.G / 256.0f, (float)color.B / 256.0f, (float)color.A / 256.0f);
+    }
   }
 }

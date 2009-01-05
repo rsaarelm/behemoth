@@ -125,6 +125,7 @@ namespace Rpg
     protected override void Display()
     {
       DrawWorld(PlayerPos);
+      DrawString("Fonter online.", 0, pixelHeight - 8, Color.Aliceblue);
     }
 
 
@@ -142,9 +143,9 @@ namespace Rpg
       int xOff = center.X - cols / 2;
       int yOff = center.Y - rows / 2;
 
-      for (int y = 0; y < rows; y++)
+      for (int y = 0; y <= rows; y++)
       {
-        for (int x = 0; x < cols; x++)
+        for (int x = 0; x <= cols; x++)
         {
           DrawSprite(x * spriteWidth, y * spriteHeight, world.Space[xOff + x, yOff + y, center.Z].Type);
         }
@@ -179,6 +180,17 @@ namespace Rpg
         x, y, frame,
         spriteWidth, spriteHeight, Textures[spriteTexture],
         16, 16);
+    }
+
+
+    void DrawString(String str, double x, double y, Color color)
+    {
+      var outlineColor = Color.Black;
+      Gfx.DrawString(str, x+1, y, 8, Textures[fontTexture], outlineColor);
+      Gfx.DrawString(str, x+1, y-1, 8, Textures[fontTexture], outlineColor);
+      Gfx.DrawString(str, x, y-1, 8, Textures[fontTexture], outlineColor);
+
+      Gfx.DrawString(str, x, y, 8, Textures[fontTexture], color);
     }
 
 
@@ -274,5 +286,7 @@ namespace Rpg
     public const int spriteHeight = 16;
 
     public const string spriteTexture = "tiles.png";
+
+    public const string fontTexture = "font8x8.png";
   }
 }
