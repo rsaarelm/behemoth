@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-
 using Tao.OpenGl;
 using Tao.Sdl;
 
@@ -40,6 +39,7 @@ namespace Rpg
       DeathKnight = 0x58,
     }
 
+
     public static void Main(string[] args)
     {
       new Rpg().MainLoop();
@@ -54,6 +54,10 @@ namespace Rpg
     protected override void Init()
     {
       base.Init();
+
+      Sdl.SDL_EnableKeyRepeat(
+        Sdl.SDL_DEFAULT_REPEAT_DELAY,
+        Sdl.SDL_DEFAULT_REPEAT_INTERVAL);
 
       Media.AddPhysFsPath("Rpg.zip");
       Media.AddPhysFsPath("build", "Rpg.zip");
@@ -106,6 +110,19 @@ namespace Rpg
           case Sdl.SDLK_ESCAPE:
             Quit();
             break;
+          case Sdl.SDLK_UP:
+            MoveCmd(0);
+            break;
+          case Sdl.SDLK_RIGHT:
+            MoveCmd(2);
+            break;
+          case Sdl.SDLK_DOWN:
+            MoveCmd(4);
+            break;
+          case Sdl.SDLK_LEFT:
+            MoveCmd(6);
+            break;
+
           }
           break;
 
@@ -273,6 +290,13 @@ namespace Rpg
       }
 
       world.Space[x, y, z] = new Terrain((byte)spr);
+    }
+
+
+    void MoveCmd(int dir8)
+    {
+      Vec3I moveVec = new Vec3I(Geom.Dir8ToVec(dir8));
+      Action.MoveRel(Player, moveVec);
     }
 
 
