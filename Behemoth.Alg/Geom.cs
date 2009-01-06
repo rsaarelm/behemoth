@@ -170,9 +170,9 @@ namespace Behemoth.Alg
     /// </summary>
     public static int VecToDir4(Vec3 vec)
     {
-      int hexadecant = Hexadecant(vec.X, vec.Y);
+      var result = ((Hexadecant(vec.X, vec.Y) + 2) % 16) / 4;
 
-      return ((hexadecant + 2) % 16) / 4;
+      return result;
     }
 
 
@@ -181,9 +181,9 @@ namespace Behemoth.Alg
     /// </summary>
     public static int VecToDir8(Vec3 vec)
     {
-      int hexadecant = Hexadecant(vec.X, vec.Y);
+      var result = ((Hexadecant(vec.X, vec.Y) + 1) % 16) / 2;
 
-      return ((hexadecant + 1) % 16) / 8;
+      return result;
     }
 
   }

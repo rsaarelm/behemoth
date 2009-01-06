@@ -132,10 +132,24 @@ namespace Behemoth.Alg
       Assert.AreEqual(0, Geom.VecToDir4(new Vec3(0.9, 1, 0)));
 
       Assert.AreEqual(1, Geom.VecToDir4(new Vec3(1.1, 1, 0)));
-
       Assert.AreEqual(2, Geom.VecToDir4(new Vec3(-0.9, -1, 0)));
-
       Assert.AreEqual(3, Geom.VecToDir4(new Vec3(-1.1, -1, 0)));
+
+
+      Assert.AreEqual(7, Geom.VecToDir8(new Vec3(-0.6, 1, 0)));
+      Assert.AreEqual(0, Geom.VecToDir8(new Vec3(-0.4, 1, 0)));
+      Assert.AreEqual(0, Geom.VecToDir8(new Vec3(0, 1, 0)));
+      Assert.AreEqual(0, Geom.VecToDir8(new Vec3(0.4, 1, 0)));
+      Assert.AreEqual(1, Geom.VecToDir8(new Vec3(0.6, 1, 0)));
+
+      Assert.AreEqual(1, Geom.VecToDir8(new Vec3(1, 1, 0)));
+      Assert.AreEqual(2, Geom.VecToDir8(new Vec3(1, 0, 0)));
+      Assert.AreEqual(3, Geom.VecToDir8(new Vec3(1, -1, 0)));
+      Assert.AreEqual(4, Geom.VecToDir8(new Vec3(0, -1, 0)));
+      Assert.AreEqual(5, Geom.VecToDir8(new Vec3(-1, -1, 0)));
+      Assert.AreEqual(6, Geom.VecToDir8(new Vec3(-1, 0, 0)));
+      Assert.AreEqual(7, Geom.VecToDir8(new Vec3(-1, 1, 0)));
+
     }
   }
 }
