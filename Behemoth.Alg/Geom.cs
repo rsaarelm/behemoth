@@ -74,5 +74,117 @@ namespace Behemoth.Alg
       return x >= rectX && x >= rectY &&
         x < rectX + rectW && x < rectY + rectH;
     }
+
+
+    /// <summary>
+    /// Determine the 1/16th sector of a circle a point in the XY plane points
+    /// towards. Sector 0 is clockwise from line x = 0, and subsequent sectors
+    /// are clockwise from there. The origin point is handled in the same way
+    /// as in Math.Atan2.
+    /// </summary>
+    /// <remarks>
+    /// Hexadecants can be used to get both quadrants and octants a vector is
+    /// pointing to.
+    /// </remarks>
+    public static int Hexadecant(double x, double y)
+    {
+      const double hexadecantWidth = Math.PI / 8.0;
+
+      double radian = Math.Atan2(x, y);
+
+      radian = radian < 0 ? radian + 2.0 * Math.PI : radian;
+      Debug.Assert(radian >= 0.0);
+
+      return (int)Math.Floor(radian / hexadecantWidth);
+    }
+
+
+    public static bool IsDir8(int dir)
+    {
+      return dir >= 0 && dir < 8;
+    }
+
+
+    public static bool IsDir4(int dir)
+    {
+      return dir >= 0 && dir < 4;
+    }
+
+
+    /// <summary>
+    /// Convert a 8-directional direction (clockwise, starting from (0, 1))
+    /// into a vector.
+    /// </summary>
+    public static Vec3 Dir8ToVec(int dir8)
+    {
+      if (!IsDir8(dir8))
+      {
+        throw new ArgumentException("Not a dir8.", "dir8");
+      }
+      else
+      {
+        return dir8Vecs[dir8];
+      }
+    }
+
+
+    /// <summary>
+    /// Convert a 4-directional direction (clockwise, starting from (0, 1))
+    /// into a vector.
+    /// </summary>
+    public static Vec3 Dir4ToVec(int dir4)
+    {
+      if (!IsDir4(dir4))
+      {
+        throw new ArgumentException("Not a dir4.", "dir4");
+      }
+      else
+      {
+        return dir4Vecs[dir4];
+      }
+    }
+
+
+    private static readonly Vec3[] dir8Vecs = new Vec3[] {
+      new Vec3( 0,  1,  0),
+      new Vec3( 1,  1,  0),
+      new Vec3( 1,  0,  0),
+      new Vec3( 1, -1,  0),
+      new Vec3( 0, -1,  0),
+      new Vec3(-1, -1,  0),
+      new Vec3(-1,  0,  0),
+      new Vec3(-1,  1,  0),
+    };
+
+
+    private static readonly Vec3[] dir4Vecs = new Vec3[] {
+      new Vec3( 0,  1,  0),
+      new Vec3( 1,  0,  0),
+      new Vec3( 0, -1,  0),
+      new Vec3(-1,  0,  0),
+    };
+
+
+    /// <summary>
+    /// Return the dir4 a vector's XY projection points to.
+    /// </summary>
+    public static int VecToDir4(Vec3 vec)
+    {
+      int hexadecant = Hexadecant(vec.X, vec.Y);
+
+      return ((hexadecant + 2) % 16) / 4;
+    }
+
+
+    /// <summary>
+    /// Return the dir8 a vector's XY projection points to.
+    /// </summary>
+    public static int VecToDir8(Vec3 vec)
+    {
+      int hexadecant = Hexadecant(vec.X, vec.Y);
+
+      return ((hexadecant + 1) % 16) / 8;
+    }
+
   }
 }

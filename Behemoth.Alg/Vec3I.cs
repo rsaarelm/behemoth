@@ -21,6 +21,18 @@ namespace Behemoth.Alg
     }
 
 
+    /// <summary>
+    /// Construct an integer vector from a floating point vector by casting
+    /// the elements of the floating point vector into integers.
+    /// </summary>
+    public Vec3I(Vec3 vec)
+    {
+      X = (int)vec.X;
+      Y = (int)vec.Y;
+      Z = (int)vec.Z;
+    }
+
+
     public override bool Equals(Object obj)
     {
       return obj is Vec3I && this == (Vec3I)obj;

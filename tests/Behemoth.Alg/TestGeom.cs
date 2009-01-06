@@ -109,5 +109,33 @@ namespace Behemoth.Alg
       Assert.AreEqual(Alg.L(30, 110, 640, 480), Alg.L(x, y, w, h));
 
     }
+
+
+    [Test]
+    public void TestHexadecant()
+    {
+      Assert.AreEqual(0, Geom.Hexadecant(0, 1));
+      Assert.AreEqual(0, Geom.Hexadecant(0.001, 1));
+      Assert.AreEqual(2, Geom.Hexadecant(1, 1));
+      Assert.AreEqual(4, Geom.Hexadecant(1, 0));
+      Assert.AreEqual(8, Geom.Hexadecant(0, -1));
+      Assert.AreEqual(12, Geom.Hexadecant(-1, 0));
+      Assert.AreEqual(15, Geom.Hexadecant(-0.001, 1));
+    }
+
+
+    [Test]
+    public void TestVecToDir()
+    {
+      Assert.AreEqual(0, Geom.VecToDir4(new Vec3(-0.9, 1, 0)));
+      Assert.AreEqual(0, Geom.VecToDir4(new Vec3(0, 1, 0)));
+      Assert.AreEqual(0, Geom.VecToDir4(new Vec3(0.9, 1, 0)));
+
+      Assert.AreEqual(1, Geom.VecToDir4(new Vec3(1.1, 1, 0)));
+
+      Assert.AreEqual(2, Geom.VecToDir4(new Vec3(-0.9, -1, 0)));
+
+      Assert.AreEqual(3, Geom.VecToDir4(new Vec3(-1.1, -1, 0)));
+    }
   }
 }
