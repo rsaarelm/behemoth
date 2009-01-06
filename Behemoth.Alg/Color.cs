@@ -6,11 +6,16 @@ namespace Behemoth.Alg
 {
   public struct Color
   {
-    public byte R;
-    public byte G;
-    public byte B;
-    public byte A;
+    public byte R { get { return r; } }
+    public byte G { get { return g; } }
+    public byte B { get { return b; } }
+    public byte A { get { return a; } }
 
+
+    private byte r;
+    private byte g;
+    private byte b;
+    private byte a;
 
 
     public Color(byte r, byte g, byte b) : this(r, g, b, 0xff)
@@ -20,10 +25,10 @@ namespace Behemoth.Alg
 
     public Color(byte r, byte g, byte b, byte a)
     {
-      R = r;
-      G = g;
-      B = b;
-      A = a;
+      this.r = r;
+      this.g = g;
+      this.b = b;
+      this.a = a;
     }
 
 
