@@ -21,15 +21,22 @@ namespace Rpg
       Grass = 0x03,
       Rocks = 0x04,
       TreeTop = 0x05,
-      Pillar = 0x06,
-      Wall = 0x07,
-      CaveEdge = 0x08,
-      CaveTop = 0x09,
+      Wall = 0x06,
+      WallEdge = 0x07,
+      Rock = 0x08,
+      RockEdge = 0x09,
       Shrub = 0x0a,
       Stalagmite = 0x0b,
       Glyph = 0x0c,
+      ClosedDoor = 0x0d,
+      OpenDoor = 0x0e,
+      Waste = 0x0f,
 
+      Window = 0x11,
+      Window2 = 0x12,
       TreeBottom = 0x15,
+
+      Pillar = 0x19,
 
       Gib = 0x40,
       Flash = 0x41,
@@ -66,19 +73,19 @@ namespace Rpg
       Tile.AsciiTableIter(
         SetCharTerrain, Alg.A(
           "##|..........==...|#",
-          "||.A..&.......==...#",
+          "||.A...&......==...#",
           "............*.==..##",
           ".....p..*p....=..###",
           "#####.....#|||=|||||",
           "####|#....#...======",
-          "||||.|||.||.......==",
+          "||||.||.|||.......==",
           ".................%.=",
           "....................",
           "...............T....",
-          "..wwww......%..I...T",
-          "..w..w............TT",
-          "..w............,..IT",
-          "..wwww.............I",
+          "..weew......%..I...T",
+          "..-..eew..........TT",
+          "..w....d.......,..IT",
+          "..e+eede...........I",
           "..............%...,."));
 
       Entity pc = world.MakeEntity("avatar");
@@ -254,16 +261,19 @@ namespace Rpg
         spr = Sprite.Grass;
         break;
       case '#':
-        spr = Sprite.CaveTop;
+        spr = Sprite.Rock;
         break;
       case '|':
-        spr = Sprite.CaveEdge;
+        spr = Sprite.RockEdge;
         break;
       case 'p':
         spr = Sprite.Pillar;
         break;
       case 'w':
         spr = Sprite.Wall;
+        break;
+      case 'e':
+        spr = Sprite.WallEdge;
         break;
       case 'T':
         spr = Sprite.TreeTop;
@@ -285,6 +295,15 @@ namespace Rpg
         break;
       case 'A':
         spr = Sprite.Stalagmite;
+        break;
+      case '+':
+        spr = Sprite.Window;
+        break;
+      case '-':
+        spr = Sprite.Window2;
+        break;
+      case 'd':
+        spr = Sprite.ClosedDoor;
         break;
       default:
         break;
