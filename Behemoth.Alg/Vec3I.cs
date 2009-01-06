@@ -55,5 +55,23 @@ namespace Behemoth.Alg
     {
       return !(lhs == rhs);
     }
+
+
+    public static Vec3I operator+(Vec3I lhs, Vec3I rhs)
+    {
+      return new Vec3I(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z);
+    }
+
+
+    public static Vec3I operator-(Vec3I lhs, Vec3I rhs)
+    {
+      return new Vec3I(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
+    }
+
+
+    public override String ToString()
+    {
+      return String.Format("<{0}, {1}, {2}>", X, Y, Z);
+    }
   }
 }
