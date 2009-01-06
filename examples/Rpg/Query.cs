@@ -7,17 +7,10 @@ namespace Rpg
 {
   public static class Query
   {
-    public static Vec3I? Pos(Entity entity)
+    public static Vec3I Pos(Entity e)
     {
-      CoreComponent core;
-      if (entity.TryGet(out core))
-      {
-        return core.Pos;
-      }
-      else
-      {
-        return null;
-      }
+      var core = e.Get<CoreComponent>();
+      return core.Pos;
     }
 
 
