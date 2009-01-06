@@ -21,8 +21,8 @@ namespace Rpg
       Grass = 0x03,
       Rocks = 0x04,
       TreeTop = 0x05,
-      WallEdge = 0x06,
-      WallTop = 0x07,
+      Pillar = 0x06,
+      Wall = 0x07,
       CaveEdge = 0x08,
       CaveTop = 0x09,
       Shrub = 0x0a,
@@ -68,17 +68,17 @@ namespace Rpg
           "##|..........==...|#",
           "||.A..&.......==...#",
           "............*.==..##",
-          "........*.....=..###",
+          ".....p..*p....=..###",
           "#####.....#|||=|||||",
           "####|#....#...======",
           "||||.|||.||.......==",
           ".................%.=",
           "....................",
           "...............T....",
-          "..qaaq......%..I...T",
-          "..q..a............TT",
-          "..q............,..IT",
-          "..aaaa.............I",
+          "..wwww......%..I...T",
+          "..w..w............TT",
+          "..w............,..IT",
+          "..wwww.............I",
           "..............%...,."));
 
       Entity pc = world.MakeEntity("avatar");
@@ -259,11 +259,11 @@ namespace Rpg
       case '|':
         spr = Sprite.CaveEdge;
         break;
-      case 'q':
-        spr = Sprite.WallTop;
+      case 'p':
+        spr = Sprite.Pillar;
         break;
-      case 'a':
-        spr = Sprite.WallEdge;
+      case 'w':
+        spr = Sprite.Wall;
         break;
       case 'T':
         spr = Sprite.TreeTop;
