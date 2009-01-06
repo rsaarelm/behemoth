@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace Behemoth.Alg
 {
+  public class ComponentNotFoundException : Exception
+  {
+    public ComponentNotFoundException(string type)
+      : base("Component '"+type+"' not found.") {}
+  }
+
   [Serializable]
   public class Entity
   {
@@ -15,8 +21,17 @@ namespace Behemoth.Alg
     public bool TryGet<T>(out T component)
       where T : Component
     {
-      component = Get<T>();
-      return component != null;
+      String type = Component.FamilyOf<T>();
+
+      if (components.ContainsKey(type))
+      {
+        component = (T)components[type];
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
 
 
@@ -31,7 +46,7 @@ namespace Behemoth.Alg
       }
       else
       {
-        return null;
+        throw new ComponentNotFoundException(type);
       }
     }
 
