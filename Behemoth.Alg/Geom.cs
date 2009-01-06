@@ -71,8 +71,8 @@ namespace Behemoth.Alg
       double x, double y,
       double rectX, double rectY, double rectW, double rectH)
     {
-      return x >= rectX && x >= rectY &&
-        x < rectX + rectW && x < rectY + rectH;
+      return x >= rectX && y >= rectY &&
+        x < rectX + rectW && y < rectY + rectH;
     }
 
 
