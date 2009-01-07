@@ -61,9 +61,12 @@ namespace Behemoth.Alg
     {
       var stream = new MemoryStream(data);
 
-      // Make settings that don't try to read DTD.
+      // Make settings that don't try to read the DTD...
       var settings = new XmlReaderSettings();
+      settings.XmlResolver = null;
+      // ...nor complain about the presence of the DTD.
       settings.ProhibitDtd = false;
+
       var reader = XmlReader.Create(stream, settings);
 
       return XDocument.Load(reader);
