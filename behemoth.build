@@ -96,6 +96,10 @@
         <include name="Behemoth.Alg/Tuple.cs"/>
         <include name="Behemoth.Alg/Vec3.cs"/>
       </sources>
+      <references>
+        <!-- I need to refer to System.Xml.Linq explicitly with Mono. Why? -->
+        <include name="System.Xml.Linq.dll"/>
+      </references>
     </csc>
   </target>
 

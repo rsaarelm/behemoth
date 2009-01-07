@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
+
 
 namespace Behemoth.Alg
 {
@@ -46,6 +51,56 @@ namespace Behemoth.Alg
           return null;
         }
       }
+    }
+
+
+    /// <summary>
+    /// Read an XDocument object from a byte array representing an XML file.
+    /// </summary>
+    public static XDocument ReadXml(byte[] data)
+    {
+      var stream = new MemoryStream(data);
+
+      // Make settings that don't try to read DTD.
+      var settings = new XmlReaderSettings();
+      settings.ProhibitDtd = false;
+      var reader = XmlReader.Create(stream, settings);
+
+      return XDocument.Load(reader);
+    }
+
+
+    public static byte[] ReadBytes(Stream stream)
+    {
+      var result = new MemoryStream();
+      var chunkSize = 1024;
+      byte[] buffer = new byte[chunkSize];
+
+      while (true)
+      {
+        var bytesRead = stream.Read(buffer, 0, chunkSize);
+
+        if (bytesRead == 0)
+        {
+          // EOF.
+          break;
+        }
+        result.Write(buffer, 0, bytesRead);
+      }
+
+      return result.ToArray();
+    }
+
+
+    /// <summary>
+    /// Decompress a GZipped data block.
+    /// </summary>
+    public static byte[] Ungzip(byte[] data)
+    {
+      var gzStream = new GZipStream(
+        new MemoryStream(data), CompressionMode.Decompress);
+
+      return ReadBytes(gzStream);
     }
   }
 }
