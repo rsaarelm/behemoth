@@ -21,14 +21,6 @@ namespace Behemoth.Alg
     }
 
 
-    public Vec3(Vec3I vec)
-    {
-      X = vec.X;
-      Y = vec.Y;
-      Z = vec.Z;
-    }
-
-
     public override bool Equals(Object obj)
     {
       return obj is Vec3 && this == (Vec3)obj;

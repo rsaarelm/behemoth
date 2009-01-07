@@ -14,11 +14,11 @@ namespace Rpg
     /// <returns>
     /// Whether moving was successful.
     /// </returns>
-    public static bool MoveRel(Entity e, Vec3I delta)
+    public static bool MoveRel(Entity e, Vec3 delta)
     {
       var newPos = Query.Pos(e) + delta;
       var core = e.Get<CoreComponent>();
-      var dir = Geom.VecToDir8(new Vec3(delta));
+      var dir = Geom.VecToDir8(delta);
 
       core.Facing = (byte)dir;
 
@@ -33,7 +33,7 @@ namespace Rpg
     /// The basic method for changing the position of an entity. All entity
     /// movement should use a Place action at the bottom.
     /// </summary>
-    public static void Place(Entity e, Vec3I pos)
+    public static void Place(Entity e, Vec3 pos)
     {
       var core = e.Get<CoreComponent>();
 

@@ -57,7 +57,7 @@ namespace Rpg
     }
 
 
-    public IEnumerable<Entity> EntitiesIn(Vec3I pos)
+    public IEnumerable<Entity> EntitiesIn(Vec3 pos)
     {
       // XXX: Iterating through every entity. May be very inefficient.
       return

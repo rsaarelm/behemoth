@@ -7,7 +7,7 @@ namespace Rpg
 {
   public static class Query
   {
-    public static Vec3I Pos(Entity e)
+    public static Vec3 Pos(Entity e)
     {
       var core = e.Get<CoreComponent>();
       return core.Pos;

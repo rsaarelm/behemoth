@@ -154,32 +154,32 @@ namespace Rpg
     }
 
 
-    public Vec3I PlayerPos { get { return Player.Get<CoreComponent>().Pos; } }
+    public Vec3 PlayerPos { get { return Player.Get<CoreComponent>().Pos; } }
 
 
     public Entity Player { get { return (Entity)world.Globals["player"]; } }
 
 
-    void DrawWorld(Vec3I center)
+    void DrawWorld(Vec3 center)
     {
       int cols = pixelWidth / spriteWidth;
       int rows = pixelHeight / spriteHeight;
 
-      int xOff = center.X - cols / 2;
-      int yOff = center.Y - rows / 2;
+      int xOff = (int)center.X - cols / 2;
+      int yOff = (int)center.Y - rows / 2;
 
       for (int y = 0; y <= rows; y++)
       {
         for (int x = 0; x <= cols; x++)
         {
-          DrawSprite(x * spriteWidth, y * spriteHeight, world.Space[xOff + x, yOff + y, center.Z].Type);
+          DrawSprite(x * spriteWidth, y * spriteHeight, world.Space[xOff + x, yOff + y, (int)center.Z].Type);
         }
       }
 
       // XXX: Iterating through every entity. Good optimization would be for
       // example to provide a Z-coordinate based entity index since pretty
       // much all of the current logic operates on a single Z layer.
-      var entitiesToDraw = world.EntitiesInRect(xOff, yOff, center.Z, cols, rows);
+      var entitiesToDraw = world.EntitiesInRect(xOff, yOff, (int)center.Z, cols, rows);
 
       // Here we could sort entitiesToDraw by any priority preferences.
 
@@ -190,7 +190,7 @@ namespace Rpg
     }
 
 
-    void DrawSprite(float x, float y, int frame)
+    void DrawSprite(double x, double y, int frame)
     {
       Gfx.DrawSprite(
         x, y, frame,
@@ -199,7 +199,7 @@ namespace Rpg
     }
 
 
-    void DrawMirroredSprite(float x, float y, int frame)
+    void DrawMirroredSprite(double x, double y, int frame)
     {
       Gfx.DrawMirroredSprite(
         x, y, frame,
@@ -225,14 +225,14 @@ namespace Rpg
     }
 
 
-    public void DrawEntity(Entity e, float xOff, float yOff)
+    public void DrawEntity(Entity e, double xOff, double yOff)
     {
       CoreComponent core;
       if (e.TryGet(out core))
       {
         int frame = core.Icon + (core.ActionPose ? 1 : 0);
-        float x = -xOff + spriteWidth * core.Pos.X;
-        float y = -yOff + spriteHeight * core.Pos.Y;
+        double x = -xOff + spriteWidth * core.Pos.X;
+        double y = -yOff + spriteHeight * core.Pos.Y;
 
         if (IsFacingLeft(core.Facing))
         {
@@ -315,7 +315,7 @@ namespace Rpg
 
     void MoveCmd(int dir8)
     {
-      Vec3I moveVec = new Vec3I(Geom.Dir8ToVec(dir8));
+      Vec3 moveVec = Geom.Dir8ToVec(dir8);
       Action.MoveRel(Player, moveVec);
     }
 

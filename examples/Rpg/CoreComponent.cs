@@ -7,7 +7,7 @@ namespace Rpg
   [Serializable]
   public class CoreComponent : Component
   {
-    public Vec3I Pos;
+    public Vec3 Pos;
 
     public void SetPos(int x, int y, int z)
     {
