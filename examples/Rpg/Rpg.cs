@@ -70,29 +70,13 @@ namespace Rpg
       Media.AddPhysFsPath("Rpg.zip");
       Media.AddPhysFsPath("build", "Rpg.zip");
 
-      Tile.AsciiTableIter(
-        SetCharTerrain, Alg.A(
-          "##|..........==...|#",
-          "||.A...&......==...#",
-          "............*.==..##",
-          ".....p..*p....=..###",
-          "#####.....#|||=|||||",
-          "####|#....#...======",
-          "||||.||.|||.......==",
-          ".................%.=",
-          "....................",
-          "...............T....",
-          "..weew......%..I...T",
-          "..-..eew..........TT",
-          "..w....d.......,..IT",
-          "..e+eede...........I",
-          "..............%...,."));
+      LoadMap("example_map.tmx", 0, 0, 0);
 
       Entity pc = world.MakeEntity("avatar");
       CoreComponent core = new CoreComponent();
       pc.Set(core);
       core.Icon = (int)Sprite.Fighter;
-      core.SetPos(3, 2, 0);
+      core.SetPos(3, 78, 0);
 
       world.Add(pc);
 
@@ -241,6 +225,27 @@ namespace Rpg
         else
         {
           DrawSprite(x, y, frame);
+        }
+      }
+    }
+
+
+    void LoadMap(string name, int xOff, int yOff, int zOff)
+    {
+      int width;
+      int height;
+      int[] tiles;
+      TiledImport.LoadMapData(
+        Media.GetPfsFileData(name),
+        out width, out height, out tiles);
+
+      for (int y = 0; y < height; y++)
+      {
+        for (int x = 0; x < width; x++)
+        {
+          world.Space[x + xOff, y + yOff, zOff] =
+            new Terrain((byte)(tiles[x + (height - y - 1) * width] - 1));
+
         }
       }
     }
