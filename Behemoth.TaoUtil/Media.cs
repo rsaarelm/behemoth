@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Text;
+
 
 using Tao.OpenGl;
 using Tao.PhysFs;
@@ -193,8 +195,7 @@ namespace Behemoth.TaoUtil
     /// <summary>
     /// Get the data from a PhysFS file as a byte array.
     /// </summary>
-    public static byte[] GetPfsFileData(
-      string filename)
+    public static byte[] GetPfsFileData(string filename)
     {
       IntPtr file = PfsOpenRead(filename);
       long size = Fs.PHYSFS_fileLength(file);
@@ -203,6 +204,25 @@ namespace Behemoth.TaoUtil
       Fs.PHYSFS_close(file);
       return data;
     }
+
+
+    /// <summary>
+    /// Get the data from a PhysFS file as an string.
+    /// </summary>
+    public static string GetPfsFileText(string filename, Encoding encoding)
+    {
+      return encoding.GetString(GetPfsFileData(filename));
+    }
+
+
+    /// <summary>
+    /// Get the data from a PhysFS file as an UTF-8 string.
+    /// </summary>
+    public static string GetPfsFileText(string filename)
+    {
+      return GetPfsFileText(filename, Encoding.UTF8);
+    }
+
 
 
     /// <summary>
