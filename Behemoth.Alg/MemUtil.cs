@@ -73,7 +73,7 @@ namespace Behemoth.Alg
     public static byte[] ReadBytes(Stream stream)
     {
       var result = new MemoryStream();
-      var chunkSize = 1024;
+      var chunkSize = 8192;
       byte[] buffer = new byte[chunkSize];
 
       while (true)
@@ -101,6 +101,24 @@ namespace Behemoth.Alg
         new MemoryStream(data), CompressionMode.Decompress);
 
       return ReadBytes(gzStream);
+    }
+
+
+    /// <summary>
+    /// Map a byte array into an Int32 array so that each consecutive chunk of
+    /// four bytes becomes one int.
+    /// </summary>
+    public static int[] ToInt32Array(byte[] byteArray)
+    {
+      int length = byteArray.Length / 4;
+      int[] result = new int[length];
+
+      for (int i = 0; i < length; i++)
+      {
+        result[i] = BitConverter.ToInt32(byteArray, i * 4);
+      }
+
+      return result;
     }
   }
 }
