@@ -63,6 +63,17 @@ namespace Rpg
     {
       base.Init();
 
+      var joystick = InputUtil.InitJoystick();
+
+      if (joystick.HasValue)
+      {
+        Console.WriteLine("Joystick detected.");
+        if (joystick.Value.MatchesPS2Pad())
+        {
+          Console.WriteLine("Joystick looks like a PS2 pad.");
+        }
+      }
+
       Sdl.SDL_EnableKeyRepeat(
         Sdl.SDL_DEFAULT_REPEAT_DELAY,
         Sdl.SDL_DEFAULT_REPEAT_INTERVAL);
@@ -117,6 +128,34 @@ namespace Rpg
 
           }
           break;
+
+        case Sdl.SDL_JOYAXISMOTION:
+          //Console.WriteLine("Joy {0}: {1} [{2}]", evt.jaxis.which, evt.jaxis.axis, evt.jaxis.val);
+          break;
+
+        case Sdl.SDL_JOYBUTTONDOWN:
+          switch (evt.jbutton.button)
+          {
+            // XXX: Hardcoded for PS2 pad
+            // XXX: No key repeat for joystick, no fun tapping the keys.
+            // XXX: Diagonal movement with the pad? Movement using the analog stick?
+          case 12:
+            MoveCmd(0);
+            break;
+          case 13:
+            MoveCmd(2);
+            break;
+          case 14:
+            MoveCmd(4);
+            break;
+          case 15:
+            MoveCmd(6);
+            break;
+          }
+
+          Console.WriteLine("Joy {0}: {1} [{2}]", evt.jbutton.which, evt.jbutton.button, evt.jbutton.state);
+          break;
+
 
         case Sdl.SDL_VIDEORESIZE:
           Resize(evt.resize.w, evt.resize.h);
