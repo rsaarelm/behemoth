@@ -114,6 +114,7 @@
         <include name="Behemoth.TaoUtil/App.cs"/>
         <include name="Behemoth.TaoUtil/Gfx.cs"/>
         <include name="Behemoth.TaoUtil/ImageCache.cs"/>
+        <include name="Behemoth.TaoUtil/InputUtil.cs"/>
         <include name="Behemoth.TaoUtil/Media.cs"/>
         <include name="Behemoth.TaoUtil/TextureCache.cs"/>
       </sources>
