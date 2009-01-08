@@ -123,5 +123,14 @@ namespace Behemoth.Alg
 
       return result;
     }
+
+
+    /// <summary>
+    /// Return an integer attribute from an XML node.
+    /// </summary>
+    public static int IntAttribute(XElement elt, string name)
+    {
+      return Int32.Parse(elt.Attribute(name).Value);
+    }
   }
 }

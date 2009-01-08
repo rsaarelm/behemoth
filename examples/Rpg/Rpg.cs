@@ -273,10 +273,22 @@ namespace Rpg
     {
       int width;
       int height;
-      int[] tiles;
+      IDictionary<String, int> tilesets;
+      IList<Tuple2<String, int[]>> layers;
+
       TiledImport.LoadMapData(
         Media.GetPfsFileData(name),
-        out width, out height, out tiles);
+        out width, out height,
+        out tilesets,
+        out layers);
+
+      // XXX: Not verifying that the map data has the expected layers & tilesets
+      // (terrain, entity and zone layers, terrain and zone tilesets)
+
+      int[] tiles = layers[0].Second;
+// TODO: Do entities and zones too.
+//      int[] entities = layers[1].Second;
+//      int[] zones = layers[2].Second;
 
       for (int y = 0; y < height; y++)
       {
@@ -287,73 +299,6 @@ namespace Rpg
 
         }
       }
-    }
-
-
-    void SetCharTerrain(char ch, int x, int y)
-    {
-      int z = 0;
-      y = 14 - y;
-      Sprite spr = Sprite.Ground;
-
-      switch (ch)
-      {
-      case '.':
-        spr = Sprite.Ground;
-        break;
-      case ',':
-        spr = Sprite.Grass;
-        break;
-      case '#':
-        spr = Sprite.Rock;
-        break;
-      case '|':
-        spr = Sprite.RockEdge;
-        break;
-      case 'p':
-        spr = Sprite.Pillar;
-        break;
-      case 'w':
-        spr = Sprite.Wall;
-        break;
-      case 'e':
-        spr = Sprite.WallEdge;
-        break;
-      case 'T':
-        spr = Sprite.TreeTop;
-        break;
-      case 'I':
-        spr = Sprite.TreeBottom;
-        break;
-      case '%':
-        spr = Sprite.Shrub;
-        break;
-      case '*':
-        spr = Sprite.Rocks;
-        break;
-      case '&':
-        spr = Sprite.Glyph;
-        break;
-      case '=':
-        spr = Sprite.Water;
-        break;
-      case 'A':
-        spr = Sprite.Stalagmite;
-        break;
-      case '+':
-        spr = Sprite.Window;
-        break;
-      case '-':
-        spr = Sprite.Window2;
-        break;
-      case 'd':
-        spr = Sprite.ClosedDoor;
-        break;
-      default:
-        break;
-      }
-
-      world.Space[x, y, z] = new Terrain((byte)spr);
     }
 
 
