@@ -87,7 +87,7 @@ namespace Rpg
       CoreComponent core = new CoreComponent();
       pc.Set(core);
       core.Icon = (int)Sprite.Fighter;
-      core.SetPos(3, 78, 0);
+      core.SetPos(1, 44, 0);
 
       world.Add(pc);
 
