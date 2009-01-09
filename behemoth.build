@@ -68,6 +68,21 @@
     </zip>
   </target>
 
+<!-- Doesn't work with my NAnt
+  <target name="doc"
+          depends="libs">
+    <ndoc>
+      <assemblies basedir="${build.dir}">
+        <include name="Behemoth.Alg.dll"/>
+        <include name="Behemoth.TaoUTil.dll"/>
+      </assemblies>
+      <documenters>
+        <documenter name="MSDN" />
+      </documenters>
+    </ndoc>
+  </target>
+-->
+
 
   <target name="Behemoth.Alg.dll" depends="init">
     <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
