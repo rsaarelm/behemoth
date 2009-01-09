@@ -60,7 +60,6 @@
 
   <target name="dist"
           depends="clean,build">
-    <!-- XXX: Really ugly expression for getting a nice timestamp. -->
     <zip zipfile="${dist.dir}/behemoth-${timestamp}.zip">
       <fileset basedir="${build.dir}" prefix="behemoth-${timestamp}">
         <include name="**/*"/>
