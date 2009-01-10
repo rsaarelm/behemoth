@@ -32,6 +32,15 @@ namespace Behemoth.Alg
     }
 
 
+    // Implemented in terms of Field2.
+    public T this[Vec3 pos]
+    {
+      get { return this[(int)pos.X, (int)pos.Y, (int)pos.Z]; }
+      set { this[(int)pos.X, (int)pos.Y, (int)pos.Z] = value; }
+    }
+
+
+
     public void Clear()
     {
       layers.Clear();

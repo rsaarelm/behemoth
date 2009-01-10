@@ -18,6 +18,17 @@ namespace Behemoth.Alg
       set;
     }
 
+
+    /// <summary>
+    /// Access using a Vec3. The components of the vec are cast to integers.
+    /// </summary>
+    T this[Vec3 pos]
+    {
+      get;
+      set;
+    }
+
+
     /// <summary>
     /// Clear all values in the field.
     /// </summary>
