@@ -24,6 +24,11 @@ namespace Rpg
 
       // TODO: Check here if the entity is blocked by something.
 
+      if (!Query.CanEnter(e, newPos))
+      {
+        return false;
+      }
+
       Action.Place(e, newPos);
       return true;
     }

@@ -11,6 +11,14 @@ namespace Rpg
   [Serializable]
   public class World
   {
+    public World()
+    {
+      terrainCache = new EasyCache<int, TerrainData>(
+        (icon) => TerrainUtil.FindData(terrainData, icon),
+        (index) => {});
+    }
+
+
     /// <summary>
     /// Make a new entity using an entity template.
     /// </summary>
@@ -74,7 +82,7 @@ namespace Rpg
         select e;
     }
 
-    public Field3<Terrain> Space { get { return space; } }
+    public Field3<TerrainTile> Space { get { return space; } }
 
 
     public Random Rng { get { return rng; } }
@@ -84,6 +92,19 @@ namespace Rpg
     /// Freeform global flags and variables.
     /// </summary>
     public Properties<String, Object> Globals { get { return globals; } }
+
+
+    public World AddTerrain(TerrainData data)
+    {
+      terrainData.Add(data);
+      return this;
+    }
+
+
+    public TerrainData GetTerrain(int icon)
+    {
+      return terrainCache[icon];
+    }
 
 
     private void Register(Entity entity)
@@ -109,9 +130,13 @@ namespace Rpg
     private Behemoth.Alg.Guid guids = new Behemoth.Alg.Guid();
     private IDictionary<String, Entity> entities = new Dictionary<String, Entity>();
 
-    Field3<Terrain> space = new Field3<Terrain>();
+    Field3<TerrainTile> space = new Field3<TerrainTile>();
 
     private Properties<String, Object> globals = new Properties<String, Object>();
+
+    private IList<TerrainData> terrainData = new List<TerrainData>();
+
+    private Cache<int, TerrainData> terrainCache;
   }
 
 }

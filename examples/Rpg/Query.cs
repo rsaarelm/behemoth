@@ -29,5 +29,23 @@ namespace Rpg
         return false;
       }
     }
+
+
+    public static World WorldOf(Entity e)
+    {
+      return e.Get<CoreComponent>().World;
+    }
+
+
+    public static bool CanEnter(Entity e, Vec3 pos)
+    {
+      var world = WorldOf(e);
+
+      var tile = world.Space[pos];
+
+      // XXX: Assuming all entities are walking around and not able to phase
+      // through walls.
+      return !TerrainUtil.BlocksMoving(tile);
+    }
   }
 }
