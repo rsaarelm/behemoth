@@ -95,7 +95,7 @@ namespace Behemoth.Alg
     {
       if (constraints.ContainsKey(key))
       {
-        constraints[key] = Alg.Join(constraints[key], constraint);
+        constraints[key] = Alg.Both(constraints[key], constraint);
       }
       else
       {

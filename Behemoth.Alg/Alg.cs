@@ -63,6 +63,16 @@ namespace Behemoth.Alg
 
 
     /// <summary>
+    /// Create an array from the parameters that can be of any type. Useful
+    /// for writing list literals.
+    /// </summary>
+    public static Object[] OA(params Object[] args)
+    {
+      return (Object[])args.Clone();
+    }
+
+
+    /// <summary>
     /// Create a dictionary from the given argument list. Each pair of
     /// consequent elements is interpreted as one key-value pair. Useful for
     /// writing literals.
@@ -157,7 +167,7 @@ namespace Behemoth.Alg
     /// <remarks>
     /// The resulting predicate short-circuits if predicate lhs fails.
     /// </remarks>
-    public static Func<T, string> Join<T>(Func<T, string> lhs, Func<T, string> rhs)
+    public static Func<T, string> Both<T>(Func<T, string> lhs, Func<T, string> rhs)
     {
       return val => {
         string ret;
@@ -165,6 +175,61 @@ namespace Behemoth.Alg
         if (ret != null) { return ret; }
         ret = rhs(val);
         if (ret != null) { return ret; }
+        return null;
+      };
+    }
+
+
+    /// <summary>
+    /// Joins two constraint-style predicates into a new constraint which
+    /// fails if both of the subconstraints fails.
+    /// </summary>
+    /// <remarks>
+    /// The resulting predicate short-circuits if predicate lhs succeeds.
+    /// </remarks>
+    public static Func<T, string> Either<T>(Func<T, string> lhs, Func<T, string> rhs)
+    {
+      return val => {
+        string ret1 = lhs(val);
+        if (ret1 == null) { return null; }
+        string ret2 = rhs(val);
+        if (ret2 == null) { return null; }
+        // XXX: Arbitrarily omitting ret2 from result if both ret1 and ret2
+        // return an error message.
+        return ret1 != null ? ret1 : ret2;
+      };
+
+    }
+
+
+    /// <summary>
+    /// Make a predicate that checks a whether a given array is of the same
+    /// size as the parameter predicate list and whether each element matches
+    /// the corresponding parameter predicate.
+    /// </summary>
+    public static Func<T[], string> ArrayP<T>(
+      params Func<T, string>[] predicates)
+    {
+      return val => {
+        if (val == null)
+        {
+          return "Null array.";
+        }
+        if (val.Length != predicates.Length)
+        {
+          return String.Format(
+            "Expected array length {0}, got {1}.",
+            predicates.Length,
+            val.Length);
+        }
+        for (int i = 0; i < predicates.Length; i++)
+        {
+          string ret = predicates[i](val[i]);
+          if (ret != null)
+          {
+            return String.Format("Error on element {0}: {1}", i, ret);
+          }
+        }
         return null;
       };
     }
