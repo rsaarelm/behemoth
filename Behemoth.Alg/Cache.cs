@@ -8,9 +8,9 @@ namespace Behemoth.Alg
   /// <summary>
   /// A cache for some type of loadable resource.
   /// </summary>
-  public abstract class Cache<T> : ICache<T>
+  public abstract class Cache<K, V> : ICache<K, V>
   {
-    public T this[string name]
+    public V this[K name]
     {
       get { return Get(name); }
       set { Add(name, value); }
@@ -20,7 +20,7 @@ namespace Behemoth.Alg
     /// <summary>
     /// Request an item from the cache. Load the item if it isn't cached yet.
     /// </summary>
-    private T Get(string name)
+    private V Get(K name)
     {
       if (disposed)
       {
@@ -29,7 +29,7 @@ namespace Behemoth.Alg
 
       if (!items.ContainsKey(name))
       {
-        T item = Load(name);
+        V item = Load(name);
         items[name] = item;
         totalSize += Size(item);
       }
@@ -41,7 +41,7 @@ namespace Behemoth.Alg
     /// Manually add a new named item in the cache, freeing any existing item
     /// cached to the same name.
     /// </summary>
-    private void Add(string name, T item)
+    private void Add(K name, V item)
     {
       if (disposed)
       {
@@ -101,7 +101,7 @@ namespace Behemoth.Alg
 
     private void FreeAll()
     {
-      foreach (T item in items.Values)
+      foreach (V item in items.Values)
       {
         Free(item);
       }
@@ -111,12 +111,12 @@ namespace Behemoth.Alg
     /// <summary>
     /// Load an item based on a name.
     /// </summary>
-    protected abstract T Load(string name);
+    protected abstract V Load(K name);
 
     /// <summary>
     /// Free a loaded item.
     /// </summary>
-    protected abstract void Free(T item);
+    protected abstract void Free(V item);
 
     /// <summary>
     /// Get the size of an item.
@@ -125,15 +125,43 @@ namespace Behemoth.Alg
     /// The default implementation returns 0 for all items. Leave it like that
     /// if you don't care about tracking cache size.
     /// </remarks>
-    protected virtual long Size(T item)
+    protected virtual long Size(V item)
     {
       return 0;
     }
 
-    private IDictionary<string, T> items = new Dictionary<string, T>();
+    private IDictionary<K, V> items = new Dictionary<K, V>();
 
     private bool disposed = false;
 
     private long totalSize = 0;
+  }
+
+
+  /// <summary>
+  /// A convenience class for defining concise caches using delegates.
+  /// </summary>
+  public class EasyCache<K, V> : Cache<K, V>
+  {
+    public EasyCache(Func<K, V> loadFunc, Action<V> freeFunc)
+    {
+      this.loadFunc = loadFunc;
+      this.freeFunc = freeFunc;
+    }
+
+
+    protected override V Load(K name)
+    {
+      return loadFunc(name);
+    }
+
+
+    protected override void Free(V item)
+    {
+      freeFunc(item);
+    }
+
+    private Func<K, V> loadFunc;
+    private Action<V> freeFunc;
   }
 }

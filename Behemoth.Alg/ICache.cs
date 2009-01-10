@@ -2,9 +2,9 @@ using System;
 
 namespace Behemoth.Alg
 {
-  public interface ICache<T> : IDisposable
+  public interface ICache<K, V> : IDisposable
   {
-    T this[string name]
+    V this[K name]
     {
       get;
       set;

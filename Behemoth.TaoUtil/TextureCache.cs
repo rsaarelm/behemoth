@@ -9,7 +9,7 @@ namespace Behemoth.TaoUtil
   /// <summary>
   /// A cache for OpenGL textures. Built on top of an image cache.
   /// </summary>
-  public class TextureCache : Cache<int>
+  public class TextureCache : Cache<String, int>
   {
     public TextureCache(ImageCache imageCache, int texFlags)
     {

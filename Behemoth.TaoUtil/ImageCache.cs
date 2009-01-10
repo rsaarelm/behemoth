@@ -7,7 +7,7 @@ namespace Behemoth.TaoUtil
   /// <summary>
   /// A cache class for image data. Currently based on SDL surfaces.
   /// </summary>
-  public class ImageCache : Cache<IntPtr>
+  public class ImageCache : Cache<String, IntPtr>
   {
     protected override IntPtr Load(string name)
     {
