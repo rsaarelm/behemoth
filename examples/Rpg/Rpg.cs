@@ -61,6 +61,23 @@ namespace Rpg
     }
 
 
+    private void PrintTable(IDictionary<Object, Object> table)
+    {
+      foreach (var kvp in table)
+      {
+        if (kvp.Value is IDictionary<Object, Object>) {
+          Console.WriteLine("{0}: [", kvp.Key);
+          PrintTable((IDictionary<Object, Object>)kvp.Value);
+          Console.WriteLine("]");
+        }
+        else
+        {
+          Console.WriteLine("{0}: {1}", kvp.Key, kvp.Value);
+        }
+      }
+    }
+
+
     protected override void Init()
     {
       base.Init();
@@ -82,6 +99,13 @@ namespace Rpg
 
       Media.AddPhysFsPath("Rpg.zip");
       Media.AddPhysFsPath("build", "Rpg.zip");
+
+
+      // Test Lua dumping.
+      //var lua = new LuaState();
+      //lua.DoString("a = 1 b = 2 c = {5, 4, foo = 'bar'}");
+      //
+      //PrintTable(lua.DumpGlobals());
 
 
       var terrainTable = new Object[][] {
