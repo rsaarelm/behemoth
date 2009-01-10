@@ -6,9 +6,11 @@ using System.Linq;
 
 using Tao.OpenGl;
 using Tao.Sdl;
+using Tao.Lua;
 
 using Behemoth.Alg;
 using Behemoth.TaoUtil;
+using Behemoth.LuaUtil;
 
 namespace Rpg
 {

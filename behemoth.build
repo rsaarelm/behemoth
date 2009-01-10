@@ -48,6 +48,7 @@
   <target name="libs"
           depends="Behemoth.Alg.dll,
                    Behemoth.TaoUtil.dll
+                   Behemoth.LuaUtil.dll
                    "/>
 
 
@@ -143,6 +144,23 @@
   </target>
 
 
+  <target name="Behemoth.LuaUtil.dll" depends="init">
+    <csc
+       target="library"
+       unsafe="true"
+       output="${build.dir}/Behemoth.LuaUtil.dll">
+      <sources>
+        <include name="Behemoth.LuaUtil/LuaUtil.cs"/>
+      </sources>
+      <references>
+        <include name="${build.dir}/Tao.Lua.dll"/>
+
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
+      </references>
+    </csc>
+  </target>
+
+
   <target name="Behemoth.Alg.Test.dll" depends="Behemoth.Alg.dll">
     <csc target="library" output="${build.dir}/Behemoth.Alg.Test.dll">
       <sources>
@@ -224,9 +242,11 @@
       <references>
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.Sdl.dll"/>
+        <include name="${build.dir}/Tao.Lua.dll"/>
 
         <include name="${build.dir}/Behemoth.Alg.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
+        <include name="${build.dir}/Behemoth.LuaUtil.dll"/>
       </references>
     </csc>
   </target>
@@ -240,8 +260,6 @@
       </fileset>
     </zip>
   </target>
-
-
 
 
 
