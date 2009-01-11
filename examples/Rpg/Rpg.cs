@@ -149,18 +149,18 @@ namespace Rpg
         world.AddTerrain(TerrainData.FromDataRow(row));
       }
 
-      templates["beastman"] = new EntityTemplate(
-        new CoreTemplate("beastman", 0x50));
-      templates["ooze"] = new EntityTemplate(
-        new CoreTemplate("ooze", 0x54));
-      templates["zombie"] = new EntityTemplate(
-        new CoreTemplate("zombie", 0x56));
-      templates["deathKnight"] = new EntityTemplate(
-        new CoreTemplate("death knight", 0x58));
-      templates["chest"] = new EntityTemplate(
-        new CoreTemplate("chest", 0x17));
-      templates["gib"] = new EntityTemplate(
-        new CoreTemplate("gib", 0x40, -1));
+      world.Add("beastman", new EntityTemplate(
+                  new CoreTemplate("beastman", 0x50)));
+      world.Add("ooze", new EntityTemplate(
+                  new CoreTemplate("ooze", 0x54)));
+      world.Add("zombie", new EntityTemplate(
+                  new CoreTemplate("zombie", 0x56)));
+      world.Add("deathKnight", new EntityTemplate(
+                  new CoreTemplate("death knight", 0x58)));
+      world.Add("chest", new EntityTemplate(
+                  new CoreTemplate("chest", 0x17)));
+      world.Add("gib", new EntityTemplate(
+                  new CoreTemplate("gib", 0x40, -1)));
 
 
       LoadMap("example_map.tmx", 0, 0, 0);
@@ -442,7 +442,7 @@ namespace Rpg
 
             if (spawn != null)
             {
-              var entity = world.Spawn(templates[spawn]);
+              var entity = world.Spawn(spawn);
               entity.Get<CCore>().SetPos(x + xOff, y + yOff, zOff);
               world.Add(entity);
             }
@@ -473,9 +473,6 @@ namespace Rpg
 
 
     private World world = new World();
-
-    private IDictionary<string, EntityTemplate> templates =
-      new Dictionary<string, EntityTemplate>();
 
 
     public const int pixelWidth = 640;

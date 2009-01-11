@@ -31,6 +31,18 @@ namespace Rpg
     }
 
 
+    public Entity Spawn(string templateName)
+    {
+      return Spawn(templates[templateName]);
+    }
+
+
+    public void Add(string name, EntityTemplate template)
+    {
+      templates[name] = template;
+    }
+
+
     /// <summary>
     /// Build a new empty entity. The entity isn't added to the world yet, but
     /// does get a valid Id.
@@ -137,6 +149,10 @@ namespace Rpg
     private IList<TerrainData> terrainData = new List<TerrainData>();
 
     private Cache<int, TerrainData> terrainCache;
+
+    private IDictionary<string, EntityTemplate> templates =
+      new Dictionary<string, EntityTemplate>();
+
   }
 
 }
