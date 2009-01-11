@@ -68,6 +68,16 @@ namespace Rpg
     }
 
 
+    public void Remove(Entity entity)
+    {
+      if (!entities.ContainsKey(entity.Id))
+      {
+        throw new ArgumentException("Entity to be removed not found in world", "entity");
+      }
+      Unregister(entity);
+    }
+
+
     public IEnumerable<Entity> Entities
     {
       get
@@ -134,6 +144,24 @@ namespace Rpg
 
       entities[entity.Id] = entity;
     }
+
+
+    private void Unregister(Entity entity)
+    {
+      CCore core;
+      if (entity.TryGet(out core)) {
+        core.World = null;
+      }
+      else
+      {
+        Console.WriteLine(
+          "Warning: Unregistering entity without a core component.");
+      }
+
+      entities.Remove(entity.Id);
+    }
+
+
 
 
     // XXX: Use something like Mersenne Twister instead of the default rng.

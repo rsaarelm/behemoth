@@ -60,5 +60,33 @@ namespace Rpg
     {
       return dir8 == 0 || dir8 == 4;
     }
+
+
+    public static void Kill(Entity entity, Entity slayer)
+    {
+      var world = Query.WorldOf(entity);
+      world.Remove(entity);
+      CBrain brain;
+      if (entity.TryGet(out brain))
+      {
+        if (brain.Gibs)
+        {
+          var gib = world.Spawn("gib");
+          gib.Get<CCore>().Pos = entity.Get<CCore>().Pos;
+          world.Add(gib);
+        }
+      }
+    }
+
+
+    public static void Attack(Entity entity, Entity target)
+    {
+      CBrain brain1, brain2;
+      if (entity.TryGet(out brain1) && target.TryGet(out brain2))
+      {
+        brain2.Damage(entity, brain1.Might);
+        // TODO: Attack message
+      }
+    }
   }
 }

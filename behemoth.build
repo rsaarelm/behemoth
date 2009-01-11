@@ -233,6 +233,7 @@
          output="${build.dir}/Rpg.exe">
       <sources>
         <include name="examples/Rpg/Action.cs"/>
+        <include name="examples/Rpg/CBrain.cs"/>
         <include name="examples/Rpg/CCore.cs"/>
         <include name="examples/Rpg/CLos.cs"/>
         <include name="examples/Rpg/Query.cs"/>

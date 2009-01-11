@@ -150,25 +150,37 @@ namespace Rpg
       }
 
       world.Add("beastman", new EntityTemplate(
-                  new CoreTemplate("beastman", 0x50)));
+                  CoreTemplate.Default("beastman", 0x50),
+                  new BrainTemplate()));
       world.Add("ooze", new EntityTemplate(
-                  new CoreTemplate("ooze", 0x54)));
+                  CoreTemplate.Default("ooze", 0x54),
+                  new BrainTemplate()));
       world.Add("zombie", new EntityTemplate(
-                  new CoreTemplate("zombie", 0x56)));
+                  CoreTemplate.Default("zombie", 0x56),
+                  new BrainTemplate()));
       world.Add("deathKnight", new EntityTemplate(
-                  new CoreTemplate("death knight", 0x58)));
+                  CoreTemplate.Default("death knight", 0x58),
+                  new BrainTemplate()));
       world.Add("chest", new EntityTemplate(
-                  new CoreTemplate("chest", 0x17)));
+                  CoreTemplate.FloorStatic("chest", 0x17)));
       world.Add("gib", new EntityTemplate(
-                  new CoreTemplate("gib", 0x40, -1)));
+                  CoreTemplate.FloorStatic("gib", 0x40)));
 
 
       LoadMap("example_map.tmx", 0, 0, 0);
 
       Entity pc = world.MakeEntity("avatar");
-      CCore core = new CCore();
+      var core = new CCore();
       pc.Set(core);
       pc.Set(new CLos());
+
+      var brain = new CBrain();
+      pc.Set(brain);
+      // No AI for player. Use human control instead.
+      brain.AiActive = false;
+      // Different from standard creatures, create hostility.
+      brain.Alignment = 1;
+
       core.Icon = (int)Sprite.Fighter;
       core.SetPos(1, 44, 0);
 
@@ -309,7 +321,17 @@ namespace Rpg
 
       foreach (var entity in entitiesToDraw)
       {
-        if (Player.Get<CLos>().IsVisible(entity.Get<CCore>().Pos))
+        var core = entity.Get<CCore>();
+        // Draw static entities anywhere on the mapped area, dynamic ones only
+        // if they're instantly visible.
+
+        // XXX: If static entities move around without the player's direct
+        // action, this will show their moving around outside the pc's field
+        // of view. A robust solution would require a separate map memory
+        // structure which retains the old view even after the static entity
+        // has covertly moved around.
+        if ((core.IsStatic && Player.Get<CLos>().IsMapped(core.Pos)) ||
+            (Player.Get<CLos>().IsVisible(core.Pos)))
         {
           DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
         }
@@ -454,7 +476,16 @@ namespace Rpg
 
     void MoveCmd(int dir8)
     {
-      Vec3 moveVec = Geom.Dir8ToVec(dir8);
+      var moveVec = Geom.Dir8ToVec(dir8);
+      var targetPos = Player.Get<CCore>().Pos + moveVec;
+      foreach (var e in world.EntitiesIn(targetPos))
+      {
+        if (Query.HostileTo(Player, e))
+        {
+          Action.Attack(Player, e);
+          return;
+        }
+      }
       Action.MoveRel(Player, moveVec);
       DoLos();
     }

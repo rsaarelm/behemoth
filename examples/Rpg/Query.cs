@@ -58,5 +58,20 @@ namespace Rpg
       // X-Ray vision and other stuff here.
       return !TerrainUtil.BlocksSight(tile);
     }
+
+
+    public static bool HostileTo(Entity e, Entity target)
+    {
+      CBrain brain1;
+      CBrain brain2;
+      if (e.TryGet(out brain1))
+      {
+        if (target.TryGet(out brain2))
+        {
+          return brain1.Alignment != brain2.Alignment;
+        }
+      }
+      return false;
+    }
   }
 }

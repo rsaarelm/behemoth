@@ -26,6 +26,14 @@ namespace Rpg
 
     public bool ActionPose;
 
+    public bool IsObstacle;
+
+    /// <summary>
+    /// Static objects are treated like the background tiles and shown on
+    /// remembered map.
+    /// </summary>
+    public bool IsStatic;
+
     /// <summary>
     /// What layer will the entity be drawn in. Entities with larger draw
     /// priority get drawn on top of entities with a smaller one.
@@ -41,21 +49,33 @@ namespace Rpg
 
   public class CoreTemplate : ComponentTemplate
   {
-    public CoreTemplate(
-      string name,
-      int icon)
+    private CoreTemplate() {}
+
+
+    public static CoreTemplate Default(string name, int icon)
     {
-      this.name = name;
-      this.icon = icon;
+      var result = new CoreTemplate();
+      result.name = name;
+      result.icon = icon;
+      return result;
     }
 
 
-    public CoreTemplate(
-      string name,
-      int icon,
-      int drawPriority) : this(name, icon)
+    public static CoreTemplate FloorStatic(string name, int icon)
     {
-      this.drawPriority = drawPriority;
+      var result = Default(name, icon);
+      result.drawPriority = -1;
+      result.isObstacle = false;
+      result.isStatic = true;
+      return result;
+    }
+
+
+    public static CoreTemplate BlockStatic(string name, int icon)
+    {
+      var result = Default(name, icon);
+      result.isStatic = true;
+      return result;
     }
 
 
@@ -68,6 +88,8 @@ namespace Rpg
       result.Name = name;
       result.Icon = icon;
       result.DrawPriority = drawPriority;
+      result.IsStatic = isStatic;
+      result.IsObstacle = isObstacle;
 
       return result;
     }
@@ -78,6 +100,10 @@ namespace Rpg
     private int icon;
 
     private int drawPriority = 0;
+
+    private bool isStatic = false;
+
+    private bool isObstacle = true;
   }
 
 }
