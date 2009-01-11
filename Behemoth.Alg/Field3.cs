@@ -64,6 +64,28 @@ namespace Behemoth.Alg
 
 
     /// <summary>
+    /// Iterate through all the points defined in the field.
+    /// </summary>
+    public IEnumerable<Tuple3<int, int, int>> Points
+    {
+      get
+      {
+        foreach (int z in layers.Keys)
+        {
+          foreach (var pt in layers[z].Points)
+          {
+            yield return new Tuple3<int, int, int>(pt.First, pt.Second, z);
+          }
+        }
+      }
+    }
+
+
+    public bool IsEmpty { get { return layers.Count == 0; } }
+
+
+
+    /// <summary>
     /// The value that will be returned for cells that haven't been set.
     /// </summary>
     public T DefaultValue = default(T);

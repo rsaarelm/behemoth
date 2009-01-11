@@ -57,6 +57,24 @@ namespace Behemoth.Alg
     }
 
 
+    /// <summary>
+    /// Iterate through all the points defined in the field.
+    /// </summary>
+    public IEnumerable<Tuple2<int, int>> Points
+    {
+      get
+      {
+        foreach (int y in rows.Keys)
+        {
+          foreach (int x in rows[y].Keys)
+          {
+            yield return new Tuple2<int, int>(x, y);
+          }
+        }
+      }
+    }
+
+
     public bool IsEmpty { get { return rows.Count == 0; } }
 
 
