@@ -8,6 +8,18 @@ namespace Behemoth.Alg
   /// </summary>
   public class EntityTemplate
   {
+    public EntityTemplate() {}
+
+
+    public EntityTemplate(params ComponentTemplate[] templates)
+    {
+      foreach (var t in templates)
+      {
+        AddComponent(t);
+      }
+    }
+
+
     public EntityTemplate AddComponent(ComponentTemplate template)
     {
       components.Add(template);

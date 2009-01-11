@@ -36,9 +36,17 @@ namespace Rpg
 
       Window = 0x11,
       Window2 = 0x12,
+      Dirt = 0x13,
+      Bookshelf = 0x14,
       TreeBottom = 0x15,
-
+      Table = 0x16,
+      Chest = 0x17,
+      Chest2 = 0x18,
       Pillar = 0x19,
+      BrokenWallEdge = 0x1a,
+      BrokenWall = 0x1b,
+      WoodenFloor = 0x1c,
+      WoodenFloor2 = 0x1d,
 
       Gib = 0x40,
       Flash = 0x41,
@@ -140,6 +148,18 @@ namespace Rpg
       {
         world.AddTerrain(TerrainData.FromDataRow(row));
       }
+
+      templates["beastman"] = new EntityTemplate(
+        new CoreTemplate("beastman", 0x50));
+      templates["ooze"] = new EntityTemplate(
+        new CoreTemplate("ooze", 0x54));
+      templates["zombie"] = new EntityTemplate(
+        new CoreTemplate("zombie", 0x56));
+      templates["deathKnight"] = new EntityTemplate(
+        new CoreTemplate("death knight", 0x58));
+      templates["chest"] = new EntityTemplate(
+        new CoreTemplate("chest", 0x17));
+
 
       LoadMap("example_map.tmx", 0, 0, 0);
 
@@ -375,17 +395,52 @@ namespace Rpg
       // (terrain, entity and zone layers, terrain and zone tilesets)
 
       int[] tiles = layers[0].Second;
-// TODO: Do entities and zones too.
-//      int[] entities = layers[1].Second;
+      int[] entities = layers[1].Second;
+
+// TODO: Do zones too.
 //      int[] zones = layers[2].Second;
 
       for (int y = 0; y < height; y++)
       {
         for (int x = 0; x < width; x++)
         {
-          world.Space[x + xOff, y + yOff, zOff] =
-            new TerrainTile(world.GetTerrain(tiles[x + (height - y - 1) * width] - 1));
+          int idx = x + (height - y - 1) * width;
 
+          world.Space[x + xOff, y + yOff, zOff] =
+            new TerrainTile(world.GetTerrain(tiles[idx] - 1));
+
+          if (entities[idx] > 0)
+          {
+            string spawn = null;
+            switch ((Sprite)(entities[idx] - 1))
+            {
+            case Sprite.Chest:
+              spawn = "chest";
+              break;
+            case Sprite.Beastman:
+              spawn = "beastman";
+              break;
+            case Sprite.Ooze:
+              spawn = "ooze";
+              break;
+            case Sprite.Zombie:
+              spawn = "zombie";
+              break;
+            case Sprite.DeathKnight:
+              spawn = "deathKnight";
+              break;
+            default:
+              Console.WriteLine("Warning: Unknown entity {0} in map.", entities[idx]);
+              break;
+            }
+
+            if (spawn != null)
+            {
+              var entity = world.Spawn(templates[spawn]);
+              entity.Get<CoreComponent>().SetPos(x + xOff, y + yOff, zOff);
+              world.Add(entity);
+            }
+          }
         }
       }
     }
@@ -412,6 +467,9 @@ namespace Rpg
 
 
     private World world = new World();
+
+    private IDictionary<string, EntityTemplate> templates =
+      new Dictionary<string, EntityTemplate>();
 
 
     public const int pixelWidth = 640;

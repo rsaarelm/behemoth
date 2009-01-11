@@ -31,4 +31,35 @@ namespace Rpg
       return "core";
     }
   }
+
+
+  public class CoreTemplate : ComponentTemplate
+  {
+    public CoreTemplate(
+      string name,
+      int icon)
+    {
+      this.name = name;
+      this.icon = icon;
+    }
+
+
+    public override string Family { get { return "core"; } }
+
+
+    protected override Component BuildComponent(Entity entity)
+    {
+      CoreComponent result = new CoreComponent();
+      result.Name = name;
+      result.Icon = icon;
+
+      return result;
+    }
+
+
+    private string name;
+
+    private int icon;
+  }
+
 }
