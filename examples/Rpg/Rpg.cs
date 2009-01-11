@@ -243,8 +243,10 @@ namespace Rpg
 
     void DrawWorld(Vec3 center)
     {
-      int cols = pixelWidth / spriteWidth;
-      int rows = pixelHeight / spriteHeight;
+//      int cols = pixelWidth / spriteWidth;
+//      int rows = pixelHeight / spriteHeight;
+      int cols = 13;
+      int rows = 13;
 
       int xOff = (int)center.X - cols / 2;
       int yOff = (int)center.Y - rows / 2;
@@ -303,12 +305,13 @@ namespace Rpg
 
     void DrawString(String str, double x, double y, Color color)
     {
+      double size = 8.0;
       var outlineColor = Color.Black;
-      Gfx.DrawString(str, x+1, y, 8, Textures[fontTexture], outlineColor);
-      Gfx.DrawString(str, x+1, y-1, 8, Textures[fontTexture], outlineColor);
-      Gfx.DrawString(str, x, y-1, 8, Textures[fontTexture], outlineColor);
+      Gfx.DrawString(str, x+1, y, size, Textures[fontTexture], outlineColor);
+      Gfx.DrawString(str, x+1, y-1, size, Textures[fontTexture], outlineColor);
+      Gfx.DrawString(str, x, y-1, size, Textures[fontTexture], outlineColor);
 
-      Gfx.DrawString(str, x, y, 8, Textures[fontTexture], color);
+      Gfx.DrawString(str, x, y, size, Textures[fontTexture], color);
     }
 
 
@@ -382,11 +385,11 @@ namespace Rpg
     private World world = new World();
 
 
-    public const int pixelWidth = 480;
-    public const int pixelHeight = 360;
+    public const int pixelWidth = 640;
+    public const int pixelHeight = 480;
 
-    public const int spriteWidth = 16;
-    public const int spriteHeight = 16;
+    public const int spriteWidth = 32;
+    public const int spriteHeight = 32;
 
     public const string spriteTexture = "tiles.png";
 
