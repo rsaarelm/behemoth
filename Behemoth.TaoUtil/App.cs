@@ -61,7 +61,17 @@ namespace Behemoth.TaoUtil
       Sdl.SDL_WM_SetCaption(windowTitle, "");
       Sdl.SDL_GL_SetAttribute(Sdl.SDL_GL_DOUBLEBUFFER, 1);
 
-      Resize(pixelWidth, pixelHeight);
+      // Scale up small pixelsize for the initial window. Assume that the user
+      // has at least 800x600 resolution.
+      const int targetW = 800;
+      const int targetH = 600;
+      int scale = 1;
+      while (pixelWidth * (scale + 1) <= targetW && pixelHeight * (scale + 1) <= targetH)
+      {
+        scale++;
+      }
+
+      Resize(pixelWidth * scale, pixelHeight * scale);
     }
 
 
