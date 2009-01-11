@@ -128,9 +128,29 @@ namespace Behemoth.LuaUtil
     }
 
 
+    /// <summary>
+    /// Dump the global values in the state into a dictionary using DumpTable.
+    /// </summary>
     public IDictionary<Object, Object> DumpGlobals()
     {
       return DumpTable(Lua.LUA_GLOBALSINDEX);
+    }
+
+
+    /// <summary>
+    /// Iterate through the array component of a dumped Lua table. Lua arrays
+    /// items are table values indexed by keys in a series 1.0, 2.0, 3.0, ...
+    /// The iteration will start from key 1.0 and yield keys as long as there
+    /// are consecutive numeric keys in the table.
+    /// </summary>
+    public static IEnumerable<Object> ArrayPart(IDictionary<Object, Object> luaTable)
+    {
+      double key = 1.0;
+      while (luaTable.ContainsKey(key))
+      {
+        yield return luaTable[key];
+        key += 1.0;
+      }
     }
 
 
