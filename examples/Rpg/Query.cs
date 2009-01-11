@@ -9,14 +9,14 @@ namespace Rpg
   {
     public static Vec3 Pos(Entity e)
     {
-      var core = e.Get<CoreComponent>();
+      var core = e.Get<CCore>();
       return core.Pos;
     }
 
 
     public static bool IsInRect(Entity e, int x, int y, int z, int w, int h)
     {
-      CoreComponent core;
+      CCore core;
       if (e.TryGet(out core))
       {
         return core.Pos.Z == z &&
@@ -33,7 +33,7 @@ namespace Rpg
 
     public static World WorldOf(Entity e)
     {
-      return e.Get<CoreComponent>().World;
+      return e.Get<CCore>().World;
     }
 
 

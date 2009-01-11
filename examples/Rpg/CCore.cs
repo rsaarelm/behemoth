@@ -5,7 +5,7 @@ using Behemoth.Alg;
 namespace Rpg
 {
   [Serializable]
-  public class CoreComponent : Component
+  public class CCore : Component
   {
     public Vec3 Pos;
 
@@ -64,7 +64,7 @@ namespace Rpg
 
     protected override Component BuildComponent(Entity entity)
     {
-      CoreComponent result = new CoreComponent();
+      CCore result = new CCore();
       result.Name = name;
       result.Icon = icon;
       result.DrawPriority = drawPriority;

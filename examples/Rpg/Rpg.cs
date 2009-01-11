@@ -166,9 +166,9 @@ namespace Rpg
       LoadMap("example_map.tmx", 0, 0, 0);
 
       Entity pc = world.MakeEntity("avatar");
-      CoreComponent core = new CoreComponent();
+      CCore core = new CCore();
       pc.Set(core);
-      pc.Set(new LosComponent());
+      pc.Set(new CLos());
       core.Icon = (int)Sprite.Fighter;
       core.SetPos(1, 44, 0);
 
@@ -263,7 +263,7 @@ namespace Rpg
     }
 
 
-    public Vec3 PlayerPos { get { return Player.Get<CoreComponent>().Pos; } }
+    public Vec3 PlayerPos { get { return Player.Get<CCore>().Pos; } }
 
 
     public Entity Player { get { return (Entity)world.Globals["player"]; } }
@@ -305,11 +305,11 @@ namespace Rpg
       // Sort the entities in draw order.
       entitiesToDraw.Sort(
         (lhs, rhs) =>
-        lhs.Get<CoreComponent>().DrawPriority.CompareTo(rhs.Get<CoreComponent>().DrawPriority));
+        lhs.Get<CCore>().DrawPriority.CompareTo(rhs.Get<CCore>().DrawPriority));
 
       foreach (var entity in entitiesToDraw)
       {
-        if (Player.Get<LosComponent>().IsVisible(entity.Get<CoreComponent>().Pos))
+        if (Player.Get<CLos>().IsVisible(entity.Get<CCore>().Pos))
         {
           DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
         }
@@ -365,7 +365,7 @@ namespace Rpg
 
     public void DrawEntity(Entity e, double xOff, double yOff)
     {
-      CoreComponent core;
+      CCore core;
       if (e.TryGet(out core))
       {
         int frame = core.Icon + (core.ActionPose ? 1 : 0);
@@ -443,7 +443,7 @@ namespace Rpg
             if (spawn != null)
             {
               var entity = world.Spawn(templates[spawn]);
-              entity.Get<CoreComponent>().SetPos(x + xOff, y + yOff, zOff);
+              entity.Get<CCore>().SetPos(x + xOff, y + yOff, zOff);
               world.Add(entity);
             }
           }
@@ -462,13 +462,13 @@ namespace Rpg
 
     void DoLos()
     {
-      Player.Get<LosComponent>().DoLos();
+      Player.Get<CLos>().DoLos();
     }
 
 
     public bool IsMapped(int x, int y, int z)
     {
-      return Player.Get<LosComponent>().IsMapped(new Vec3(x, y, z));
+      return Player.Get<CLos>().IsMapped(new Vec3(x, y, z));
     }
 
 

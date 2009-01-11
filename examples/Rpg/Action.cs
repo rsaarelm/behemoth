@@ -17,7 +17,7 @@ namespace Rpg
     public static bool MoveRel(Entity e, Vec3 delta)
     {
       var newPos = Query.Pos(e) + delta;
-      var core = e.Get<CoreComponent>();
+      var core = e.Get<CCore>();
       var dir = Geom.VecToDir8(delta);
 
       // Hack: Since dirs are currently only used to flip the character icon
@@ -48,7 +48,7 @@ namespace Rpg
     /// </summary>
     public static void Place(Entity e, Vec3 pos)
     {
-      var core = e.Get<CoreComponent>();
+      var core = e.Get<CCore>();
 
       // XXX: Might want to do some spatial index update stuff here.
 

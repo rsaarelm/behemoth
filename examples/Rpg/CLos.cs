@@ -5,14 +5,14 @@ using Behemoth.Alg;
 namespace Rpg
 {
   [Serializable]
-  public class LosComponent : Component
+  public class CLos : Component
   {
     public void DoLos()
     {
       visible.Clear();
       int radius = 8;
 
-      var core = Entity.Get<CoreComponent>();
+      var core = Entity.Get<CCore>();
 
       int centerX = (int)core.Pos.X;
       int centerY = (int)core.Pos.Y;

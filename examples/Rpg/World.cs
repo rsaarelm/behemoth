@@ -109,7 +109,7 @@ namespace Rpg
 
     private void Register(Entity entity)
     {
-      CoreComponent core;
+      CCore core;
       if (entity.TryGet(out core)) {
         core.World = this;
       }
