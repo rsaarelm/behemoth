@@ -232,6 +232,7 @@ namespace Rpg
 
     protected override void Display()
     {
+      ClearScreen();
       DrawWorld(PlayerPos);
       DrawString("Fonter online.", 0, pixelHeight - 8, Color.Aliceblue);
     }
