@@ -120,7 +120,9 @@ namespace Rpg
         Alg.OA("shrub", "Ground", 0x0A),
         Alg.OA("stalagmite", "Pillar", 0x0B),
         Alg.OA("glyph", "Ground", 0x0C),
-        Alg.OA("door", "Wall", 0x0D, 0x0D),
+        // Door opening not yet supported, so now the work like walls you
+        // can't see through but can walk through.
+        Alg.OA("door", "IllusionWall", 0x0D, 0x0D),
         Alg.OA("soot", "Ground", 0x0F),
         Alg.OA("rubble", "Ground", 0x10),
         Alg.OA("window", "TransparentWall", 0x11, 0x12),
