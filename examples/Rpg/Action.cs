@@ -20,7 +20,15 @@ namespace Rpg
       var core = e.Get<CoreComponent>();
       var dir = Geom.VecToDir8(delta);
 
-      core.Facing = (byte)dir;
+      // Hack: Since dirs are currently only used to flip the character icon
+      // horizontally, do not impose a facing change when moving along the
+      // vertical axis.
+
+      // XXX: Remove this if facing gets any game-mechanical significance.
+      if (!IsVerticalDir(dir))
+      {
+        core.Facing = (byte)dir;
+      }
 
       // TODO: Check here if the entity is blocked by something.
 
@@ -45,6 +53,12 @@ namespace Rpg
       // XXX: Might want to do some spatial index update stuff here.
 
       core.Pos = pos;
+    }
+
+
+    public static bool IsVerticalDir(int dir8)
+    {
+      return dir8 == 0 || dir8 == 4;
     }
   }
 }
