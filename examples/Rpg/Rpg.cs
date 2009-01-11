@@ -159,6 +159,8 @@ namespace Rpg
         new CoreTemplate("death knight", 0x58));
       templates["chest"] = new EntityTemplate(
         new CoreTemplate("chest", 0x17));
+      templates["gib"] = new EntityTemplate(
+        new CoreTemplate("gib", 0x40, -1));
 
 
       LoadMap("example_map.tmx", 0, 0, 0);
@@ -297,9 +299,13 @@ namespace Rpg
       // XXX: Iterating through every entity. Good optimization would be for
       // example to provide a Z-coordinate based entity index since pretty
       // much all of the current logic operates on a single Z layer.
-      var entitiesToDraw = world.EntitiesInRect(xOff, yOff, (int)center.Z, cols, rows);
+      List<Entity> entitiesToDraw = new List<Entity>(
+        world.EntitiesInRect(xOff, yOff, (int)center.Z, cols, rows));
 
-      // Here we could sort entitiesToDraw by any priority preferences.
+      // Sort the entities in draw order.
+      entitiesToDraw.Sort(
+        (lhs, rhs) =>
+        lhs.Get<CoreComponent>().DrawPriority.CompareTo(rhs.Get<CoreComponent>().DrawPriority));
 
       foreach (var entity in entitiesToDraw)
       {

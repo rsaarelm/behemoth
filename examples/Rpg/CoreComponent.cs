@@ -26,6 +26,12 @@ namespace Rpg
 
     public bool ActionPose;
 
+    /// <summary>
+    /// What layer will the entity be drawn in. Entities with larger draw
+    /// priority get drawn on top of entities with a smaller one.
+    /// </summary>
+    public int DrawPriority;
+
     new public static String GetFamily()
     {
       return "core";
@@ -44,6 +50,15 @@ namespace Rpg
     }
 
 
+    public CoreTemplate(
+      string name,
+      int icon,
+      int drawPriority) : this(name, icon)
+    {
+      this.drawPriority = drawPriority;
+    }
+
+
     public override string Family { get { return "core"; } }
 
 
@@ -52,6 +67,7 @@ namespace Rpg
       CoreComponent result = new CoreComponent();
       result.Name = name;
       result.Icon = icon;
+      result.DrawPriority = drawPriority;
 
       return result;
     }
@@ -60,6 +76,8 @@ namespace Rpg
     private string name;
 
     private int icon;
+
+    private int drawPriority = 0;
   }
 
 }
