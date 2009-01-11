@@ -62,7 +62,7 @@ namespace Behemoth.Alg
     /// stranger shapes, the field of view will probably only form a part of
     /// the shape due to the way the algorithm works.
     /// </param>
-    public static void LineOfSightField(
+    public static void LineOfSight(
       Func<int, int, bool> isBlockedPredicate,
       Action<int, int> markSeenAction,
       Func<int, int, bool> outsideRadiusPredicate)
@@ -173,7 +173,7 @@ namespace Behemoth.Alg
         // Not using u and v because the radius predicate might treat x and y
         // axes differently.
         if (startSlope < endSlope &&
-          outsideRadiusPredicate(mapX, mapY)) {
+          !outsideRadiusPredicate(mapX, mapY)) {
           markSeenAction(mapX, mapY);
         }
       }

@@ -146,12 +146,15 @@ namespace Rpg
       Entity pc = world.MakeEntity("avatar");
       CoreComponent core = new CoreComponent();
       pc.Set(core);
+      pc.Set(new LosComponent());
       core.Icon = (int)Sprite.Fighter;
       core.SetPos(1, 44, 0);
 
       world.Add(pc);
 
       world.Globals["player"] = pc;
+
+      DoLos();
     }
 
 
@@ -258,9 +261,16 @@ namespace Rpg
       {
         for (int x = 0; x <= cols; x++)
         {
-          DrawSprite(
-            x * spriteWidth, y * spriteHeight,
-            TerrainIcon(xOff + x, yOff + y, (int)center.Z));
+          int mapX = xOff + x;
+          int mapY = yOff + y;
+          int mapZ = (int)center.Z;
+
+          if (IsMapped(mapX, mapY, mapZ))
+          {
+            DrawSprite(
+              x * spriteWidth, y * spriteHeight,
+              TerrainIcon(mapX, mapY, mapZ));
+          }
         }
       }
 
@@ -273,7 +283,10 @@ namespace Rpg
 
       foreach (var entity in entitiesToDraw)
       {
-        DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
+        if (Player.Get<LosComponent>().IsVisible(entity.Get<CoreComponent>().Pos))
+        {
+          DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
+        }
       }
     }
 
@@ -382,6 +395,19 @@ namespace Rpg
     {
       Vec3 moveVec = Geom.Dir8ToVec(dir8);
       Action.MoveRel(Player, moveVec);
+      DoLos();
+    }
+
+
+    void DoLos()
+    {
+      Player.Get<LosComponent>().DoLos();
+    }
+
+
+    public bool IsMapped(int x, int y, int z)
+    {
+      return Player.Get<LosComponent>().IsMapped(new Vec3(x, y, z));
     }
 
 

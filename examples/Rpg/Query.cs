@@ -47,5 +47,16 @@ namespace Rpg
       // through walls.
       return !TerrainUtil.BlocksMoving(tile);
     }
+
+
+    public static bool CanSeeThrough(Entity e, Vec3 pos)
+    {
+      var world = WorldOf(e);
+
+      var tile = world.Space[pos];
+
+      // X-Ray vision and other stuff here.
+      return !TerrainUtil.BlocksSight(tile);
+    }
   }
 }
