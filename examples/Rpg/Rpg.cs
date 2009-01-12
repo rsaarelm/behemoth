@@ -283,10 +283,8 @@ namespace Rpg
 
     void DrawWorld(Vec3 center)
     {
-//      int cols = pixelWidth / spriteWidth;
-//      int rows = pixelHeight / spriteHeight;
-      int cols = 13;
-      int rows = 13;
+      int cols = pixelWidth / spriteWidth;
+      int rows = pixelHeight / spriteHeight;
 
       int xOff = (int)center.X - cols / 2;
       int yOff = (int)center.Y - rows / 2;
