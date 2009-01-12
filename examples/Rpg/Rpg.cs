@@ -205,6 +205,9 @@ namespace Rpg
           break;
 
         case Sdl.SDL_KEYDOWN:
+          // Clear the msg buffer whenever the player presses a key.
+          ClearMsg();
+
           switch (evt.key.keysym.sym)
           {
           case Sdl.SDLK_ESCAPE:
@@ -271,7 +274,7 @@ namespace Rpg
     {
       ClearScreen();
       DrawWorld(PlayerPos);
-      DrawString("Fonter online.", 0, pixelHeight - 8, Color.Aliceblue);
+      DrawMessages();
     }
 
 
@@ -280,6 +283,30 @@ namespace Rpg
 
     public Entity Player { get { return (Entity)world.Globals["player"]; } }
 
+
+    void DrawMessages()
+    {
+      double y = pixelHeight;
+      foreach (string line in messages)
+      {
+        y -= fontSize;
+        DrawString(line, 0, y, Color.Aliceblue);
+      }
+    }
+
+
+    public void Msg(string fmt, params Object[] args)
+    {
+      string msg = String.Format(fmt, args);
+      // TODO: Handle newlines
+      messages.Add(msg);
+    }
+
+
+    public void ClearMsg()
+    {
+      messages.Clear();
+    }
 
     void DrawWorld(Vec3 center)
     {
@@ -367,13 +394,18 @@ namespace Rpg
 
     void DrawString(String str, double x, double y, Color color)
     {
-      double size = 8.0;
       var outlineColor = Color.Black;
-      Gfx.DrawString(str, x+1, y, size, Textures[fontTexture], outlineColor);
-      Gfx.DrawString(str, x+1, y-1, size, Textures[fontTexture], outlineColor);
-      Gfx.DrawString(str, x, y-1, size, Textures[fontTexture], outlineColor);
-
-      Gfx.DrawString(str, x, y, size, Textures[fontTexture], color);
+      for (int yOff = -1; yOff <= 1; yOff++)
+      {
+        for (int xOff = -1; xOff <= 1; xOff++)
+        {
+          if (xOff != 0 || yOff != 0)
+          {
+            Gfx.DrawString(str, x + xOff * fontPixelScale, y + yOff * fontPixelScale, fontSize, Textures[fontTexture], outlineColor);
+          }
+        }
+      }
+      Gfx.DrawString(str, x, y, fontSize, Textures[fontTexture], color);
     }
 
 
@@ -503,6 +535,7 @@ namespace Rpg
 
     private World world = new World();
 
+    private List<string> messages = new List<string>();
 
     public const int pixelWidth = 640;
     public const int pixelHeight = 480;
@@ -513,5 +546,9 @@ namespace Rpg
     public const string spriteTexture = "tiles.png";
 
     public const string fontTexture = "font8x8.png";
+
+    public const double fontSize = 16.0;
+    public const double fontPixelScale = 2.0;
+
   }
 }

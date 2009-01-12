@@ -71,6 +71,7 @@ namespace Rpg
       {
         if (brain.Gibs)
         {
+          UI.Msg("Splodey!");
           var gib = world.Spawn("gib");
           gib.Get<CCore>().Pos = entity.Get<CCore>().Pos;
           world.Add(gib);
@@ -84,6 +85,7 @@ namespace Rpg
       CBrain brain1, brain2;
       if (entity.TryGet(out brain1) && target.TryGet(out brain2))
       {
+        UI.Msg("Whup!");
         brain2.Damage(entity, brain1.Might);
         // TODO: Attack message
       }
