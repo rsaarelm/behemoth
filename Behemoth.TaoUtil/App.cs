@@ -19,6 +19,13 @@ namespace Behemoth.TaoUtil
       this.pixelHeight = pixelHeight;
       this.windowTitle = title;
 
+      if (App.instance != null)
+      {
+        throw new ApplicationException("Trying to instantiate multiple Apps.");
+      }
+
+      App.instance = this;
+
       Init();
     }
 
@@ -194,6 +201,9 @@ namespace Behemoth.TaoUtil
     }
 
 
+    public static App Instance { get { return instance; } }
+
+
     public int PixelWidth { get { return pixelWidth; } }
 
     public int PixelHeight { get { return pixelHeight; } }
@@ -222,5 +232,7 @@ namespace Behemoth.TaoUtil
     private double timeStamp = CurrentSeconds;
 
     private TextureCache textureCache = new TextureCache(new ImageCache(), 0);
+
+    private static App instance = null;
   }
 }
