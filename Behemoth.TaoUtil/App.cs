@@ -175,27 +175,6 @@ namespace Behemoth.TaoUtil
     { get { return (double)DateTime.Now.Ticks / 1e7; } }
 
 
-    public static void DrawRect(double x, double y, double w, double h, byte r, byte g, byte b)
-    {
-      // Clear the bound texture.
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-
-      Gl.glColor3f((float)r / 256, (float)g / 256, (float)b / 256);
-
-      Gl.glBegin(Gl.GL_QUADS);
-
-      Gl.glVertex3f((float)x, (float)y, 0.0f);
-
-      Gl.glVertex3f((float)(x + w), (float)y, 0.0f);
-
-      Gl.glVertex3f((float)(x + w), (float)(y + h), 0.0f);
-
-      Gl.glVertex3f((float)x, (float)(y + h), 0.0f);
-
-      Gl.glEnd();
-    }
-
-
     public static void ClearScreen()
     {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);

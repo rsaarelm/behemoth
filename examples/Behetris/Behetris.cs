@@ -101,9 +101,9 @@ namespace Behetris
     {
       // XXX: Magic numbers. Not caring much now, since this stuff is limited
       // to display logic.
-      DrawRect(0, 0, PixelWidth, PixelHeight, 230, 214, 156);
-      DrawRect(0, 0, 8, 144, 57, 56, 41);
-      DrawRect(88, 0, 8, 144, 57, 56, 41);
+      Gfx.DrawRect(0, 0, PixelWidth, PixelHeight, 230, 214, 156);
+      Gfx.DrawRect(0, 0, 8, 144, 57, 56, 41);
+      Gfx.DrawRect(88, 0, 8, 144, 57, 56, 41);
 
       for (int y = 0; y < fieldH; y++)
       {
@@ -138,7 +138,7 @@ namespace Behetris
 
     private void DrawCell(int type, int x, int y)
     {
-      DrawRect(x * 8 + 8, PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
+      Gfx.DrawRect(x * 8 + 8, PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
     }
 
 
