@@ -9,6 +9,19 @@ namespace Behemoth.Alg
   /// </summary>
   public class App
   {
+    public App()
+    {
+      if (App.instance != null)
+      {
+        throw new ApplicationException("Trying to instantiate multiple Apps.");
+      }
+      App.instance = this;
+    }
+
+
+    public static App Instance { get { return instance; } }
+
+
     public T GetService<T>() where T : IAppService
     {
       return (T)services[typeof(T)];
@@ -54,9 +67,12 @@ namespace Behemoth.Alg
     public void Run()
     {
       isRunning = true;
+
+      Init();
+
       foreach (AppComponent c in components)
       {
-        c.Initialize();
+        c.Init();
       }
 
       double lastTime = CurrentSeconds;
@@ -76,8 +92,11 @@ namespace Behemoth.Alg
       {
         foreach (AppComponent c in components)
         {
-          c.Uninitialize();
+          c.Uninit();
         }
+
+        Uninit();
+
         isRunning = false;
       }
     }
@@ -99,7 +118,10 @@ namespace Behemoth.Alg
     { get { return (double)DateTime.Now.Ticks / 1e7; } }
 
 
-    protected void Update(double timeElapsed)
+    public int Tick { get { return tick; } }
+
+
+    protected virtual void Update(double timeElapsed)
     {
       var updatees = from c in components
         orderby c.UpdateOrder
@@ -109,10 +131,12 @@ namespace Behemoth.Alg
       {
         c.Update(timeElapsed);
       }
+
+      tick++;
     }
 
 
-    protected void Draw(double timeElapsed)
+    protected virtual void Draw(double timeElapsed)
     {
       var drawees = from c in components
         where c is DrawableAppComponent
@@ -126,11 +150,22 @@ namespace Behemoth.Alg
     }
 
 
+    protected virtual void Init() {}
+
+
+    protected virtual void Uninit() {}
+
+
     private List<AppComponent> components = new List<AppComponent>();
 
     private IDictionary<Type, IAppService> services =
       new Dictionary<Type, IAppService>();
 
     private bool isRunning = false;
+
+    private int tick = 0;
+
+
+    private static App instance = null;
   }
 }

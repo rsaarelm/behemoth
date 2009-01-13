@@ -12,10 +12,10 @@ namespace Behemoth.Alg
     /// Called when this component is initialized after all components have
     /// been attached to the App. Get services from the App here.
     /// </summary>
-    public virtual void Initialize() {}
+    public virtual void Init() {}
 
 
-    public virtual void Uninitialize() {}
+    public virtual void Uninit() {}
 
 
     /// <summary>
