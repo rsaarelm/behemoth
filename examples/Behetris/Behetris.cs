@@ -14,7 +14,7 @@ namespace Behetris
   /// <summary>
   /// A falling blocks game.
   /// </summary>
-  public class Behetris : App
+  public class Behetris : Behemoth.TaoUtil.App
   {
     public Behetris() : base(160, 144, "Behetris")
     {

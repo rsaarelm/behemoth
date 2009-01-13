@@ -11,6 +11,7 @@ namespace Behemoth.TaoUtil
   /// <summary>
   /// Base class for game applications.
   /// </summary>
+  [Obsolete("To be replaced by Behemoth.Alg.App")]
   public abstract class App
   {
     public App(int pixelWidth, int pixelHeight, string title)

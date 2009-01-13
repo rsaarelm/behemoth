@@ -87,15 +87,19 @@
   <target name="Behemoth.Alg.dll" depends="init">
     <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
       <sources>
+        <include name="Behemoth.Alg/IAppService.cs"/>
         <include name="Behemoth.Alg/ICache.cs"/>
         <include name="Behemoth.Alg/IField2.cs"/>
         <include name="Behemoth.Alg/IField3.cs"/>
 
         <include name="Behemoth.Alg/Alg.cs"/>
+        <include name="Behemoth.Alg/App.cs"/>
+        <include name="Behemoth.Alg/AppComponent.cs"/>
         <include name="Behemoth.Alg/Cache.cs"/>
         <include name="Behemoth.Alg/Color.cs"/>
         <include name="Behemoth.Alg/Component.cs"/>
         <include name="Behemoth.Alg/ComponentTemplate.cs"/>
+        <include name="Behemoth.Alg/DrawableAppComponent.cs"/>
         <include name="Behemoth.Alg/Entity.cs"/>
         <include name="Behemoth.Alg/EntityTemplate.cs"/>
         <include name="Behemoth.Alg/Field2.cs"/>

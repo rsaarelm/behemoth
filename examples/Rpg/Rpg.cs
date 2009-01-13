@@ -14,7 +14,7 @@ using Behemoth.LuaUtil;
 
 namespace Rpg
 {
-  public class Rpg : App
+  public class Rpg : Behemoth.TaoUtil.App
   {
     public enum Sprite {
       Empty = 0x00,

@@ -10,7 +10,7 @@ namespace Rpg
   {
     public static void Msg(string fmt, params Object[] args)
     {
-      ((Rpg)App.Instance).Msg(fmt, args);
+      ((Rpg)Behemoth.TaoUtil.App.Instance).Msg(fmt, args);
     }
   }
 }

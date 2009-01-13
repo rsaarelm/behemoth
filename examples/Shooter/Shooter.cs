@@ -364,7 +364,7 @@ namespace Shooter
   }
 
 
-  public class Shooter : App
+  public class Shooter : Behemoth.TaoUtil.App
   {
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;
