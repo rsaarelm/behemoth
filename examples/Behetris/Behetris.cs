@@ -14,9 +14,9 @@ namespace Behetris
   /// <summary>
   /// A falling blocks game.
   /// </summary>
-  public class Behetris : Behemoth.TaoUtil.App
+  public class Behetris : Behemoth.Alg.DrawableAppComponent
   {
-    public Behetris() : base(160, 144, "Behetris")
+    public Behetris()
     {
       blocks = new Block[][] {
         Block.MakeSet(
@@ -73,9 +73,9 @@ namespace Behetris
     }
 
 
-    protected override void Update()
+    public override void Update(double timeElapsed)
     {
-      base.Update();
+      ReadInput();
 
       if (speedDrop)
       {
@@ -97,11 +97,11 @@ namespace Behetris
     }
 
 
-    protected override void Display()
+    public override void Draw(double timeElapsed)
     {
       // XXX: Magic numbers. Not caring much now, since this stuff is limited
       // to display logic.
-      Gfx.DrawRect(0, 0, PixelWidth, PixelHeight, 230, 214, 156);
+      Gfx.DrawRect(0, 0, ((TaoApp)App).PixelWidth, ((TaoApp)App).PixelHeight, 230, 214, 156);
       Gfx.DrawRect(0, 0, 8, 144, 57, 56, 41);
       Gfx.DrawRect(88, 0, 8, 144, 57, 56, 41);
 
@@ -133,12 +133,12 @@ namespace Behetris
     }
 
 
-    private bool BlinkOn { get { return (Tick / 4) % 2 == 0; } }
+    private bool BlinkOn { get { return (App.Tick / 4) % 2 == 0; } }
 
 
     private void DrawCell(int type, int x, int y)
     {
-      Gfx.DrawRect(x * 8 + 8, PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
+      Gfx.DrawRect(x * 8 + 8, ((TaoApp)App).PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
     }
 
 
@@ -190,7 +190,7 @@ namespace Behetris
     }
 
 
-    protected override void ReadInput()
+    protected void ReadInput()
     {
       Sdl.SDL_Event evt;
 
@@ -199,14 +199,14 @@ namespace Behetris
         switch (evt.type)
         {
         case Sdl.SDL_QUIT:
-          Quit();
+          App.Exit();
           break;
 
         case Sdl.SDL_KEYDOWN:
           switch (evt.key.keysym.sym)
           {
           case Sdl.SDLK_ESCAPE:
-            Quit();
+            App.Exit();
             break;
           case Sdl.SDLK_LEFT:
             Steer(-1);
@@ -240,7 +240,7 @@ namespace Behetris
           break;
 
         case Sdl.SDL_VIDEORESIZE:
-          Resize(evt.resize.w, evt.resize.h);
+          ((TaoApp)App).Resize(evt.resize.w, evt.resize.h);
           break;
         }
       }
@@ -416,7 +416,7 @@ namespace Behetris
     {
       // TODO: Don't quit instantly, countdown to exit.
       Console.WriteLine("Ha-ha.");
-      IsRunning = false;
+      App.Exit();
     }
 
 
@@ -470,7 +470,9 @@ namespace Behetris
 
     public static void Main(string[] args)
     {
-      new Behetris().MainLoop();
+      var app = new TaoApp(160, 144, "Behetris");
+      app.Add(new Behetris());
+      app.Run();
     }
 
 
