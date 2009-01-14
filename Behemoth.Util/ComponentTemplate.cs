@@ -7,7 +7,7 @@ namespace Behemoth.Util
   /// </summary>
   public abstract class ComponentTemplate
   {
-    public abstract String Family { get; }
+    public abstract Type Family { get; }
 
 
     /// <summary>

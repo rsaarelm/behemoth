@@ -124,9 +124,9 @@ namespace Behemoth.Util
   [Serializable]
   class StatsComponent : Component
   {
-    new public static String GetFamily()
+    new public static Type GetFamily()
     {
-      return "stats";
+      return typeof(StatsComponent);
     }
 
     public int Might;
@@ -138,9 +138,9 @@ namespace Behemoth.Util
   [Serializable]
   class PosComponent : Component
   {
-    new public static String GetFamily()
+    new public static Type GetFamily()
     {
-      return "pos";
+      return typeof(PosComponent);
     }
 
     public int X;
@@ -165,7 +165,7 @@ namespace Behemoth.Util
     }
 
 
-    public override String Family { get { return StatsComponent.GetFamily(); } }
+    public override Type Family { get { return StatsComponent.GetFamily(); } }
 
 
     protected override Component BuildComponent(Entity entity)
@@ -186,7 +186,7 @@ namespace Behemoth.Util
 
   class RandomPosTemplate : ComponentTemplate
   {
-    public override String Family { get { return PosComponent.GetFamily(); } }
+    public override Type Family { get { return PosComponent.GetFamily(); } }
 
 
     protected override Component BuildComponent(Entity entity)

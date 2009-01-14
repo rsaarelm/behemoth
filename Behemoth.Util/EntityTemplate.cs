@@ -40,7 +40,7 @@ namespace Behemoth.Util
     }
 
 
-    public string Name = "";
+    public string Name = String.Empty;
 
 
     private IList<ComponentTemplate> components = new List<ComponentTemplate>();

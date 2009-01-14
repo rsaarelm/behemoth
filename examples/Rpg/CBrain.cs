@@ -38,9 +38,9 @@ namespace Rpg
     }
 
 
-    new public static String GetFamily()
+    new public static Type GetFamily()
     {
-      return "brain";
+      return typeof(CBrain);
     }
   }
 
@@ -52,7 +52,7 @@ namespace Rpg
     {}
 
 
-    public override string Family { get { return "brain"; } }
+    public override Type Family { get { return CBrain.GetFamily(); } }
 
 
     protected override Component BuildComponent(Entity entity)

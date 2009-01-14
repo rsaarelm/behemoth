@@ -21,7 +21,7 @@ namespace Behemoth.Util
     public bool TryGet<T>(out T component)
       where T : Component
     {
-      String type = Component.FamilyOf<T>();
+      Type type = Component.FamilyOf<T>();
 
       if (components.ContainsKey(type))
       {
@@ -38,7 +38,7 @@ namespace Behemoth.Util
     public T Get<T>()
       where T : Component
     {
-      String type = Component.FamilyOf<T>();
+      Type type = Component.FamilyOf<T>();
 
       if (components.ContainsKey(type))
       {
@@ -46,7 +46,7 @@ namespace Behemoth.Util
       }
       else
       {
-        throw new ComponentNotFoundException(type);
+        throw new ComponentNotFoundException(type.ToString());
       }
     }
 
@@ -58,7 +58,7 @@ namespace Behemoth.Util
         throw new ArgumentNullException("c");
       }
 
-      String type = c.Family;
+      Type type = c.Family;
 
       if (components.ContainsKey(type)) {
         components[type].Detach();
@@ -71,7 +71,7 @@ namespace Behemoth.Util
     }
 
 
-    public void Clear(String type)
+    public void Clear(Type type)
     {
       if (components.ContainsKey(type)) {
         components[type].Detach();
@@ -92,7 +92,7 @@ namespace Behemoth.Util
 
     private string id;
 
-    private IDictionary<String, Component> components =
-      new Dictionary<String, Component>();
+    private IDictionary<Type, Component> components =
+      new Dictionary<Type, Component>();
   }
 }

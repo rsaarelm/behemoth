@@ -12,13 +12,13 @@ namespace Behemoth.Util
     /// The component family of this component. Entities can have only one
     /// component of any single family.
     /// </summary>
-    public String Family { get { return FamilyOf(this.GetType()); } }
+    public Type Family { get { return FamilyOf(this.GetType()); } }
 
 
     /// <summary>
     /// An utility method for determining the family of a component based on type.
     /// </summary>
-    public static String FamilyOf<T>()
+    public static Type FamilyOf<T>()
       where T : Component
     {
       return FamilyOf(typeof(T));
@@ -28,9 +28,9 @@ namespace Behemoth.Util
     /// <summary>
     /// An utility method for determining the family of a component based on type.
     /// </summary>
-    public static String FamilyOf(Type type)
+    public static Type FamilyOf(Type type)
     {
-      var result = (String)MemUtil.CallInheritedStaticMethod(type, "GetFamily", null);
+      var result = (Type)MemUtil.CallInheritedStaticMethod(type, "GetFamily", null);
       if (result == null)
       {
         throw new ApplicationException(
@@ -52,7 +52,7 @@ namespace Behemoth.Util
     /// to call is determined from component class type objects using
     /// reflection trickery.
     /// </remarks>
-    public static String GetFamily()
+    public static Type GetFamily()
     {
       throw new ApplicationException("GetFamily lookup fell back to root Component class.");
     }
@@ -102,7 +102,7 @@ namespace Behemoth.Util
     protected virtual void InnerDetach() {}
 
 
-    protected String family;
+    protected Type family;
 
     private Entity entity;
   }

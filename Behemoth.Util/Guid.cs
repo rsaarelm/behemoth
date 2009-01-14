@@ -16,7 +16,7 @@ namespace Behemoth.Util
 
     public string Next()
     {
-      return Next("");
+      return Next(String.Empty);
     }
 
 

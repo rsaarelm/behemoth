@@ -40,9 +40,9 @@ namespace Rpg
     /// </summary>
     public int DrawPriority;
 
-    new public static String GetFamily()
+    new public static Type GetFamily()
     {
-      return "core";
+      return typeof(CCore);
     }
   }
 
@@ -79,7 +79,7 @@ namespace Rpg
     }
 
 
-    public override string Family { get { return "core"; } }
+    public override Type Family { get { return CCore.GetFamily(); } }
 
 
     protected override Component BuildComponent(Entity entity)

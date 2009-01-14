@@ -54,9 +54,9 @@ namespace Rpg
     private Field3<bool> mapped = new Field3<bool>();
     private Field3<bool> visible = new Field3<bool>();
 
-    new public static String GetFamily()
+    new public static Type GetFamily()
     {
-      return "los";
+      return typeof(CLos);
     }
   }
 }
