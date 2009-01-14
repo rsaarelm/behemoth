@@ -8,7 +8,7 @@ using Behemoth.Alg;
 
 namespace Behemoth.TaoUtil
 {
-  public class TaoApp : Behemoth.Alg.App
+  public class TaoApp : Behemoth.Alg.App, ITaoService
   {
     public TaoApp(int pixelWidth, int pixelHeight, string title)
     {
@@ -32,6 +32,8 @@ namespace Behemoth.TaoUtil
 
       InitSdl();
       InitGl();
+
+      RegisterService(typeof(ITaoService), this);
     }
 
 
@@ -120,12 +122,14 @@ namespace Behemoth.TaoUtil
 
     public TextureCache Textures { get { return textureCache; } }
 
-    public bool UseSound = true;
+    public bool UseSound { get { return useSound; } set { useSound = value; } }
 
 
     private int pixelWidth;
     private int pixelHeight;
     private double pixelScale;
+
+    private bool useSound = true;
 
     private string windowTitle;
 

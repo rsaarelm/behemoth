@@ -45,7 +45,7 @@ namespace Behemoth.Alg
     }
 
 
-    public void RegisterService(Type service, AppComponent component)
+    public void RegisterService(Type service, IAppService provider)
     {
       if (service.GetInterface("Behemoth.Alg.IAppService") == null)
       {
@@ -53,14 +53,14 @@ namespace Behemoth.Alg
           "Service type doesn't implement service base interface.",
           "service");
       }
-      if (!service.IsInstanceOfType(component))
+      if (!service.IsInstanceOfType(provider))
       {
         throw new ArgumentException(
-          "Component does not implement the specified interface.",
-          "component");
+          "Provider does not implement the specified interface.",
+          "provider");
       }
 
-      services[service] = (IAppService)component;
+      services[service] = provider;
     }
 
 
