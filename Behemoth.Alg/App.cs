@@ -117,6 +117,18 @@ namespace Behemoth.Alg
     public int Tick { get { return tick; } }
 
 
+    public IEnumerable<AppComponent> Components
+    {
+      get
+      {
+        foreach (var c in components)
+        {
+          yield return c;
+        }
+      }
+    }
+
+
     protected virtual void Update(double timeElapsed)
     {
       var updatees = from c in components
