@@ -14,7 +14,7 @@ namespace Behemoth.Alg
     /// <summary>
     /// Whether this component is currently being drawn.
     /// </summary>
-    public bool Visible;
+    public bool Visible = true;
 
 
     /// <summary>

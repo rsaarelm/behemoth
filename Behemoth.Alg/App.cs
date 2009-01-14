@@ -124,6 +124,7 @@ namespace Behemoth.Alg
     protected virtual void Update(double timeElapsed)
     {
       var updatees = from c in components
+        where c.Enabled
         orderby c.UpdateOrder
         select c;
 
@@ -139,7 +140,7 @@ namespace Behemoth.Alg
     protected virtual void Draw(double timeElapsed)
     {
       var drawees = from c in components
-        where c is DrawableAppComponent
+        where c is DrawableAppComponent && ((DrawableAppComponent)c).Visible
         orderby ((DrawableAppComponent)c).DrawOrder
         select (DrawableAppComponent)c;
 

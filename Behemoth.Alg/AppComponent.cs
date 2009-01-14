@@ -34,7 +34,7 @@ namespace Behemoth.Alg
     /// <summary>
     /// Whether this component is currently being updated.
     /// </summary>
-    public bool Enabled;
+    public bool Enabled = true;
 
 
     /// <summary>
