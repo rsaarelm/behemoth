@@ -7,13 +7,11 @@ namespace Behemoth.Util
   /// </summary>
   public static class Tile
   {
-    public delegate void CharHandler(char ch, int x, int y);
-
     /// <summary>
     /// Call a function for each character in an ascii table with the char and
     /// coordinates of the character.
     /// </summary>
-    public static void AsciiTableIter(CharHandler func, string[] lines)
+    public static void AsciiTableIter(Action<char, int, int> func, string[] lines)
     {
       for (int y = 0; y < lines.Length; y++)
       {
