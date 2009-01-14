@@ -181,5 +181,11 @@ namespace Behemoth.TaoUtil
 
       Gl.glEnd();
     }
+
+
+    public static void ClearScreen()
+    {
+      Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
+    }
   }
 }
