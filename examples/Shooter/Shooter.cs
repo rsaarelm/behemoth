@@ -402,8 +402,6 @@ namespace Shooter
 
     public override void Init()
     {
-      base.Init();
-
       Media.AddPhysFsPath("Shooter.zip");
       // Make the zip file found from build subdir too, so that it's easy to
       // run the exe from the project root dir.

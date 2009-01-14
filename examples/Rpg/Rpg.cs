@@ -14,7 +14,7 @@ using Behemoth.LuaUtil;
 
 namespace Rpg
 {
-  public class Rpg : Behemoth.TaoUtil.App
+  public class Rpg : DrawableAppComponent, IUIService
   {
     public enum Sprite {
       Empty = 0x00,
@@ -60,12 +60,9 @@ namespace Rpg
 
     public static void Main(string[] args)
     {
-      new Rpg().MainLoop();
-    }
-
-
-    public Rpg() : base (pixelWidth, pixelHeight, "Rpg demo")
-    {
+      var app = new TaoApp(pixelWidth, pixelHeight, "Rpg demo");
+      app.Add(new Rpg());
+      app.Run();
     }
 
 
@@ -86,9 +83,11 @@ namespace Rpg
     }
 
 
-    protected override void Init()
+    public override void Init()
     {
-      base.Init();
+      tao = App.GetService<ITaoService>();
+
+      App.RegisterService(typeof(IUIService), this);
 
       var joystick = InputUtil.InitJoystick();
 
@@ -192,7 +191,7 @@ namespace Rpg
     }
 
 
-    protected override void ReadInput()
+    void ReadInput()
     {
       Sdl.SDL_Event evt;
 
@@ -201,7 +200,7 @@ namespace Rpg
         switch (evt.type)
         {
         case Sdl.SDL_QUIT:
-          Quit();
+          App.Exit();
           break;
 
         case Sdl.SDL_KEYDOWN:
@@ -211,7 +210,7 @@ namespace Rpg
           switch (evt.key.keysym.sym)
           {
           case Sdl.SDLK_ESCAPE:
-            Quit();
+            App.Exit();
             break;
           case Sdl.SDLK_UP:
             MoveCmd(0);
@@ -257,22 +256,24 @@ namespace Rpg
           break;
 
 
+          // XXX: Really doesn't belong at this abstraction level...
         case Sdl.SDL_VIDEORESIZE:
-          Resize(evt.resize.w, evt.resize.h);
+          tao.Resize(evt.resize.w, evt.resize.h);
           break;
         }
       }
     }
 
 
-    protected override void Update()
+    public override void Update(double timeElapsed)
     {
+      ReadInput();
     }
 
 
-    protected override void Display()
+    public override void Draw(double timeElapsed)
     {
-      ClearScreen();
+      Gfx.ClearScreen();
       DrawWorld(PlayerPos);
       DrawMessages();
     }
@@ -378,7 +379,7 @@ namespace Rpg
     {
       Gfx.DrawSprite(
         x, y, frame,
-        spriteWidth, spriteHeight, Textures[spriteTexture],
+        spriteWidth, spriteHeight, tao.Textures[spriteTexture],
         16, 16);
     }
 
@@ -387,7 +388,7 @@ namespace Rpg
     {
       Gfx.DrawMirroredSprite(
         x, y, frame,
-        spriteWidth, spriteHeight, Textures[spriteTexture],
+        spriteWidth, spriteHeight, tao.Textures[spriteTexture],
         16, 16);
     }
 
@@ -401,11 +402,13 @@ namespace Rpg
         {
           if (xOff != 0 || yOff != 0)
           {
-            Gfx.DrawString(str, x + xOff * fontPixelScale, y + yOff * fontPixelScale, fontSize, Textures[fontTexture], outlineColor);
+            Gfx.DrawString(
+              str, x + xOff * fontPixelScale, y + yOff * fontPixelScale,
+              fontSize, tao.Textures[fontTexture], outlineColor);
           }
         }
       }
-      Gfx.DrawString(str, x, y, fontSize, Textures[fontTexture], color);
+      Gfx.DrawString(str, x, y, fontSize, tao.Textures[fontTexture], color);
     }
 
 
@@ -536,6 +539,8 @@ namespace Rpg
     private World world = new World();
 
     private List<string> messages = new List<string>();
+
+    private ITaoService tao;
 
     public const int pixelWidth = 640;
     public const int pixelHeight = 480;
