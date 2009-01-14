@@ -75,12 +75,12 @@ namespace Behemoth.Alg
         c.Init();
       }
 
-      double lastTime = CurrentSeconds;
+      double lastTime = TimeUtil.CurrentSeconds;
       try
       {
         while (isRunning)
         {
-          if (CurrentSeconds >= lastTime + TargetUpdateInterval)
+          if (TimeUtil.CurrentSeconds >= lastTime + TargetUpdateInterval)
           {
             Update(TargetUpdateInterval);
             Draw(TargetUpdateInterval);
@@ -112,10 +112,6 @@ namespace Behemoth.Alg
     /// Targeted frame rate in seconds.
     /// </summary>
     public double TargetUpdateInterval = 1.0 / 30.0;
-
-
-    public static double CurrentSeconds
-    { get { return (double)DateTime.Now.Ticks / 1e7; } }
 
 
     public int Tick { get { return tick; } }

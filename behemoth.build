@@ -113,6 +113,7 @@
         <include name="Behemoth.Alg/TestUtil.cs"/>
         <include name="Behemoth.Alg/Tile.cs"/>
         <include name="Behemoth.Alg/TiledImport.cs"/>
+        <include name="Behemoth.Alg/TimeUtil.cs"/>
         <include name="Behemoth.Alg/Tuple.cs"/>
         <include name="Behemoth.Alg/Vec3.cs"/>
       </sources>
