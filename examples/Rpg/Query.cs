@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using Behemoth.Alg;
+using Behemoth.Util;
 
 namespace Rpg
 {

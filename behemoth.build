@@ -36,17 +36,17 @@
 
 
   <target name="test"
-          depends="Behemoth.Alg.Test.dll,
+          depends="Behemoth.Util.Test.dll,
                    ">
     <nunit2>
       <formatter type="Plain"/>
-      <test assemblyname="${build.dir}/Behemoth.Alg.Test.dll"/>
+      <test assemblyname="${build.dir}/Behemoth.Util.Test.dll"/>
     </nunit2>
   </target>
 
 
   <target name="libs"
-          depends="Behemoth.Alg.dll,
+          depends="Behemoth.Util.dll,
                    Behemoth.App.dll,
                    Behemoth.TaoUtil.dll
                    Behemoth.LuaUtil.dll
@@ -74,7 +74,7 @@
           depends="libs">
     <ndoc>
       <assemblies basedir="${build.dir}">
-        <include name="Behemoth.Alg.dll"/>
+        <include name="Behemoth.Util.dll"/>
         <include name="Behemoth.TaoUTil.dll"/>
       </assemblies>
       <documenters>
@@ -85,34 +85,34 @@
 -->
 
 
-  <target name="Behemoth.Alg.dll" depends="init">
-    <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
+  <target name="Behemoth.Util.dll" depends="init">
+    <csc target="library" output="${build.dir}/Behemoth.Util.dll">
       <sources>
-        <include name="Behemoth.Alg/ICache.cs"/>
-        <include name="Behemoth.Alg/IField2.cs"/>
-        <include name="Behemoth.Alg/IField3.cs"/>
+        <include name="Behemoth.Util/ICache.cs"/>
+        <include name="Behemoth.Util/IField2.cs"/>
+        <include name="Behemoth.Util/IField3.cs"/>
 
-        <include name="Behemoth.Alg/Alg.cs"/>
-        <include name="Behemoth.Alg/Cache.cs"/>
-        <include name="Behemoth.Alg/Color.cs"/>
-        <include name="Behemoth.Alg/Component.cs"/>
-        <include name="Behemoth.Alg/ComponentTemplate.cs"/>
-        <include name="Behemoth.Alg/Entity.cs"/>
-        <include name="Behemoth.Alg/EntityTemplate.cs"/>
-        <include name="Behemoth.Alg/Field2.cs"/>
-        <include name="Behemoth.Alg/Field3.cs"/>
-        <include name="Behemoth.Alg/Geom.cs"/>
-        <include name="Behemoth.Alg/Guid.cs"/>
-        <include name="Behemoth.Alg/MemUtil.cs"/>
-        <include name="Behemoth.Alg/Num.cs"/>
-        <include name="Behemoth.Alg/Properties.cs"/>
-        <include name="Behemoth.Alg/SchemaProperties.cs"/>
-        <include name="Behemoth.Alg/TestUtil.cs"/>
-        <include name="Behemoth.Alg/Tile.cs"/>
-        <include name="Behemoth.Alg/TiledImport.cs"/>
-        <include name="Behemoth.Alg/TimeUtil.cs"/>
-        <include name="Behemoth.Alg/Tuple.cs"/>
-        <include name="Behemoth.Alg/Vec3.cs"/>
+        <include name="Behemoth.Util/Alg.cs"/>
+        <include name="Behemoth.Util/Cache.cs"/>
+        <include name="Behemoth.Util/Color.cs"/>
+        <include name="Behemoth.Util/Component.cs"/>
+        <include name="Behemoth.Util/ComponentTemplate.cs"/>
+        <include name="Behemoth.Util/Entity.cs"/>
+        <include name="Behemoth.Util/EntityTemplate.cs"/>
+        <include name="Behemoth.Util/Field2.cs"/>
+        <include name="Behemoth.Util/Field3.cs"/>
+        <include name="Behemoth.Util/Geom.cs"/>
+        <include name="Behemoth.Util/Guid.cs"/>
+        <include name="Behemoth.Util/MemUtil.cs"/>
+        <include name="Behemoth.Util/Num.cs"/>
+        <include name="Behemoth.Util/Properties.cs"/>
+        <include name="Behemoth.Util/SchemaProperties.cs"/>
+        <include name="Behemoth.Util/TestUtil.cs"/>
+        <include name="Behemoth.Util/Tile.cs"/>
+        <include name="Behemoth.Util/TiledImport.cs"/>
+        <include name="Behemoth.Util/TimeUtil.cs"/>
+        <include name="Behemoth.Util/Tuple.cs"/>
+        <include name="Behemoth.Util/Vec3.cs"/>
       </sources>
       <references>
         <!-- I need to refer to System.Xml.Linq explicitly with Mono. Why? -->
@@ -132,7 +132,7 @@
         <include name="Behemoth.App/DrawableAppComponent.cs"/>
       </sources>
       <references>
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
       </references>
     </csc>
   </target>
@@ -158,7 +158,7 @@
         <include name="${build.dir}/Tao.PhysFs.dll"/>
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
         <include name="${build.dir}/Behemoth.App.dll"/>
       </references>
     </csc>
@@ -176,24 +176,24 @@
       <references>
         <include name="${build.dir}/Tao.Lua.dll"/>
 
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
       </references>
     </csc>
   </target>
 
 
-  <target name="Behemoth.Alg.Test.dll" depends="Behemoth.Alg.dll">
-    <csc target="library" output="${build.dir}/Behemoth.Alg.Test.dll">
+  <target name="Behemoth.Util.Test.dll" depends="Behemoth.Util.dll">
+    <csc target="library" output="${build.dir}/Behemoth.Util.Test.dll">
       <sources>
-        <include name="tests/Behemoth.Alg/TestAlg.cs"/>
-        <include name="tests/Behemoth.Alg/TestColor.cs"/>
-        <include name="tests/Behemoth.Alg/TestEntities.cs"/>
-        <include name="tests/Behemoth.Alg/TestGeom.cs"/>
-        <include name="tests/Behemoth.Alg/TestMemUtil.cs"/>
-        <include name="tests/Behemoth.Alg/TestProperties.cs"/>
+        <include name="tests/Behemoth.Util/TestAlg.cs"/>
+        <include name="tests/Behemoth.Util/TestColor.cs"/>
+        <include name="tests/Behemoth.Util/TestEntities.cs"/>
+        <include name="tests/Behemoth.Util/TestGeom.cs"/>
+        <include name="tests/Behemoth.Util/TestMemUtil.cs"/>
+        <include name="tests/Behemoth.Util/TestProperties.cs"/>
       </sources>
       <references>
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
         <include name="${libs.dir}/nunit.framework.dll"/>
       </references>
     </csc>
@@ -211,7 +211,7 @@
         <include name="${build.dir}/Tao.OpenGl.dll"/>
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
         <include name="${build.dir}/Behemoth.App.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
@@ -242,7 +242,7 @@
         <include name="${build.dir}/Tao.PhysFs.dll"/>
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
         <include name="${build.dir}/Behemoth.App.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
@@ -272,7 +272,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
         <include name="${build.dir}/Tao.Lua.dll"/>
 
-        <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.Util.dll"/>
         <include name="${build.dir}/Behemoth.App.dll"/>
         <include name="${build.dir}/Behemoth.LuaUtil.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>

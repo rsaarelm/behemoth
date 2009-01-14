@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using Tao.OpenGl;
 using Tao.Sdl;
 
-using Behemoth.Alg;
 using Behemoth.App;
 using Behemoth.TaoUtil;
+using Behemoth.Util;
 
 namespace Behetris
 {

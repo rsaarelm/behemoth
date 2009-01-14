@@ -1,6 +1,6 @@
 using System;
 using Tao.Sdl;
-using Behemoth.Alg;
+using Behemoth.Util;
 
 namespace Behemoth.TaoUtil
 {

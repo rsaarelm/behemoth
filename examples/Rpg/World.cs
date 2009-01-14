@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-using Behemoth.Alg;
+using Behemoth.Util;
 
 namespace Rpg
 {
@@ -167,7 +167,7 @@ namespace Rpg
     // XXX: Use something like Mersenne Twister instead of the default rng.
     private Random rng = new Random();
 
-    private Behemoth.Alg.Guid guids = new Behemoth.Alg.Guid();
+    private Behemoth.Util.Guid guids = new Behemoth.Util.Guid();
     private IDictionary<String, Entity> entities = new Dictionary<String, Entity>();
 
     Field3<TerrainTile> space = new Field3<TerrainTile>();

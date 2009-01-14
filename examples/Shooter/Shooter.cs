@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Tao.OpenGl;
 using Tao.Sdl;
 
-using Behemoth.Alg;
+using Behemoth.Util;
 using Behemoth.App;
 using Behemoth.TaoUtil;
 

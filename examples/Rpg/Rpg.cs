@@ -8,7 +8,7 @@ using Tao.OpenGl;
 using Tao.Sdl;
 using Tao.Lua;
 
-using Behemoth.Alg;
+using Behemoth.Util;
 using Behemoth.App;
 using Behemoth.TaoUtil;
 using Behemoth.LuaUtil;

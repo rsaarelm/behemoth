@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Tao.OpenGl;
 using Tao.Sdl;
-using Behemoth.Alg;
+using Behemoth.Util;
 
 namespace Behemoth.TaoUtil
 {
