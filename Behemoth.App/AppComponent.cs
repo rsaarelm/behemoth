@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Behemoth.Alg
+namespace Behemoth.App
 {
   /// <summary>
   /// Base class for all game components.
@@ -28,7 +28,7 @@ namespace Behemoth.Alg
     /// <summary>
     /// The app this component is attached to.
     /// </summary>
-    public App App;
+    public Application App;
 
 
     /// <summary>

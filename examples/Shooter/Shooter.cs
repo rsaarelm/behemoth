@@ -7,6 +7,7 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Alg;
+using Behemoth.App;
 using Behemoth.TaoUtil;
 
 namespace Shooter
@@ -364,7 +365,7 @@ namespace Shooter
   }
 
 
-  public class Shooter : Behemoth.Alg.DrawableAppComponent
+  public class Shooter : DrawableAppComponent
   {
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;

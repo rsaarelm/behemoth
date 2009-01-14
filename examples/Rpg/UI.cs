@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using Behemoth.Alg;
+using Behemoth.App;
 
 namespace Rpg
 {
@@ -9,7 +9,7 @@ namespace Rpg
   {
     public static void Msg(string fmt, params Object[] args)
     {
-      App.Instance.GetService<IUIService>().Msg(fmt, args);
+      Application.Instance.GetService<IUIService>().Msg(fmt, args);
     }
   }
 }

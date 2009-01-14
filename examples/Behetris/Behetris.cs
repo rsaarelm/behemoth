@@ -7,6 +7,7 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Alg;
+using Behemoth.App;
 using Behemoth.TaoUtil;
 
 namespace Behetris
@@ -14,7 +15,7 @@ namespace Behetris
   /// <summary>
   /// A falling blocks game.
   /// </summary>
-  public class Behetris : Behemoth.Alg.DrawableAppComponent
+  public class Behetris : DrawableAppComponent
   {
     public Behetris()
     {

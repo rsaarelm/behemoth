@@ -5,10 +5,11 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Alg;
+using Behemoth.App;
 
 namespace Behemoth.TaoUtil
 {
-  public class TaoApp : Behemoth.Alg.App, ITaoService
+  public class TaoApp : Application, ITaoService
   {
     public TaoApp(int pixelWidth, int pixelHeight, string title)
     {

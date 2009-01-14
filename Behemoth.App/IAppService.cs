@@ -1,4 +1,4 @@
-namespace Behemoth.Alg
+namespace Behemoth.App
 {
   public interface IAppService {}
 }

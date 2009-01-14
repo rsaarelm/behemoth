@@ -1,6 +1,6 @@
 using System;
 
-using Behemoth.Alg;
+using Behemoth.App;
 
 namespace Rpg
 {

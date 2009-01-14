@@ -2,24 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Behemoth.Alg
+using Behemoth.Alg;
+
+namespace Behemoth.App
 {
   /// <summary>
   /// Component-based Application class.
   /// </summary>
-  public class App
+  public class Application
   {
-    public App()
+    public Application()
     {
-      if (App.instance != null)
+      if (Application.instance != null)
       {
         throw new ApplicationException("Trying to instantiate multiple Apps.");
       }
-      App.instance = this;
+      Application.instance = this;
     }
 
 
-    public static App Instance { get { return instance; } }
+    public static Application Instance { get { return instance; } }
 
 
     public T GetService<T>() where T : IAppService
@@ -47,7 +49,7 @@ namespace Behemoth.Alg
 
     public void RegisterService(Type service, IAppService provider)
     {
-      if (service.GetInterface("Behemoth.Alg.IAppService") == null)
+      if (service.GetInterface("Behemoth.App.IAppService") == null)
       {
         throw new ArgumentException(
           "Service type doesn't implement service base interface.",
@@ -175,6 +177,6 @@ namespace Behemoth.Alg
     private int tick = 0;
 
 
-    private static App instance = null;
+    private static Application instance = null;
   }
 }

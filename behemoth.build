@@ -47,6 +47,7 @@
 
   <target name="libs"
           depends="Behemoth.Alg.dll,
+                   Behemoth.App.dll,
                    Behemoth.TaoUtil.dll
                    Behemoth.LuaUtil.dll
                    "/>
@@ -87,19 +88,15 @@
   <target name="Behemoth.Alg.dll" depends="init">
     <csc target="library" output="${build.dir}/Behemoth.Alg.dll">
       <sources>
-        <include name="Behemoth.Alg/IAppService.cs"/>
         <include name="Behemoth.Alg/ICache.cs"/>
         <include name="Behemoth.Alg/IField2.cs"/>
         <include name="Behemoth.Alg/IField3.cs"/>
 
         <include name="Behemoth.Alg/Alg.cs"/>
-        <include name="Behemoth.Alg/App.cs"/>
-        <include name="Behemoth.Alg/AppComponent.cs"/>
         <include name="Behemoth.Alg/Cache.cs"/>
         <include name="Behemoth.Alg/Color.cs"/>
         <include name="Behemoth.Alg/Component.cs"/>
         <include name="Behemoth.Alg/ComponentTemplate.cs"/>
-        <include name="Behemoth.Alg/DrawableAppComponent.cs"/>
         <include name="Behemoth.Alg/Entity.cs"/>
         <include name="Behemoth.Alg/EntityTemplate.cs"/>
         <include name="Behemoth.Alg/Field2.cs"/>
@@ -120,6 +117,22 @@
       <references>
         <!-- I need to refer to System.Xml.Linq explicitly with Mono. Why? -->
         <include name="System.Xml.Linq.dll"/>
+      </references>
+    </csc>
+  </target>
+
+
+  <target name="Behemoth.App.dll" depends="init">
+    <csc target="library" output="${build.dir}/Behemoth.App.dll">
+      <sources>
+        <include name="Behemoth.App/IAppService.cs"/>
+
+        <include name="Behemoth.App/AppComponent.cs"/>
+        <include name="Behemoth.App/Application.cs"/>
+        <include name="Behemoth.App/DrawableAppComponent.cs"/>
+      </sources>
+      <references>
+        <include name="${build.dir}/Behemoth.Alg.dll"/>
       </references>
     </csc>
   </target>
@@ -146,6 +159,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.App.dll"/>
       </references>
     </csc>
   </target>
@@ -198,6 +212,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.App.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
     </csc>
@@ -228,6 +243,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Alg.dll"/>
+        <include name="${build.dir}/Behemoth.App.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
     </csc>
@@ -257,8 +273,9 @@
         <include name="${build.dir}/Tao.Lua.dll"/>
 
         <include name="${build.dir}/Behemoth.Alg.dll"/>
-        <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
+        <include name="${build.dir}/Behemoth.App.dll"/>
         <include name="${build.dir}/Behemoth.LuaUtil.dll"/>
+        <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
     </csc>
   </target>
