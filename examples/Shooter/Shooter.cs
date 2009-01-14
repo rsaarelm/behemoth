@@ -364,7 +364,7 @@ namespace Shooter
   }
 
 
-  public class Shooter : Behemoth.TaoUtil.App
+  public class Shooter : Behemoth.Alg.DrawableAppComponent
   {
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;
@@ -392,20 +392,15 @@ namespace Shooter
 
     List<Vec3> starfield = new List<Vec3>();
 
-
-
     public static void Main(string[] args)
     {
-      new Shooter().MainLoop();
+      var app = new TaoApp(pixelWidth, pixelHeight, "Behemoth Shooter");
+      app.Add(new Shooter());
+      app.Run();
     }
 
 
-    public Shooter() : base (pixelWidth, pixelHeight, "Behemoth Shooter")
-    {
-    }
-
-
-    protected override void Init()
+    public override void Init()
     {
       base.Init();
 
@@ -419,6 +414,7 @@ namespace Shooter
       entities.Add(avatar);
 
       InitStarfield();
+
     }
 
 
@@ -438,7 +434,7 @@ namespace Shooter
     }
 
 
-    protected override void ReadInput()
+    void ReadInput()
     {
       Sdl.SDL_Event evt;
 
@@ -447,14 +443,14 @@ namespace Shooter
         switch (evt.type)
         {
         case Sdl.SDL_QUIT:
-          Quit();
+          App.Exit();
           break;
 
         case Sdl.SDL_KEYDOWN:
           switch (evt.key.keysym.sym)
           {
           case Sdl.SDLK_ESCAPE:
-            Quit();
+            App.Exit();
             break;
           case Sdl.SDLK_LEFT:
             avatar.IsMovingLeft = true;
@@ -484,7 +480,7 @@ namespace Shooter
           break;
 
         case Sdl.SDL_VIDEORESIZE:
-          Resize(evt.resize.w, evt.resize.h);
+          App.GetService<ITaoService>().Resize(evt.resize.w, evt.resize.h);
           break;
 
         case Sdl.SDL_VIDEOEXPOSE:
@@ -495,12 +491,13 @@ namespace Shooter
     }
 
 
-    protected override void Update()
+    public override void Update(double timeElapsed)
     {
+      ReadInput();
       entities.Update();
       if (isGameOver) {
         if (gameOverCounter-- <= 0) {
-          Quit();
+          App.Exit();
         }
       }
 
@@ -511,13 +508,15 @@ namespace Shooter
     }
 
 
-    protected override void Display()
+    public override void Draw(double timeElapsed)
     {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
 
-      Gfx.DrawStarfield(starfield, CurrentSeconds * 100, PixelScale, PixelWidth);
+      Gfx.DrawStarfield(starfield, TimeUtil.CurrentSeconds * 100,
+                        App.GetService<ITaoService>().PixelScale,
+                        App.GetService<ITaoService>().PixelWidth);
 
       entities.Display(this, 0, 0);
 
@@ -544,7 +543,9 @@ namespace Shooter
 
     public void DrawSprite(float x, float y, int frame)
     {
-      Gfx.DrawSprite(x, y, frame, spriteWidth, spriteHeight, Textures[spriteTexture], 8, 8);
+      Gfx.DrawSprite(
+        x, y, frame, spriteWidth, spriteHeight,
+        App.GetService<ITaoService>().Textures[spriteTexture], 8, 8);
     }
   }
 }
