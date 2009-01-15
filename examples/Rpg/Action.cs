@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using Behemoth.App;
 using Behemoth.Util;
 
 namespace Rpg
@@ -77,6 +78,12 @@ namespace Rpg
           world.Add(gib);
         }
       }
+
+      var rpg = Application.Instance.GetService<IRpgService>();
+      if (entity == rpg.Player)
+      {
+        rpg.GameOver(String.Format("Killed by {0}.", slayer.Get<CCore>().Name));
+      }
     }
 
 
@@ -89,6 +96,24 @@ namespace Rpg
         brain2.Damage(entity, brain1.Might);
         // TODO: Attack message
       }
+    }
+
+
+    public static void AttackMove(Entity entity, int dir8)
+    {
+      var moveVec = Geom.Dir8ToVec(dir8);
+      var targetPos = entity.Get<CCore>().Pos + moveVec;
+      foreach (var e in Query.WorldOf(entity).EntitiesIn(targetPos))
+      {
+        if (Query.HostileTo(entity, e))
+        {
+          Action.Attack(entity, e);
+
+          return;
+        }
+      }
+      Action.MoveRel(entity, moveVec);
+
     }
   }
 }

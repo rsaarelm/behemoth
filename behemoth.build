@@ -255,7 +255,7 @@
     <csc target="exe"
          output="${build.dir}/Rpg.exe">
       <sources>
-        <include name="examples/Rpg/IUIService.cs"/>
+        <include name="examples/Rpg/IRpgService.cs"/>
 
         <include name="examples/Rpg/Action.cs"/>
         <include name="examples/Rpg/CBrain.cs"/>

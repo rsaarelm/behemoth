@@ -15,7 +15,7 @@ using Behemoth.LuaUtil;
 
 namespace Rpg
 {
-  public class Rpg : DrawableAppComponent, IUIService
+  public class Rpg : DrawableAppComponent, IRpgService
   {
     public enum Sprite {
       Empty = 0x00,
@@ -88,7 +88,7 @@ namespace Rpg
     {
       tao = App.GetService<ITaoService>();
 
-      App.RegisterService(typeof(IUIService), this);
+      App.RegisterService(typeof(IRpgService), this);
 
       var joystick = InputUtil.InitJoystick();
 
@@ -213,6 +213,9 @@ namespace Rpg
           case Sdl.SDLK_ESCAPE:
             App.Exit();
             break;
+          case Sdl.SDLK_q:
+            GameOver("Quit.");
+            break;
           case Sdl.SDLK_UP:
             MoveCmd(0);
             break;
@@ -225,7 +228,9 @@ namespace Rpg
           case Sdl.SDLK_LEFT:
             MoveCmd(6);
             break;
-
+          case Sdl.SDLK_SPACE:
+            NewTurn();
+            break;
           }
           break;
 
@@ -268,6 +273,11 @@ namespace Rpg
 
     public override void Update(double timeElapsed)
     {
+      if (gameOver)
+      {
+        WaitKey();
+        App.Exit();
+      }
       ReadInput();
     }
 
@@ -510,18 +520,9 @@ namespace Rpg
 
     void MoveCmd(int dir8)
     {
-      var moveVec = Geom.Dir8ToVec(dir8);
-      var targetPos = Player.Get<CCore>().Pos + moveVec;
-      foreach (var e in world.EntitiesIn(targetPos))
-      {
-        if (Query.HostileTo(Player, e))
-        {
-          Action.Attack(Player, e);
-          return;
-        }
-      }
-      Action.MoveRel(Player, moveVec);
+      Action.AttackMove(Player, dir8);
       DoLos();
+      NewTurn();
     }
 
 
@@ -531,10 +532,52 @@ namespace Rpg
     }
 
 
+    void NewTurn()
+    {
+      UpdateBrains();
+    }
+
+
+    void UpdateBrains()
+    {
+      foreach (var e in world.Entities)
+      {
+        CBrain brain;
+        if (e.TryGet(out brain))
+        {
+          brain.Update();
+        }
+      }
+    }
+
+
     public bool IsMapped(int x, int y, int z)
     {
       return Player.Get<CLos>().IsMapped(new Vec3(x, y, z));
     }
+
+
+    public void GameOver(string msg)
+    {
+      Msg(msg);
+      gameOver = true;
+    }
+
+
+    void WaitKey()
+    {
+      Sdl.SDL_Event evt;
+
+      while (Sdl.SDL_WaitEvent(out evt) != 0)
+      {
+        if (evt.type == Sdl.SDL_KEYDOWN)
+        {
+          break;
+        }
+      }
+    }
+
+
 
 
     private World world = new World();
@@ -542,6 +585,9 @@ namespace Rpg
     private List<string> messages = new List<string>();
 
     private ITaoService tao;
+
+    private bool gameOver = false;
+
 
     public const int pixelWidth = 640;
     public const int pixelHeight = 480;

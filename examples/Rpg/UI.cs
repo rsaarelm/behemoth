@@ -9,7 +9,7 @@ namespace Rpg
   {
     public static void Msg(string fmt, params Object[] args)
     {
-      Application.Instance.GetService<IUIService>().Msg(fmt, args);
+      Application.Instance.GetService<IRpgService>().Msg(fmt, args);
     }
   }
 }
