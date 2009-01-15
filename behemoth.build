@@ -97,6 +97,7 @@
         <include name="Behemoth.Util/Color.cs"/>
         <include name="Behemoth.Util/Component.cs"/>
         <include name="Behemoth.Util/ComponentTemplate.cs"/>
+        <include name="Behemoth.Util/DefaultRng.cs"/>
         <include name="Behemoth.Util/Entity.cs"/>
         <include name="Behemoth.Util/EntityTemplate.cs"/>
         <include name="Behemoth.Util/Field2.cs"/>
@@ -106,6 +107,7 @@
         <include name="Behemoth.Util/MemUtil.cs"/>
         <include name="Behemoth.Util/Num.cs"/>
         <include name="Behemoth.Util/Properties.cs"/>
+        <include name="Behemoth.Util/Rng.cs"/>
         <include name="Behemoth.Util/SchemaProperties.cs"/>
         <include name="Behemoth.Util/TestUtil.cs"/>
         <include name="Behemoth.Util/Tile.cs"/>

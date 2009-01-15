@@ -132,5 +132,17 @@ namespace Behemoth.Util
     {
       return Int32.Parse(elt.Attribute(name).Value);
     }
+
+
+    /// <summary>
+    /// Pad an array with the default values of the generic type until it is
+    /// at least minLength in size.
+    /// </summary>
+    public static T[] Pad<T>(T[] array, int minLength)
+    {
+      T[] result = new T[Math.Max(minLength, array.Length)];
+      Array.Copy(array, 0, result, 0, array.Length);
+      return result;
+    }
   }
 }

@@ -79,10 +79,9 @@ namespace Rpg
         }
       }
 
-      var rpg = Application.Instance.GetService<IRpgService>();
-      if (entity == rpg.Player)
+      if (entity == Rpg.Service.Player)
       {
-        rpg.GameOver(String.Format("Killed by {0}.", slayer.Get<CCore>().Name));
+        Rpg.Service.GameOver(String.Format("Killed by {0}.", slayer.Get<CCore>().Name));
       }
     }
 

@@ -12,5 +12,7 @@ namespace Rpg
     void GameOver(string msg);
 
     Entity Player { get; }
+
+    Rng Rng { get; }
   }
 }

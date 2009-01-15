@@ -41,7 +41,9 @@ namespace Rpg
     public virtual void Update()
     {
       if (AiActive) {
-        Action.AttackMove(Entity, new Random().Next(8));
+        Action.AttackMove(
+          Entity,
+          Rpg.Service.Rng.RandInt(8));
       }
     }
 

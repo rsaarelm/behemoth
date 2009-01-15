@@ -577,7 +577,16 @@ namespace Rpg
       }
     }
 
+    public Rng Rng { get { return rng; } }
 
+    /// <summary>
+    /// Rpg.Service is a shortcut for
+    /// Application.Instance.GetService<IRpgService>().
+    /// </summary>
+    public static IRpgService Service
+    {
+      get { return Application.Instance.GetService<IRpgService>(); }
+    }
 
 
     private World world = new World();
@@ -587,6 +596,8 @@ namespace Rpg
     private ITaoService tao;
 
     private bool gameOver = false;
+
+    private Rng rng = new DefaultRng();
 
 
     public const int pixelWidth = 640;
