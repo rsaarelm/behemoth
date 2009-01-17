@@ -7,21 +7,21 @@ using Behemoth.Util;
 namespace Behemoth.Apps
 {
   /// <summary>
-  /// Component-based Application class.
+  /// Component-based App class.
   /// </summary>
-  public class Application
+  public class App
   {
-    public Application()
+    public App()
     {
-      if (Application.instance != null)
+      if (App.instance != null)
       {
         throw new ApplicationException("Trying to instantiate multiple Apps.");
       }
-      Application.instance = this;
+      App.instance = this;
     }
 
 
-    public static Application Instance { get { return instance; } }
+    public static App Instance { get { return instance; } }
 
 
     public T GetService<T>() where T : IAppService
@@ -177,6 +177,6 @@ namespace Behemoth.Apps
     private int tick = 0;
 
 
-    private static Application instance = null;
+    private static App instance = null;
   }
 }

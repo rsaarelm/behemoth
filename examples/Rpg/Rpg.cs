@@ -581,11 +581,11 @@ namespace Rpg
 
     /// <summary>
     /// Rpg.Service is a shortcut for
-    /// Application.Instance.GetService<IRpgService>().
+    /// App.Instance.GetService<IRpgService>().
     /// </summary>
     public static IRpgService Service
     {
-      get { return Application.Instance.GetService<IRpgService>(); }
+      get { return App.Instance.GetService<IRpgService>(); }
     }
 
 

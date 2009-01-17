@@ -130,7 +130,7 @@
         <include name="Behemoth.Apps/IAppService.cs"/>
 
         <include name="Behemoth.Apps/AppComponent.cs"/>
-        <include name="Behemoth.Apps/Application.cs"/>
+        <include name="Behemoth.Apps/App.cs"/>
         <include name="Behemoth.Apps/DrawableAppComponent.cs"/>
       </sources>
       <references>

@@ -28,7 +28,7 @@ namespace Behemoth.Apps
     /// <summary>
     /// The app this component is attached to.
     /// </summary>
-    public Application App;
+    public App App;
 
 
     /// <summary>

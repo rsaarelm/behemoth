@@ -9,7 +9,7 @@ using Behemoth.Apps;
 
 namespace Behemoth.TaoUtil
 {
-  public class TaoApp : Application, ITaoService
+  public class TaoApp : App, ITaoService
   {
     public TaoApp(int pixelWidth, int pixelHeight, string title)
     {
