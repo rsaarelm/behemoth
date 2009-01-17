@@ -479,7 +479,7 @@ namespace Shooter
           break;
 
         case Sdl.SDL_VIDEORESIZE:
-          App.GetService<ITaoService>().Resize(evt.resize.w, evt.resize.h);
+          App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
           break;
 
         case Sdl.SDL_VIDEOEXPOSE:
@@ -514,8 +514,8 @@ namespace Shooter
       Gl.glLoadIdentity();
 
       Gfx.DrawStarfield(starfield, TimeUtil.CurrentSeconds * 100,
-                        App.GetService<ITaoService>().PixelScale,
-                        App.GetService<ITaoService>().PixelWidth);
+                        App.Service<ITaoService>().PixelScale,
+                        App.Service<ITaoService>().PixelWidth);
 
       entities.Display(this, 0, 0);
 
@@ -544,7 +544,7 @@ namespace Shooter
     {
       Gfx.DrawSprite(
         x, y, frame, spriteWidth, spriteHeight,
-        App.GetService<ITaoService>().Textures[spriteTexture], 8, 8);
+        App.Service<ITaoService>().Textures[spriteTexture], 8, 8);
     }
   }
 }

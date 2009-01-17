@@ -86,7 +86,7 @@ namespace Rpg
 
     public override void Init()
     {
-      tao = App.GetService<ITaoService>();
+      tao = App.Service<ITaoService>();
 
       App.RegisterService(typeof(IRpgService), this);
 
@@ -581,11 +581,11 @@ namespace Rpg
 
     /// <summary>
     /// Rpg.Service is a shortcut for
-    /// App.Instance.GetService<IRpgService>().
+    /// App.Service<IRpgService>().
     /// </summary>
     public static IRpgService Service
     {
-      get { return App.Instance.GetService<IRpgService>(); }
+      get { return App.Service<IRpgService>(); }
     }
 
 

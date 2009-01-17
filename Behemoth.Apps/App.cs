@@ -21,7 +21,19 @@ namespace Behemoth.Apps
     }
 
 
+    /// <summary>
+    /// Get the singleton App instance.
+    /// </summary>
     public static App Instance { get { return instance; } }
+
+
+    /// <summary>
+    /// Shortcut for App.Instance.GetService<T>().
+    /// </summary>
+    public static T Service<T>() where T : IAppService
+    {
+      return Instance.GetService<T>();
+    }
 
 
     public T GetService<T>() where T : IAppService

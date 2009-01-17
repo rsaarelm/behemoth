@@ -104,7 +104,7 @@ namespace Behetris
       // to display logic.
       Gfx.DrawRect(
         0, 0,
-        App.GetService<ITaoService>().PixelWidth, App.GetService<ITaoService>().PixelHeight,
+        App.Service<ITaoService>().PixelWidth, App.Service<ITaoService>().PixelHeight,
         230, 214, 156);
       Gfx.DrawRect(0, 0, 8, 144, 57, 56, 41);
       Gfx.DrawRect(88, 0, 8, 144, 57, 56, 41);
@@ -142,7 +142,7 @@ namespace Behetris
 
     private void DrawCell(int type, int x, int y)
     {
-      Gfx.DrawRect(x * 8 + 8, App.GetService<ITaoService>().PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
+      Gfx.DrawRect(x * 8 + 8, App.Service<ITaoService>().PixelHeight - 8 - y * 8, 8, 8, 123, 113, 98);
     }
 
 
@@ -244,7 +244,7 @@ namespace Behetris
           break;
 
         case Sdl.SDL_VIDEORESIZE:
-          App.GetService<ITaoService>().Resize(evt.resize.w, evt.resize.h);
+          App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
           break;
         }
       }
