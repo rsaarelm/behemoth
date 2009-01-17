@@ -96,7 +96,8 @@ namespace Rpg
       if (Rpg.Service.IsGameOver)
       {
         WaitKey();
-        App.Instance.Exit();
+        // Return to title screen.
+        App.Service<IScreenManager>().SwapScreen(new TitleScreen());
       }
       ReadInput();
     }

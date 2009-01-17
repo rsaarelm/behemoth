@@ -270,6 +270,7 @@
         <include name="examples/Rpg/PlayScreen.cs"/>
         <include name="examples/Rpg/Rpg.cs"/>
         <include name="examples/Rpg/Terrain.cs"/>
+        <include name="examples/Rpg/TitleScreen.cs"/>
         <include name="examples/Rpg/UI.cs"/>
         <include name="examples/Rpg/World.cs"/>
       </sources>

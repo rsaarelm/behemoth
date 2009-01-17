@@ -65,7 +65,7 @@ namespace Rpg
       app.Add(new Rpg());
 
       var screenManager = new ScreenManager();
-      screenManager.PushScreen(new PlayScreen());
+      screenManager.PushScreen(new TitleScreen());
       app.Add(screenManager);
 
       app.Run();
@@ -89,9 +89,20 @@ namespace Rpg
     }
 
 
+    public void NewGame()
+    {
+      Init();
+    }
+
+
     public override void Init()
     {
       App.RegisterService(typeof(IRpgService), this);
+
+      world = new World();
+      ClearMsg();
+      gameOver = false;
+      rng = new DefaultRng();
 
       var joystick = InputUtil.InitJoystick();
 
@@ -355,13 +366,13 @@ namespace Rpg
     }
 
 
-    private World world = new World();
+    private World world;
 
     private List<string> messages = new List<string>();
 
-    private bool gameOver = false;
+    private bool gameOver;
 
-    private Rng rng = new DefaultRng();
+    private Rng rng;
 
 
     public const int pixelWidth = 640;

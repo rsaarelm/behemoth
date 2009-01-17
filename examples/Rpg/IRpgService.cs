@@ -8,6 +8,8 @@ namespace Rpg
 {
   public interface IRpgService : IAppService
   {
+    void NewGame();
+
     void Msg(string fmt, params Object[] args);
 
     IEnumerable<string> MsgLines { get; }
