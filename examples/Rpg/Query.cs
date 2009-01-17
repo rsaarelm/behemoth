@@ -119,7 +119,7 @@ namespace Rpg
     public static bool Notices(Entity observer, Entity target)
     {
       const double cutoff = 100.0;
-      const double sightDecay = 0.1;
+      const double sightDecay = 0.3;
       // TODO: Check line of sight.
       // TODO: Observer state modifiers.
       // TODO: Targer stealth modifiers.
@@ -130,7 +130,18 @@ namespace Rpg
         return false;
       }
 
-      return Rpg.Service.Rng.RandDouble() > Num.Sigmoid2(dist * sightDecay);
+      var prob = 1 - Num.Sigmoid2(dist * sightDecay);
+
+      var result = Rpg.Service.Rng.RandDouble() < prob;
+
+      /*
+      UI.Msg("{0} is looking for a target, {1} chance to spot... {2}",
+             observer.Get<CCore>().Name,
+             prob,
+             result ? "Saw it!" : "Didn't see it.");
+      */
+
+      return result;
     }
   }
 }
