@@ -73,5 +73,64 @@ namespace Rpg
       }
       return false;
     }
+
+
+    public static IEnumerable<Entity> NearbyEnemies(Entity e)
+    {
+      var world = WorldOf(e);
+      foreach (var target in world.EntitiesNear(e.Get<CCore>().Pos))
+      {
+        if (HostileTo(e, target))
+        {
+          yield return target;
+        }
+      }
+    }
+
+
+    /// <summary>
+    /// Return whether an entity exists in the world.
+    /// </summary>
+    public static bool IsAlive(Entity e)
+    {
+      return e != null && WorldOf(e) != null;
+    }
+
+
+    public static double Distance(Entity e1, Entity e2)
+    {
+      var pos1 = e1.Get<CCore>().Pos;
+      var pos2 = e2.Get<CCore>().Pos;
+
+      if (pos1.Z != pos2.Z)
+      {
+        return Double.MaxValue;
+      }
+      else
+      {
+        return ((pos2 - pos1).Abs());
+      }
+    }
+
+
+    /// <summary>
+    /// Return whether an entity can become aware of a target entity.
+    /// </summary>
+    public static bool Notices(Entity observer, Entity target)
+    {
+      const double cutoff = 100.0;
+      const double sightDecay = 0.1;
+      // TODO: Check line of sight.
+      // TODO: Observer state modifiers.
+      // TODO: Targer stealth modifiers.
+
+      var dist = Distance(observer, target);
+      if (dist > cutoff)
+      {
+        return false;
+      }
+
+      return Rpg.Service.Rng.RandDouble() > Num.Sigmoid2(dist * sightDecay);
+    }
   }
 }

@@ -98,7 +98,7 @@ namespace Rpg
     }
 
 
-    public static void AttackMove(Entity entity, int dir8)
+    public static bool AttackMove(Entity entity, int dir8)
     {
       var moveVec = Geom.Dir8ToVec(dir8);
       var targetPos = entity.Get<CCore>().Pos + moveVec;
@@ -108,10 +108,10 @@ namespace Rpg
         {
           Action.Attack(entity, e);
 
-          return;
+          return true;
         }
       }
-      Action.MoveRel(entity, moveVec);
+      return Action.MoveRel(entity, moveVec);
 
     }
   }

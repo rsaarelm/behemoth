@@ -104,6 +104,20 @@ namespace Rpg
         select e;
     }
 
+
+    /// <summary>
+    /// Enumerate the entities in the rougly gameplay-relevant region around
+    /// the given pos. Things dealing with AI perception, UI display of nearby
+    /// objects and similar distance-constrained operations should use this.
+    /// </summary>
+    public IEnumerable<Entity> EntitiesNear(Vec3 pos)
+    {
+      // XXX: Doesn't do any spatial indexing yet, just iterates everything.
+      return Entities;
+    }
+
+
+
     public Field3<TerrainTile> Space { get { return space; } }
 
 
