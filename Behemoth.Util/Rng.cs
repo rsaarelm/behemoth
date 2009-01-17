@@ -33,6 +33,12 @@ namespace Behemoth.Util
     }
 
 
+    public bool OneChanceIn(int num)
+    {
+      return RandInt(num) == 0;
+    }
+
+
     public void Init(long seed)
     {
       Init(BitConverter.GetBytes(seed));

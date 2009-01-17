@@ -186,5 +186,23 @@ namespace Behemoth.Util
       return result;
     }
 
+
+    /// <summary>
+    /// If two vectors are on the same Z plane, return a dir8 pointing from
+    /// the first to the second.
+    /// </summary>
+    public static bool PointTo(Vec3 origin, Vec3 target, out int dir8)
+    {
+      dir8 = -1;
+      if (origin.Z == target.Z)
+      {
+        dir8 = VecToDir8(target - origin);
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
   }
 }

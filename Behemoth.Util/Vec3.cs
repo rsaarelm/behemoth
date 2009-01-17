@@ -57,6 +57,18 @@ namespace Behemoth.Util
     }
 
 
+    public static double Dot(Vec3 lhs, Vec3 rhs)
+    {
+      return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z;
+    }
+
+
+    public double Abs()
+    {
+      return Math.Sqrt(Dot(this, this));
+    }
+
+
     public override String ToString()
     {
       return String.Format("<{0}, {1}, {2}>", X, Y, Z);

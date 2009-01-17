@@ -43,5 +43,23 @@ namespace Behemoth.Util
       return a + x * (b - a);
     }
 
+
+    /// <summary>
+    /// Sigmoid function P(t) = 1 / (1 + e^-t). Maps (-inf, inf) into (0, 1).
+    /// </summary>
+    public static double Sigmoid(double x)
+    {
+      return 1 / (1 + Math.Exp(-x));
+    }
+
+
+    /// <summary>
+    /// Scaled sigmoid function. Maps (-inf, inf) into (-1, 1).
+    /// </summary>
+    public static double Sigmoid2(double x)
+    {
+      return 2.0 * (Sigmoid(x) - 0.5);
+    }
+
   }
 }
