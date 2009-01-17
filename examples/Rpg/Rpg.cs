@@ -217,8 +217,13 @@ namespace Rpg
     public void Msg(string fmt, params Object[] args)
     {
       string msg = String.Format(fmt, args);
-      // TODO: Handle newlines
-      messages.Add(msg);
+      foreach (var paragraph in TextUtil.SplitAtNewlines(msg))
+      {
+        foreach (var line in TextUtil.SplitLongLine(paragraph, ConsoleColumns))
+        {
+          messages.Add(line);
+        }
+      }
     }
 
 
@@ -388,5 +393,6 @@ namespace Rpg
     public const double fontSize = 16.0;
     public const double fontPixelScale = 2.0;
 
+    public const int ConsoleColumns = 40;
   }
 }

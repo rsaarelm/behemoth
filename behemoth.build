@@ -109,6 +109,7 @@
         <include name="Behemoth.Util/Properties.cs"/>
         <include name="Behemoth.Util/Rng.cs"/>
         <include name="Behemoth.Util/SchemaProperties.cs"/>
+        <include name="Behemoth.Util/TextUtil.cs"/>
         <include name="Behemoth.Util/TestUtil.cs"/>
         <include name="Behemoth.Util/Tile.cs"/>
         <include name="Behemoth.Util/TiledImport.cs"/>
