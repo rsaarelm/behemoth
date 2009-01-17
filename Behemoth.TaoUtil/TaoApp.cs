@@ -5,7 +5,7 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Util;
-using Behemoth.App;
+using Behemoth.Apps;
 
 namespace Behemoth.TaoUtil
 {

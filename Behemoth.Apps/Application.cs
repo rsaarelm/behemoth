@@ -4,7 +4,7 @@ using System.Linq;
 
 using Behemoth.Util;
 
-namespace Behemoth.App
+namespace Behemoth.Apps
 {
   /// <summary>
   /// Component-based Application class.
@@ -49,7 +49,7 @@ namespace Behemoth.App
 
     public void RegisterService(Type service, IAppService provider)
     {
-      if (service.GetInterface("Behemoth.App.IAppService") == null)
+      if (service.GetInterface("Behemoth.Apps.IAppService") == null)
       {
         throw new ArgumentException(
           "Service type doesn't implement service base interface.",

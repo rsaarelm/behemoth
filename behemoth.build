@@ -47,7 +47,7 @@
 
   <target name="libs"
           depends="Behemoth.Util.dll,
-                   Behemoth.App.dll,
+                   Behemoth.Apps.dll,
                    Behemoth.TaoUtil.dll
                    Behemoth.LuaUtil.dll
                    "/>
@@ -124,14 +124,14 @@
   </target>
 
 
-  <target name="Behemoth.App.dll" depends="init">
-    <csc target="library" output="${build.dir}/Behemoth.App.dll">
+  <target name="Behemoth.Apps.dll" depends="init">
+    <csc target="library" output="${build.dir}/Behemoth.Apps.dll">
       <sources>
-        <include name="Behemoth.App/IAppService.cs"/>
+        <include name="Behemoth.Apps/IAppService.cs"/>
 
-        <include name="Behemoth.App/AppComponent.cs"/>
-        <include name="Behemoth.App/Application.cs"/>
-        <include name="Behemoth.App/DrawableAppComponent.cs"/>
+        <include name="Behemoth.Apps/AppComponent.cs"/>
+        <include name="Behemoth.Apps/Application.cs"/>
+        <include name="Behemoth.Apps/DrawableAppComponent.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Behemoth.Util.dll"/>
@@ -161,7 +161,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Util.dll"/>
-        <include name="${build.dir}/Behemoth.App.dll"/>
+        <include name="${build.dir}/Behemoth.Apps.dll"/>
       </references>
     </csc>
   </target>
@@ -214,7 +214,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Util.dll"/>
-        <include name="${build.dir}/Behemoth.App.dll"/>
+        <include name="${build.dir}/Behemoth.Apps.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
     </csc>
@@ -245,7 +245,7 @@
         <include name="${build.dir}/Tao.Sdl.dll"/>
 
         <include name="${build.dir}/Behemoth.Util.dll"/>
-        <include name="${build.dir}/Behemoth.App.dll"/>
+        <include name="${build.dir}/Behemoth.Apps.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
     </csc>
@@ -275,7 +275,7 @@
         <include name="${build.dir}/Tao.Lua.dll"/>
 
         <include name="${build.dir}/Behemoth.Util.dll"/>
-        <include name="${build.dir}/Behemoth.App.dll"/>
+        <include name="${build.dir}/Behemoth.Apps.dll"/>
         <include name="${build.dir}/Behemoth.LuaUtil.dll"/>
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>

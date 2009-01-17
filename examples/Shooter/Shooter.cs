@@ -7,7 +7,7 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Util;
-using Behemoth.App;
+using Behemoth.Apps;
 using Behemoth.TaoUtil;
 
 namespace Shooter

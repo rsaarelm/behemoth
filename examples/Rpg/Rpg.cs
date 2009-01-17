@@ -9,7 +9,7 @@ using Tao.Sdl;
 using Tao.Lua;
 
 using Behemoth.Util;
-using Behemoth.App;
+using Behemoth.Apps;
 using Behemoth.TaoUtil;
 using Behemoth.LuaUtil;
 

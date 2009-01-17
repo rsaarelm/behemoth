@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Behemoth.App
+namespace Behemoth.Apps
 {
   /// <summary>
   /// Base class for components that get drawn during the game loop.
