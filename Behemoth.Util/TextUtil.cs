@@ -22,8 +22,8 @@ namespace Behemoth.Util
         throw new ArgumentException(
           "Must have positive nonzero line length.", "maxLength");
       }
+
       int currentLineStart = 0;
-      int lastCutPos = -1;
       Func<char, bool> isWhiteSpace = (c) => Char.IsWhiteSpace(c);
 
       while (currentLineStart < text.Length)
