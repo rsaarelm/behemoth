@@ -128,10 +128,13 @@
     <csc target="library" output="${build.dir}/Behemoth.Apps.dll">
       <sources>
         <include name="Behemoth.Apps/IAppService.cs"/>
+        <include name="Behemoth.Apps/IScreen.cs"/>
+        <include name="Behemoth.Apps/IScreenManager.cs"/>
 
         <include name="Behemoth.Apps/AppComponent.cs"/>
         <include name="Behemoth.Apps/App.cs"/>
         <include name="Behemoth.Apps/DrawableAppComponent.cs"/>
+        <include name="Behemoth.Apps/ScreenManager.cs"/>
       </sources>
       <references>
         <include name="${build.dir}/Behemoth.Util.dll"/>
