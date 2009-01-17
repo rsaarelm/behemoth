@@ -267,6 +267,7 @@
         <include name="examples/Rpg/CCore.cs"/>
         <include name="examples/Rpg/CLos.cs"/>
         <include name="examples/Rpg/Query.cs"/>
+        <include name="examples/Rpg/PlayScreen.cs"/>
         <include name="examples/Rpg/Rpg.cs"/>
         <include name="examples/Rpg/Terrain.cs"/>
         <include name="examples/Rpg/UI.cs"/>

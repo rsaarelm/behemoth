@@ -63,6 +63,11 @@ namespace Rpg
     {
       var app = new TaoApp(pixelWidth, pixelHeight, "Rpg demo");
       app.Add(new Rpg());
+
+      var screenManager = new ScreenManager();
+      screenManager.PushScreen(new PlayScreen());
+      app.Add(screenManager);
+
       app.Run();
     }
 
@@ -86,8 +91,6 @@ namespace Rpg
 
     public override void Init()
     {
-      tao = App.Service<ITaoService>();
-
       App.RegisterService(typeof(IRpgService), this);
 
       var joystick = InputUtil.InitJoystick();
@@ -192,119 +195,12 @@ namespace Rpg
     }
 
 
-    void ReadInput()
-    {
-      Sdl.SDL_Event evt;
-
-      while (Sdl.SDL_PollEvent(out evt) != 0)
-      {
-        switch (evt.type)
-        {
-        case Sdl.SDL_QUIT:
-          App.Exit();
-          break;
-
-        case Sdl.SDL_KEYDOWN:
-          // Clear the msg buffer whenever the player presses a key.
-          ClearMsg();
-
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_ESCAPE:
-            App.Exit();
-            break;
-          case Sdl.SDLK_q:
-            GameOver("Quit.");
-            break;
-          case Sdl.SDLK_UP:
-            MoveCmd(0);
-            break;
-          case Sdl.SDLK_RIGHT:
-            MoveCmd(2);
-            break;
-          case Sdl.SDLK_DOWN:
-            MoveCmd(4);
-            break;
-          case Sdl.SDLK_LEFT:
-            MoveCmd(6);
-            break;
-          case Sdl.SDLK_SPACE:
-            NewTurn();
-            break;
-          }
-          break;
-
-        case Sdl.SDL_JOYAXISMOTION:
-          //Console.WriteLine("Joy {0}: {1} [{2}]", evt.jaxis.which, evt.jaxis.axis, evt.jaxis.val);
-          break;
-
-        case Sdl.SDL_JOYBUTTONDOWN:
-          switch (evt.jbutton.button)
-          {
-            // XXX: Hardcoded for PS2 pad
-            // XXX: No key repeat for joystick, no fun tapping the keys.
-            // XXX: Diagonal movement with the pad? Movement using the analog stick?
-          case 12:
-            MoveCmd(0);
-            break;
-          case 13:
-            MoveCmd(2);
-            break;
-          case 14:
-            MoveCmd(4);
-            break;
-          case 15:
-            MoveCmd(6);
-            break;
-          }
-
-          Console.WriteLine("Joy {0}: {1} [{2}]", evt.jbutton.which, evt.jbutton.button, evt.jbutton.state);
-          break;
-
-
-          // XXX: Really doesn't belong at this abstraction level...
-        case Sdl.SDL_VIDEORESIZE:
-          tao.Resize(evt.resize.w, evt.resize.h);
-          break;
-        }
-      }
-    }
-
-
-    public override void Update(double timeElapsed)
-    {
-      if (gameOver)
-      {
-        WaitKey();
-        App.Exit();
-      }
-      ReadInput();
-    }
-
-
-    public override void Draw(double timeElapsed)
-    {
-      Gfx.ClearScreen();
-      DrawWorld(PlayerPos);
-      DrawMessages();
-    }
 
 
     public Vec3 PlayerPos { get { return Player.Get<CCore>().Pos; } }
 
 
     public Entity Player { get { return (Entity)world.Globals["player"]; } }
-
-
-    void DrawMessages()
-    {
-      double y = pixelHeight;
-      foreach (string line in messages)
-      {
-        y -= fontSize;
-        DrawString(line, 0, y, Color.Aliceblue);
-      }
-    }
 
 
     public void Msg(string fmt, params Object[] args)
@@ -315,139 +211,15 @@ namespace Rpg
     }
 
 
+    public IEnumerable<string> MsgLines { get { return messages; } }
+
+
     public void ClearMsg()
     {
       messages.Clear();
     }
 
-    void DrawWorld(Vec3 center)
-    {
-      int cols = pixelWidth / spriteWidth;
-      int rows = pixelHeight / spriteHeight;
 
-      int xOff = (int)center.X - cols / 2;
-      int yOff = (int)center.Y - rows / 2;
-
-      for (int y = 0; y <= rows; y++)
-      {
-        for (int x = 0; x <= cols; x++)
-        {
-          int mapX = xOff + x;
-          int mapY = yOff + y;
-          int mapZ = (int)center.Z;
-
-          if (IsMapped(mapX, mapY, mapZ))
-          {
-            DrawSprite(
-              x * spriteWidth, y * spriteHeight,
-              TerrainIcon(mapX, mapY, mapZ));
-          }
-        }
-      }
-
-      // XXX: Iterating through every entity. Good optimization would be for
-      // example to provide a Z-coordinate based entity index since pretty
-      // much all of the current logic operates on a single Z layer.
-      List<Entity> entitiesToDraw = new List<Entity>(
-        world.EntitiesInRect(xOff, yOff, (int)center.Z, cols, rows));
-
-      // Sort the entities in draw order.
-      entitiesToDraw.Sort(
-        (lhs, rhs) =>
-        lhs.Get<CCore>().DrawPriority.CompareTo(rhs.Get<CCore>().DrawPriority));
-
-      foreach (var entity in entitiesToDraw)
-      {
-        var core = entity.Get<CCore>();
-        // Draw static entities anywhere on the mapped area, dynamic ones only
-        // if they're instantly visible.
-
-        // XXX: If static entities move around without the player's direct
-        // action, this will show their moving around outside the pc's field
-        // of view. A robust solution would require a separate map memory
-        // structure which retains the old view even after the static entity
-        // has covertly moved around.
-        if ((core.IsStatic && Player.Get<CLos>().IsMapped(core.Pos)) ||
-            (Player.Get<CLos>().IsVisible(core.Pos)))
-        {
-          DrawEntity(entity, xOff * spriteWidth, yOff * spriteHeight);
-        }
-      }
-    }
-
-
-    int TerrainIcon(int x, int y, int z)
-    {
-      var tile = world.Space[x, y, z];
-      var nextTile = world.Space[x, y - 1, z];
-
-      var useBackIcon = TerrainUtil.IsWall(tile) && TerrainUtil.IsWall(nextTile);
-      return useBackIcon ? tile.Type.BackIcon : tile.Type.Icon;
-    }
-
-
-    void DrawSprite(double x, double y, int frame)
-    {
-      Gfx.DrawSprite(
-        x, y, frame,
-        spriteWidth, spriteHeight, tao.Textures[spriteTexture],
-        16, 16);
-    }
-
-
-    void DrawMirroredSprite(double x, double y, int frame)
-    {
-      Gfx.DrawMirroredSprite(
-        x, y, frame,
-        spriteWidth, spriteHeight, tao.Textures[spriteTexture],
-        16, 16);
-    }
-
-
-    void DrawString(String str, double x, double y, Color color)
-    {
-      var outlineColor = Color.Black;
-      for (int yOff = -1; yOff <= 1; yOff++)
-      {
-        for (int xOff = -1; xOff <= 1; xOff++)
-        {
-          if (xOff != 0 || yOff != 0)
-          {
-            Gfx.DrawString(
-              str, x + xOff * fontPixelScale, y + yOff * fontPixelScale,
-              fontSize, tao.Textures[fontTexture], outlineColor);
-          }
-        }
-      }
-      Gfx.DrawString(str, x, y, fontSize, tao.Textures[fontTexture], color);
-    }
-
-
-    public static bool IsFacingLeft(int facing)
-    {
-      return facing >= 4;
-    }
-
-
-    public void DrawEntity(Entity e, double xOff, double yOff)
-    {
-      CCore core;
-      if (e.TryGet(out core))
-      {
-        int frame = core.Icon + (core.ActionPose ? 1 : 0);
-        double x = -xOff + spriteWidth * core.Pos.X;
-        double y = -yOff + spriteHeight * core.Pos.Y;
-
-        if (IsFacingLeft(core.Facing))
-        {
-          DrawMirroredSprite(x, y, frame);
-        }
-        else
-        {
-          DrawSprite(x, y, frame);
-        }
-      }
-    }
 
 
     void LoadMap(string name, int xOff, int yOff, int zOff)
@@ -518,7 +290,7 @@ namespace Rpg
     }
 
 
-    void MoveCmd(int dir8)
+    public void MoveCmd(int dir8)
     {
       Action.AttackMove(Player, dir8);
       DoLos();
@@ -532,7 +304,7 @@ namespace Rpg
     }
 
 
-    void NewTurn()
+    public void NewTurn()
     {
       UpdateBrains();
     }
@@ -564,20 +336,14 @@ namespace Rpg
     }
 
 
-    void WaitKey()
-    {
-      Sdl.SDL_Event evt;
-
-      while (Sdl.SDL_WaitEvent(out evt) != 0)
-      {
-        if (evt.type == Sdl.SDL_KEYDOWN)
-        {
-          break;
-        }
-      }
-    }
-
     public Rng Rng { get { return rng; } }
+
+
+    public bool IsGameOver { get { return gameOver; } }
+
+
+    public World World { get { return world; } }
+
 
     /// <summary>
     /// Rpg.Service is a shortcut for
@@ -592,8 +358,6 @@ namespace Rpg
     private World world = new World();
 
     private List<string> messages = new List<string>();
-
-    private ITaoService tao;
 
     private bool gameOver = false;
 
