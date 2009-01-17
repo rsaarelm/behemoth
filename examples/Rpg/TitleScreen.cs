@@ -58,8 +58,8 @@ namespace Rpg
     {
       var color = Color.Green;
 
-      Gfx.DrawString(txt, 0, Rpg.pixelHeight - Rpg.fontSize * (line + 1),
-                     Rpg.fontSize, App.Service<ITaoService>().Textures[Rpg.fontTexture],
+      Gfx.DrawString(txt, 0, Rpg.pixelHeight - Rpg.fontH * (line + 1),
+                     Rpg.fontW, Rpg.fontH, App.Service<ITaoService>().Textures[Rpg.fontTexture],
                      color);
 
     }

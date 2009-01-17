@@ -134,7 +134,7 @@ namespace Behemoth.TaoUtil
 
 
     public static void DrawChar(
-      char ch, double x, double y, double size, int sheetTexture, Color color)
+      char ch, double x, double y, double w, double h, int sheetTexture, Color color)
     {
       int frame = (int)ch;
       if (frame > 0xff)
@@ -142,16 +142,16 @@ namespace Behemoth.TaoUtil
         throw new ArgumentException("Can't render chars above 255.", "ch");
       }
 
-      DrawSprite(x, y, frame, size, size, sheetTexture, 16, 16, 0, 0, color);
+      DrawSprite(x, y, frame, w, h, sheetTexture, 16, 16, 0, 0, color);
     }
 
 
     public static void DrawString(
-      String str, double x, double y, double size, int sheetTexture, Color color)
+      String str, double x, double y, double fontW, double fontH, int sheetTexture, Color color)
     {
       for (int i = 0; i < str.Length; i++)
       {
-        DrawChar(str[i], x + i * size, y, size, sheetTexture, color);
+        DrawChar(str[i], x + i * fontW, y, fontW, fontH, sheetTexture, color);
       }
     }
 

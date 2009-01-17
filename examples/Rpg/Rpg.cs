@@ -388,10 +388,10 @@ namespace Rpg
 
     public const string spriteTexture = "tiles.png";
 
-    public const string fontTexture = "font8x8.png";
-
-    public const double fontSize = 16.0;
-    public const double fontPixelScale = 2.0;
+    public const string fontTexture = "font8x16.png";
+    public const double fontW = 8.0;
+    public const double fontH = 16.0;
+    public const double fontPixelScale = 1.0;
 
     public const int ConsoleColumns = 40;
   }

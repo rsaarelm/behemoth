@@ -227,7 +227,7 @@ namespace Rpg
       double y = Rpg.pixelHeight;
       foreach (string line in Rpg.Service.MsgLines)
       {
-        y -= Rpg.fontSize;
+        y -= Rpg.fontH;
         DrawString(line, 0, y, Color.Aliceblue);
       }
     }
@@ -244,11 +244,11 @@ namespace Rpg
           {
             Gfx.DrawString(
               str, x + xOff * Rpg.fontPixelScale, y + yOff * Rpg.fontPixelScale,
-              Rpg.fontSize, App.Service<ITaoService>().Textures[Rpg.fontTexture], outlineColor);
+              Rpg.fontW, Rpg.fontH, App.Service<ITaoService>().Textures[Rpg.fontTexture], outlineColor);
           }
         }
       }
-      Gfx.DrawString(str, x, y, Rpg.fontSize, App.Service<ITaoService>().Textures[Rpg.fontTexture], color);
+      Gfx.DrawString(str, x, y, Rpg.fontW, Rpg.fontH, App.Service<ITaoService>().Textures[Rpg.fontTexture], color);
     }
 
 
