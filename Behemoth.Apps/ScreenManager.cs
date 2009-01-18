@@ -5,6 +5,15 @@ namespace Behemoth.Apps
 {
   public class ScreenManager : DrawableAppComponent, IScreenManager
   {
+    public ScreenManager(params IScreen[] screens)
+    {
+      foreach (var screen in screens)
+      {
+        PushScreen(screen);
+      }
+    }
+
+
     public override void Init()
     {
       App.RegisterService(typeof(IScreenManager), this);

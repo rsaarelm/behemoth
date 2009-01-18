@@ -64,9 +64,7 @@ namespace Rpg
       var app = new TaoApp(pixelWidth, pixelHeight, "Rpg demo");
       app.Add(new Rpg());
 
-      var screenManager = new ScreenManager();
-      screenManager.PushScreen(new TitleScreen());
-      app.Add(screenManager);
+      app.Add(new ScreenManager(new TitleScreen()));
 
       app.Run();
     }
