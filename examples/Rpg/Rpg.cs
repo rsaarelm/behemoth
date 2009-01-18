@@ -89,20 +89,9 @@ namespace Rpg
     }
 
 
-    public void NewGame()
-    {
-      Init();
-    }
-
-
     public override void Init()
     {
       App.RegisterService(typeof(IRpgService), this);
-
-      world = new World();
-      ClearMsg();
-      gameOver = false;
-      rng = new DefaultRng();
 
       var joystick = InputUtil.InitJoystick();
 
@@ -122,13 +111,22 @@ namespace Rpg
       Media.AddPhysFsPath("Rpg.zip");
       Media.AddPhysFsPath("build", "Rpg.zip");
 
+      NewGame();
 
       // Test Lua dumping.
       //var lua = new LuaState();
       //lua.DoString("a = 1 b = 2 c = {5, 4, foo = 'bar'}");
       //
       //PrintTable(lua.DumpGlobals());
+    }
 
+
+    public void NewGame()
+    {
+      world = new World();
+      ClearMsg();
+      gameOver = false;
+      rng = new DefaultRng();
 
       var terrainTable = new Object[][] {
         Alg.OA("nothing", "NoTerrain", 0x00, 0x00),
@@ -204,8 +202,6 @@ namespace Rpg
 
       DoLos();
     }
-
-
 
 
     public Vec3 PlayerPos { get { return Player.Get<CCore>().Pos; } }
