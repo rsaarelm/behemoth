@@ -43,6 +43,14 @@ namespace Rpg
 
       var tile = world.Space[pos];
 
+      foreach (var entity in WorldOf(e).EntitiesIn(pos))
+      {
+        if (entity.Get<CCore>().IsObstacle)
+        {
+          return false;
+        }
+      }
+
       // XXX: Assuming all entities are walking around and not able to phase
       // through walls.
       return !TerrainUtil.BlocksMoving(tile);

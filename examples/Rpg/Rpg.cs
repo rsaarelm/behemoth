@@ -108,10 +108,10 @@ namespace Rpg
 
       if (joystick.HasValue)
       {
-        Console.WriteLine("Joystick detected.");
+        //Console.WriteLine("Joystick detected.");
         if (joystick.Value.MatchesPS2Pad())
         {
-          Console.WriteLine("Joystick looks like a PS2 pad.");
+          //Console.WriteLine("Joystick looks like a PS2 pad.");
         }
       }
 
