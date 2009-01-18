@@ -18,83 +18,39 @@ namespace Rpg
     public void Uninit() {}
 
 
-    void ReadInput()
+    public void KeyPressed(int keycode, int keyMod, char ch)
     {
-      Sdl.SDL_Event evt;
+      // Clear the msg buffer whenever the player presses a key.
+      Rpg.Service.ClearMsg();
 
-      while (Sdl.SDL_PollEvent(out evt) != 0)
+      switch (keycode)
       {
-        switch (evt.type)
-        {
-        case Sdl.SDL_QUIT:
-          App.Instance.Exit();
-          break;
-
-        case Sdl.SDL_KEYDOWN:
-          // Clear the msg buffer whenever the player presses a key.
-          Rpg.Service.ClearMsg();
-
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_ESCAPE:
-            App.Instance.Exit();
-            break;
-          case Sdl.SDLK_q:
-            Rpg.Service.GameOver("Quit.");
-            break;
-          case Sdl.SDLK_UP:
-            Rpg.Service.MoveCmd(0);
-            break;
-          case Sdl.SDLK_RIGHT:
-            Rpg.Service.MoveCmd(2);
-            break;
-          case Sdl.SDLK_DOWN:
-            Rpg.Service.MoveCmd(4);
-            break;
-          case Sdl.SDLK_LEFT:
-            Rpg.Service.MoveCmd(6);
-            break;
-          case Sdl.SDLK_SPACE:
-            Rpg.Service.NewTurn();
-            break;
-          }
-          break;
-
-        case Sdl.SDL_JOYAXISMOTION:
-          //Console.WriteLine("Joy {0}: {1} [{2}]", evt.jaxis.which, evt.jaxis.axis, evt.jaxis.val);
-          break;
-
-        case Sdl.SDL_JOYBUTTONDOWN:
-          switch (evt.jbutton.button)
-          {
-            // XXX: Hardcoded for PS2 pad
-            // XXX: No key repeat for joystick, no fun tapping the keys.
-            // XXX: Diagonal movement with the pad? Movement using the analog stick?
-          case 12:
-            Rpg.Service.MoveCmd(0);
-            break;
-          case 13:
-            Rpg.Service.MoveCmd(2);
-            break;
-          case 14:
-            Rpg.Service.MoveCmd(4);
-            break;
-          case 15:
-            Rpg.Service.MoveCmd(6);
-            break;
-          }
-
-          Console.WriteLine("Joy {0}: {1} [{2}]", evt.jbutton.which, evt.jbutton.button, evt.jbutton.state);
-          break;
-
-
-          // XXX: Really doesn't belong at this abstraction level...
-        case Sdl.SDL_VIDEORESIZE:
-          App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
-          break;
-        }
+      case Sdl.SDLK_ESCAPE:
+        App.Instance.Exit();
+        break;
+      case Sdl.SDLK_q:
+        Rpg.Service.GameOver("Quit.");
+        break;
+      case Sdl.SDLK_UP:
+        Rpg.Service.MoveCmd(0);
+        break;
+      case Sdl.SDLK_RIGHT:
+        Rpg.Service.MoveCmd(2);
+        break;
+      case Sdl.SDLK_DOWN:
+        Rpg.Service.MoveCmd(4);
+        break;
+      case Sdl.SDLK_LEFT:
+        Rpg.Service.MoveCmd(6);
+        break;
+      case Sdl.SDLK_SPACE:
+        Rpg.Service.NewTurn();
+        break;
       }
     }
+
+
+    public void KeyReleased(int keycode) {}
 
 
     public void Update(double timeElapsed)
@@ -105,7 +61,6 @@ namespace Rpg
         // Return to title screen.
         App.Service<IScreenManager>().SwapScreen(new TitleScreen());
       }
-      ReadInput();
     }
 
 
@@ -258,6 +213,7 @@ namespace Rpg
     }
 
 
+    // XXX: Move to generic UI module.
     void WaitKey()
     {
       Sdl.SDL_Event evt;

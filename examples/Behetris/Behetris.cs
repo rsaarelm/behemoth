@@ -82,8 +82,6 @@ namespace Behetris
 
     public void Update(double timeElapsed)
     {
-      ReadInput();
-
       if (speedDrop)
       {
         StepBlock();
@@ -200,59 +198,42 @@ namespace Behetris
     }
 
 
-    protected void ReadInput()
+    public void KeyPressed(int keycode, int keyMod, char ch)
     {
-      Sdl.SDL_Event evt;
-
-      while (Sdl.SDL_PollEvent(out evt) != 0)
+      switch (keycode)
       {
-        switch (evt.type)
-        {
-        case Sdl.SDL_QUIT:
-          App.Instance.Exit();
-          break;
+      case Sdl.SDLK_ESCAPE:
+        App.Instance.Exit();
+        break;
+      case Sdl.SDLK_LEFT:
+        Steer(-1);
+        break;
+      case Sdl.SDLK_RIGHT:
+        Steer(1);
+        break;
+      case Sdl.SDLK_UP:
+        RotateBlock(1);
+        break;
+      case Sdl.SDLK_DOWN:
+        speedDrop = true;
+        break;
+      }
+    }
 
-        case Sdl.SDL_KEYDOWN:
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_ESCAPE:
-            App.Instance.Exit();
-            break;
-          case Sdl.SDLK_LEFT:
-            Steer(-1);
-            break;
-          case Sdl.SDLK_RIGHT:
-            Steer(1);
-            break;
-          case Sdl.SDLK_UP:
-            RotateBlock(1);
-            break;
-          case Sdl.SDLK_DOWN:
-            speedDrop = true;
-            break;
 
-          }
-          break;
-
-        case Sdl.SDL_KEYUP:
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_DOWN:
-            speedDrop = false;
-            break;
-          case Sdl.SDLK_LEFT:
-            Unsteer(-1);
-            break;
-          case Sdl.SDLK_RIGHT:
-            Unsteer(1);
-            break;
-          }
-          break;
-
-        case Sdl.SDL_VIDEORESIZE:
-          App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
-          break;
-        }
+    public void KeyReleased(int keycode)
+    {
+      switch (keycode)
+      {
+      case Sdl.SDLK_DOWN:
+        speedDrop = false;
+        break;
+      case Sdl.SDLK_LEFT:
+        Unsteer(-1);
+        break;
+      case Sdl.SDLK_RIGHT:
+        Unsteer(1);
+        break;
       }
     }
 

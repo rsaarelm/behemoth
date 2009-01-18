@@ -438,66 +438,45 @@ namespace Shooter
     }
 
 
-    void ReadInput()
+    public void KeyPressed(int keycode, int keyMod, char ch)
     {
-      Sdl.SDL_Event evt;
-
-      while (Sdl.SDL_PollEvent(out evt) != 0)
+      switch (keycode)
       {
-        switch (evt.type)
-        {
-        case Sdl.SDL_QUIT:
-          App.Exit();
-          break;
+      case Sdl.SDLK_ESCAPE:
+        App.Exit();
+        break;
+      case Sdl.SDLK_LEFT:
+        avatar.IsMovingLeft = true;
+        break;
+      case Sdl.SDLK_RIGHT:
+        avatar.IsMovingRight = true;
+        break;
+      case Sdl.SDLK_SPACE:
+        avatar.IsShooting = true;
+        break;
+      }
+    }
 
-        case Sdl.SDL_KEYDOWN:
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_ESCAPE:
-            App.Exit();
-            break;
-          case Sdl.SDLK_LEFT:
-            avatar.IsMovingLeft = true;
-            break;
-          case Sdl.SDLK_RIGHT:
-            avatar.IsMovingRight = true;
-            break;
-          case Sdl.SDLK_SPACE:
-            avatar.IsShooting = true;
-            break;
-          }
-          break;
 
-        case Sdl.SDL_KEYUP:
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_LEFT:
-            avatar.IsMovingLeft = false;
-            break;
-          case Sdl.SDLK_RIGHT:
-            avatar.IsMovingRight = false;
-            break;
-          case Sdl.SDLK_SPACE:
-            avatar.IsShooting = false;
-            break;
-          }
-          break;
-
-        case Sdl.SDL_VIDEORESIZE:
-          App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
-          break;
-
-        case Sdl.SDL_VIDEOEXPOSE:
-          // Might want some kind of repaint here?
-          break;
-        }
+    public void KeyReleased(int keycode)
+    {
+      switch (keycode)
+      {
+      case Sdl.SDLK_LEFT:
+        avatar.IsMovingLeft = false;
+        break;
+      case Sdl.SDLK_RIGHT:
+        avatar.IsMovingRight = false;
+        break;
+      case Sdl.SDLK_SPACE:
+        avatar.IsShooting = false;
+        break;
       }
     }
 
 
     public void Update(double timeElapsed)
     {
-      ReadInput();
       entities.Update();
       if (isGameOver) {
         if (gameOverCounter-- <= 0) {

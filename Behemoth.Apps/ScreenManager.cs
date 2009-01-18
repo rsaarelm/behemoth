@@ -45,6 +45,24 @@ namespace Behemoth.Apps
     }
 
 
+    public void KeyPressed(int keycode, int keyMod, char ch)
+    {
+      if (screens.Count > 0)
+      {
+        screens.Peek().KeyPressed(keycode, keyMod, ch);
+      }
+    }
+
+
+    public void KeyReleased(int keycode)
+    {
+      if (screens.Count > 0)
+      {
+        screens.Peek().KeyReleased(keycode);
+      }
+    }
+
+
     public void PushScreen(IScreen screen)
     {
       screens.Push(screen);

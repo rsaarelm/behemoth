@@ -12,40 +12,24 @@ namespace Rpg
 {
   public class TitleScreen : IScreen
   {
-    void ReadInput()
+    public void KeyPressed(int keycode, int keyMod, char ch)
     {
-      Sdl.SDL_Event evt;
-
-      while (Sdl.SDL_PollEvent(out evt) != 0)
+      switch (keycode)
       {
-        switch (evt.type)
-        {
-        case Sdl.SDL_QUIT:
-          App.Instance.Exit();
-          break;
-
-        case Sdl.SDL_KEYDOWN:
-          switch (evt.key.keysym.sym)
-          {
-          case Sdl.SDLK_ESCAPE:
-            App.Instance.Exit();
-            break;
-          case Sdl.SDLK_q:
-            App.Instance.Exit();
-            break;
-          case Sdl.SDLK_n:
-            StartGame();
-            break;
-          }
-          break;
-
-          // XXX: Really doesn't belong at this abstraction level...
-        case Sdl.SDL_VIDEORESIZE:
-          App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
-          break;
-        }
+      case Sdl.SDLK_ESCAPE:
+        App.Instance.Exit();
+        break;
+      case Sdl.SDLK_q:
+        App.Instance.Exit();
+        break;
+      case Sdl.SDLK_n:
+        StartGame();
+        break;
       }
     }
+
+
+    public void KeyReleased(int keycode) {}
 
 
     public void Init() {}
@@ -56,7 +40,6 @@ namespace Rpg
 
     public void Update(double timeElapsed)
     {
-      ReadInput();
     }
 
 
