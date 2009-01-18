@@ -191,6 +191,8 @@ namespace Rpg
       brain.AiActive = false;
       // Different from standard creatures, create hostility.
       brain.Alignment = 1;
+      brain.Might = 20.0;
+      brain.Resistance = 4.0;
 
       core.Icon = (int)Sprite.Fighter;
       core.SetPos(1, 44, 0);

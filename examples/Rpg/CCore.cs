@@ -24,7 +24,17 @@ namespace Rpg
 
     public World World;
 
-    public bool ActionPose;
+    public bool ActionPose { get { return AnimActTime > TimeUtil.CurrentSeconds; } }
+
+    /// <summary>
+    /// Hack variable for showing the action pose. When the critter acts, set
+    /// this some time in the future. When drawing the critter, use the action
+    /// frame is AnimActTime is later than the current time in seconds.
+    /// </summary>
+    public double AnimActTime = double.MinValue;
+    public const double ActSpeed = 0.5;
+
+
 
     public bool IsObstacle;
 

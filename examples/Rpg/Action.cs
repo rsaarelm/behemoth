@@ -93,6 +93,9 @@ namespace Rpg
       {
         UI.Msg("Whup!");
         brain2.Damage(entity, brain1.Might);
+
+        var core = entity.Get<CCore>();
+        core.AnimActTime = TimeUtil.CurrentSeconds + CCore.ActSpeed;
         // TODO: Attack message
       }
     }

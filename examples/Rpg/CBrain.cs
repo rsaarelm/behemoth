@@ -39,10 +39,9 @@ namespace Rpg
 
     public States State = States.Sleep;
 
-
     public virtual void Damage(Entity cause, double amount)
     {
-      Health -= amount / Resistance * Might;
+      Health -= amount / (Resistance * Might);
       if (Health < 0.0)
       {
         Action.Kill(Entity, cause);
