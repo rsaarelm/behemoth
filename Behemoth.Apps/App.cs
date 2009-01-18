@@ -42,20 +42,24 @@ namespace Behemoth.Apps
     }
 
 
-    public void Add(AppComponent component)
+    public bool TryGetService<T>(out T service) where T : IAppService
     {
-      if (isRunning)
+      IAppService s;
+      if (services.TryGetValue(typeof(T), out s))
       {
-        // XXX The current sequence is to add all components before the app is
-        // started and initialize the components when the app starts running.
-        // Since the initialization doesn't get called any more when the app
-        // is running, attempts to add components when running cause an
-        // exception. Might change this later if I need more flexible
-        // components.
-        throw new ApplicationException("Can't add components when app is running.");
+        service = (T)s;
+        return true;
       }
-      components.Add(component);
-      component.App = this;
+      else
+      {
+        return false;
+      }
+    }
+
+
+    public bool ContainsService(Type serviceType)
+    {
+      return services.ContainsKey(serviceType);
     }
 
 
@@ -74,7 +78,16 @@ namespace Behemoth.Apps
           "provider");
       }
 
+      IAppService oldService;
+
+      if (services.TryGetValue(service, out oldService))
+      {
+        oldService.Uninit();
+      }
+
       services[service] = provider;
+
+      provider.Init();
     }
 
 
@@ -82,12 +95,7 @@ namespace Behemoth.Apps
     {
       isRunning = true;
 
-      Init();
-
-      foreach (AppComponent c in components)
-      {
-        c.Init();
-      }
+      InitApp();
 
       double lastTime = TimeUtil.CurrentSeconds;
       try
@@ -104,12 +112,12 @@ namespace Behemoth.Apps
       }
       finally
       {
-        foreach (AppComponent c in components)
+        foreach (var serv in services.Values)
         {
-          c.Uninit();
+          serv.Uninit();
         }
 
-        Uninit();
+        UninitApp();
 
         isRunning = false;
       }
@@ -131,28 +139,12 @@ namespace Behemoth.Apps
     public int Tick { get { return tick; } }
 
 
-    public IEnumerable<AppComponent> Components
-    {
-      get
-      {
-        foreach (var c in components)
-        {
-          yield return c;
-        }
-      }
-    }
-
-
     protected virtual void Update(double timeElapsed)
     {
-      var updatees = from c in components
-        where c.Enabled
-        orderby c.UpdateOrder
-        select c;
-
-      foreach (var c in updatees)
+      IScreen screen;
+      if (TryGetService(out screen))
       {
-        c.Update(timeElapsed);
+        screen.Update(timeElapsed);
       }
 
       tick++;
@@ -161,25 +153,19 @@ namespace Behemoth.Apps
 
     protected virtual void Draw(double timeElapsed)
     {
-      var drawees = from c in components
-        where c is DrawableAppComponent && ((DrawableAppComponent)c).Visible
-        orderby ((DrawableAppComponent)c).DrawOrder
-        select (DrawableAppComponent)c;
-
-      foreach (DrawableAppComponent c in drawees)
+      IScreen screen;
+      if (TryGetService(out screen))
       {
-        c.Draw(timeElapsed);
+        screen.Draw(timeElapsed);
       }
     }
 
 
-    protected virtual void Init() {}
+    protected virtual void InitApp() {}
 
 
-    protected virtual void Uninit() {}
+    protected virtual void UninitApp() {}
 
-
-    private List<AppComponent> components = new List<AppComponent>();
 
     private IDictionary<Type, IAppService> services =
       new Dictionary<Type, IAppService>();

@@ -12,6 +12,12 @@ namespace Rpg
 {
   public class PlayScreen : IScreen
   {
+    public void Init() {}
+
+
+    public void Uninit() {}
+
+
     void ReadInput()
     {
       Sdl.SDL_Event evt;

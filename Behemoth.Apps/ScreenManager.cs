@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Behemoth.Apps
 {
-  public class ScreenManager : DrawableAppComponent, IScreenManager
+  public class ScreenManager : IScreen, IScreenManager
   {
     public ScreenManager(params IScreen[] screens)
     {
@@ -14,12 +14,20 @@ namespace Behemoth.Apps
     }
 
 
-    public override void Init()
+    public void Register(App app)
     {
-      App.RegisterService(typeof(IScreenManager), this);
+      app.RegisterService(typeof(IScreen), this);
+      app.RegisterService(typeof(IScreenManager), this);
     }
 
-    public override void Update(double timeElapsed)
+
+    public void Init() {}
+
+
+    public void Uninit() {}
+
+
+    public void Update(double timeElapsed)
     {
       if (screens.Count > 0)
       {
@@ -28,7 +36,7 @@ namespace Behemoth.Apps
     }
 
 
-    public override void Draw(double timeElapsed)
+    public void Draw(double timeElapsed)
     {
       if (screens.Count > 0)
       {

@@ -48,6 +48,12 @@ namespace Rpg
     }
 
 
+    public void Init() {}
+
+
+    public void Uninit() {}
+
+
     public void Update(double timeElapsed)
     {
       ReadInput();

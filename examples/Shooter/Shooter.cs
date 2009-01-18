@@ -365,7 +365,7 @@ namespace Shooter
   }
 
 
-  public class Shooter : DrawableAppComponent
+  public class Shooter : IScreen
   {
     public const int pixelWidth = 240;
     public const int pixelHeight = 320;
@@ -393,15 +393,17 @@ namespace Shooter
 
     List<Vec3> starfield = new List<Vec3>();
 
+    App App;
+
     public static void Main(string[] args)
     {
       var app = new TaoApp(pixelWidth, pixelHeight, "Behemoth Shooter");
-      app.Add(new Shooter());
+      app.RegisterService(typeof(IScreen), new Shooter());
       app.Run();
     }
 
 
-    public override void Init()
+    public void Init()
     {
       Media.AddPhysFsPath("Shooter.zip");
       // Make the zip file found from build subdir too, so that it's easy to
@@ -414,8 +416,11 @@ namespace Shooter
 
       InitStarfield();
 
+      App = App.Instance;
     }
 
+
+    public void Uninit() {}
 
 
     void InitStarfield()
@@ -490,7 +495,7 @@ namespace Shooter
     }
 
 
-    public override void Update(double timeElapsed)
+    public void Update(double timeElapsed)
     {
       ReadInput();
       entities.Update();
@@ -507,7 +512,7 @@ namespace Shooter
     }
 
 
-    public override void Draw(double timeElapsed)
+    public void Draw(double timeElapsed)
     {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
       Gl.glMatrixMode(Gl.GL_MODELVIEW);

@@ -15,7 +15,7 @@ namespace Behetris
   /// <summary>
   /// A falling blocks game.
   /// </summary>
-  public class Behetris : DrawableAppComponent
+  public class Behetris : IScreen
   {
     public Behetris()
     {
@@ -74,7 +74,13 @@ namespace Behetris
     }
 
 
-    public override void Update(double timeElapsed)
+    public void Init() {}
+
+
+    public void Uninit() {}
+
+
+    public void Update(double timeElapsed)
     {
       ReadInput();
 
@@ -98,7 +104,7 @@ namespace Behetris
     }
 
 
-    public override void Draw(double timeElapsed)
+    public void Draw(double timeElapsed)
     {
       // XXX: Magic numbers. Not caring much now, since this stuff is limited
       // to display logic.
@@ -137,7 +143,7 @@ namespace Behetris
     }
 
 
-    private bool BlinkOn { get { return (App.Tick / 4) % 2 == 0; } }
+    private bool BlinkOn { get { return (App.Instance.Tick / 4) % 2 == 0; } }
 
 
     private void DrawCell(int type, int x, int y)
@@ -203,14 +209,14 @@ namespace Behetris
         switch (evt.type)
         {
         case Sdl.SDL_QUIT:
-          App.Exit();
+          App.Instance.Exit();
           break;
 
         case Sdl.SDL_KEYDOWN:
           switch (evt.key.keysym.sym)
           {
           case Sdl.SDLK_ESCAPE:
-            App.Exit();
+            App.Instance.Exit();
             break;
           case Sdl.SDLK_LEFT:
             Steer(-1);
@@ -420,7 +426,7 @@ namespace Behetris
     {
       // TODO: Don't quit instantly, countdown to exit.
       Console.WriteLine("Ha-ha.");
-      App.Exit();
+      App.Instance.Exit();
     }
 
 
@@ -475,7 +481,7 @@ namespace Behetris
     public static void Main(string[] args)
     {
       var app = new TaoApp(160, 144, "Behetris");
-      app.Add(new Behetris());
+      app.RegisterService(typeof(IScreen), new Behetris());
       app.Run();
     }
 

@@ -132,9 +132,7 @@
         <include name="Behemoth.Apps/IScreen.cs"/>
         <include name="Behemoth.Apps/IScreenManager.cs"/>
 
-        <include name="Behemoth.Apps/AppComponent.cs"/>
         <include name="Behemoth.Apps/App.cs"/>
-        <include name="Behemoth.Apps/DrawableAppComponent.cs"/>
         <include name="Behemoth.Apps/ScreenManager.cs"/>
       </sources>
       <references>

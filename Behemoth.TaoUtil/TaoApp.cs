@@ -16,6 +16,20 @@ namespace Behemoth.TaoUtil
       this.pixelWidth = pixelWidth;
       this.pixelHeight = pixelHeight;
       this.windowTitle = title;
+
+      LibInit();
+
+      RegisterService(typeof(ITaoService), this);
+    }
+
+
+    private void LibInit()
+    {
+      Sdl.SDL_Init(Sdl.SDL_INIT_EVERYTHING);
+      Media.InitFacilities();
+
+      InitSdl();
+      InitGl();
     }
 
 
@@ -26,24 +40,24 @@ namespace Behemoth.TaoUtil
     }
 
 
-    protected override void Init()
+    protected override void InitApp()
     {
-      Sdl.SDL_Init(Sdl.SDL_INIT_EVERYTHING);
-      Media.InitFacilities();
-
-      InitSdl();
-      InitGl();
-
-      RegisterService(typeof(ITaoService), this);
     }
 
 
-    protected override void Uninit()
+    protected override void UninitApp()
     {
       textureCache.Dispose();
       Media.UninitFacilities();
       Sdl.SDL_Quit();
     }
+
+
+    public void Init()
+    {
+    }
+
+    public void Uninit() {}
 
 
     void InitSdl()

@@ -15,7 +15,7 @@ using Behemoth.LuaUtil;
 
 namespace Rpg
 {
-  public class Rpg : DrawableAppComponent, IRpgService
+  public class Rpg : IRpgService
   {
     public enum Sprite {
       Empty = 0x00,
@@ -62,9 +62,9 @@ namespace Rpg
     public static void Main(string[] args)
     {
       var app = new TaoApp(pixelWidth, pixelHeight, "Rpg demo");
-      app.Add(new Rpg());
+      app.RegisterService(typeof(IRpgService), new Rpg());
 
-      app.Add(new ScreenManager(new TitleScreen()));
+      new ScreenManager(new TitleScreen()).Register(app);
 
       app.Run();
     }
@@ -87,10 +87,8 @@ namespace Rpg
     }
 
 
-    public override void Init()
+    public void Init()
     {
-      App.RegisterService(typeof(IRpgService), this);
-
       var joystick = InputUtil.InitJoystick();
 
       if (joystick.HasValue)
@@ -117,6 +115,9 @@ namespace Rpg
       //
       //PrintTable(lua.DumpGlobals());
     }
+
+
+    public void Uninit() {}
 
 
     public void NewGame()
