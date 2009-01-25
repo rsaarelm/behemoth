@@ -193,38 +193,45 @@ namespace Behemoth.TaoUtil
     /// Draw an axis-aligned OpenGL cube.
     /// </summary>
     public static void DrawCube(
-      float x1, float y1, float z1, float x2, float y2, float z2)
+      float x, float y, float z, float w, float h, float d)
     {
       Gl.glBegin(Gl.GL_QUADS);
-      Gl.glVertex3f(x1, y1, z1);
-      Gl.glVertex3f(x1, y1, z2);
-      Gl.glVertex3f(x1, y2, z2);
-      Gl.glVertex3f(x1, y2, z1);
 
-      Gl.glVertex3f(x2, y1, z1);
-      Gl.glVertex3f(x2, y2, z1);
-      Gl.glVertex3f(x2, y2, z2);
-      Gl.glVertex3f(x2, y1, z2);
+      Gl.glNormal3f(-1, 0, 0);
+      Gl.glVertex3f(x, y, z);
+      Gl.glVertex3f(x, y, z + d);
+      Gl.glVertex3f(x, y + h, z + d);
+      Gl.glVertex3f(x, y + h, z);
 
-      Gl.glVertex3f(x1, y1, z1);
-      Gl.glVertex3f(x2, y1, z1);
-      Gl.glVertex3f(x2, y1, z2);
-      Gl.glVertex3f(x1, y1, z2);
+      Gl.glNormal3f(1, 0, 0);
+      Gl.glVertex3f(x + w, y, z);
+      Gl.glVertex3f(x + w, y + h, z);
+      Gl.glVertex3f(x + w, y + h, z + d);
+      Gl.glVertex3f(x + w, y, z + d);
 
-      Gl.glVertex3f(x1, y2, z1);
-      Gl.glVertex3f(x1, y2, z2);
-      Gl.glVertex3f(x2, y2, z2);
-      Gl.glVertex3f(x2, y2, z1);
+      Gl.glNormal3f(0, -1, 0);
+      Gl.glVertex3f(x, y, z);
+      Gl.glVertex3f(x + w, y, z);
+      Gl.glVertex3f(x + w, y, z + d);
+      Gl.glVertex3f(x, y, z + d);
 
-      Gl.glVertex3f(x1, y1, z1);
-      Gl.glVertex3f(x1, y2, z1);
-      Gl.glVertex3f(x2, y2, z1);
-      Gl.glVertex3f(x2, y1, z1);
+      Gl.glNormal3f(0, 1, 0);
+      Gl.glVertex3f(x, y + h, z);
+      Gl.glVertex3f(x, y + h, z + d);
+      Gl.glVertex3f(x + w, y + h, z + d);
+      Gl.glVertex3f(x + w, y + h, z);
 
-      Gl.glVertex3f(x1, y1, z2);
-      Gl.glVertex3f(x2, y1, z2);
-      Gl.glVertex3f(x2, y2, z2);
-      Gl.glVertex3f(x1, y2, z2);
+      Gl.glNormal3f(0, 0, -1);
+      Gl.glVertex3f(x, y, z);
+      Gl.glVertex3f(x, y + h, z);
+      Gl.glVertex3f(x + w, y + h, z);
+      Gl.glVertex3f(x + w, y, z);
+
+      Gl.glNormal3f(0, 0, 1);
+      Gl.glVertex3f(x, y, z + d);
+      Gl.glVertex3f(x + w, y, z + d);
+      Gl.glVertex3f(x + w, y + h, z + d);
+      Gl.glVertex3f(x, y + h, z + d);
       Gl.glEnd();
     }
   }
