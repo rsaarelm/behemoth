@@ -187,5 +187,45 @@ namespace Behemoth.TaoUtil
     {
       Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
     }
+
+
+    /// <summary>
+    /// Draw an axis-aligned OpenGL cube.
+    /// </summary>
+    public static void DrawCube(
+      float x1, float y1, float z1, float x2, float y2, float z2)
+    {
+      Gl.glBegin(Gl.GL_QUADS);
+      Gl.glVertex3f(x1, y1, z1);
+      Gl.glVertex3f(x1, y1, z2);
+      Gl.glVertex3f(x1, y2, z2);
+      Gl.glVertex3f(x1, y2, z1);
+
+      Gl.glVertex3f(x2, y1, z1);
+      Gl.glVertex3f(x2, y2, z1);
+      Gl.glVertex3f(x2, y2, z2);
+      Gl.glVertex3f(x2, y1, z2);
+
+      Gl.glVertex3f(x1, y1, z1);
+      Gl.glVertex3f(x2, y1, z1);
+      Gl.glVertex3f(x2, y1, z2);
+      Gl.glVertex3f(x1, y1, z2);
+
+      Gl.glVertex3f(x1, y2, z1);
+      Gl.glVertex3f(x1, y2, z2);
+      Gl.glVertex3f(x2, y2, z2);
+      Gl.glVertex3f(x2, y2, z1);
+
+      Gl.glVertex3f(x1, y1, z1);
+      Gl.glVertex3f(x1, y2, z1);
+      Gl.glVertex3f(x2, y2, z1);
+      Gl.glVertex3f(x2, y1, z1);
+
+      Gl.glVertex3f(x1, y1, z2);
+      Gl.glVertex3f(x2, y1, z2);
+      Gl.glVertex3f(x2, y2, z2);
+      Gl.glVertex3f(x1, y2, z2);
+      Gl.glEnd();
+    }
   }
 }
