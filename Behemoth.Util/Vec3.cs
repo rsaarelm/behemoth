@@ -57,6 +57,12 @@ namespace Behemoth.Util
     }
 
 
+    public static Vec3 operator*(Vec3 lhs, double rhs)
+    {
+      return new Vec3(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs);
+    }
+
+
     public static double Dot(Vec3 lhs, Vec3 rhs)
     {
       return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z;
@@ -66,6 +72,12 @@ namespace Behemoth.Util
     public double Abs()
     {
       return Math.Sqrt(Dot(this, this));
+    }
+
+
+    public Vec3 Unit()
+    {
+      return this * (1.0 / this.Abs());
     }
 
 

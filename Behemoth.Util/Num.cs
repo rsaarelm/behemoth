@@ -61,5 +61,7 @@ namespace Behemoth.Util
       return 2.0 * (Sigmoid(x) - 0.5);
     }
 
+
+    public const double Epsilon = 0.000001;
   }
 }

@@ -33,6 +33,35 @@ namespace Behemoth.Util
     }
 
 
+    public double RandDouble(double min, double max)
+    {
+      return min + RandDouble() * (max - min);
+    }
+
+
+    /// <summary>
+    /// Make a random unit vector.
+    /// </summary>
+    /// <remarks>
+    /// Samples points in [-1, -1, -1] - [1, 1, 1] until one that's neither at
+    /// the origin or outside the unit sphere is found. Returns this vector
+    /// normalized to unit length.
+    /// </remarks>
+    public Vec3 UnitVec() {
+      double len;
+      Vec3 result;
+      do {
+        result = new Vec3(
+          RandDouble(-1.0, 1.0),
+          RandDouble(-1.0, 1.0),
+          RandDouble(-1.0, 1.0));
+        len = result.Abs();
+      } while (len < Num.Epsilon || len > 1.0);
+
+      return result.Unit();
+    }
+
+
     public bool OneChanceIn(int num)
     {
       return RandInt(num) == 0;
