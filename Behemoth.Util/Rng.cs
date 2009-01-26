@@ -47,10 +47,12 @@ namespace Behemoth.Util
     /// the origin or outside the unit sphere is found. Returns this vector
     /// normalized to unit length.
     /// </remarks>
-    public Vec3 UnitVec() {
+    public Vec3 UnitVec()
+    {
       double len;
       Vec3 result;
-      do {
+      do
+      {
         result = new Vec3(
           RandDouble(-1.0, 1.0),
           RandDouble(-1.0, 1.0),

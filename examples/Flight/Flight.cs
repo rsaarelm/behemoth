@@ -97,18 +97,25 @@ namespace Flight
       int degree,
       float x, float y, float z, float w, float h, float d)
     {
-      if (degree < 1) {
+      if (degree < 1)
+      {
         Gfx.DrawCube(x, y, z, w, h, d);
-      } else {
+      }
+      else
+      {
         var pw = w / 3;
         var ph = h / 3;
         var pd = d / 3;
 
-        for (int zp = 0; zp < 3; zp++) {
-          for (int yp = 0; yp < 3; yp++) {
-            for (int xp = 0; xp < 3; xp++) {
+        for (int zp = 0; zp < 3; zp++)
+        {
+          for (int yp = 0; yp < 3; yp++)
+          {
+            for (int xp = 0; xp < 3; xp++)
+            {
               var form = (xp == 1 ? 0 : 1) + (yp == 1 ? 0 : 1) + (zp == 1 ? 0 : 1);
-              if (form > 1) {
+              if (form > 1)
+              {
                 MengerSponge(
                   degree - 1,
                   x + xp * pw, y + yp * ph, z + zp * pd,
@@ -119,6 +126,5 @@ namespace Flight
         }
       }
     }
-
   }
 }
