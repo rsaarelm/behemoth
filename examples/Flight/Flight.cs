@@ -62,7 +62,7 @@ namespace Flight
 //      Gl.glPolygonMode(Gl.GL_FRONT_AND_BACK, Gl.GL_LINE);
 
 //      Gfx.DrawCube(-1, -1, -1, 2, 2, 2);
-      MengerSponge(3, -2, -2, -2, 4, 4, 4);
+      MengerSponge((App.Instance.Tick / 30) % 4, -2, -2, -2, 4, 4, 4);
     }
 
 
