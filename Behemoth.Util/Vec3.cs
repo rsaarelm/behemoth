@@ -81,6 +81,15 @@ namespace Behemoth.Util
     }
 
 
+    public static Vec3 Cross(Vec3 lhs, Vec3 rhs)
+    {
+      return new Vec3(
+        lhs.Y * rhs.Z - lhs.Z * rhs.Y,
+        lhs.Z * rhs.X - lhs.X * rhs.Z,
+        lhs.X * rhs.Y - lhs.Y * rhs.X);
+    }
+
+
     public override String ToString()
     {
       return String.Format("<{0}, {1}, {2}>", X, Y, Z);
