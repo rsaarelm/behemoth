@@ -15,6 +15,11 @@ namespace Flight
   /// </summary>
   public class Flight : IScreen
   {
+    const int terrainSize = 64;
+
+    const float[] lightPos = {0.2f, 1.0f, 1.0f};
+
+
     public static void Main(String[] args)
     {
       var app = new TaoApp(640, 480, "Flight");
@@ -31,6 +36,13 @@ namespace Flight
 
       InitLighting();
       InitShading();
+
+      landscape = new Model();
+
+      HeightMap(TerrainHeight, 0.0, 0.0, 1.0, 1.0, terrainSize, terrainSize,
+                out landscape.Vertices,
+                out landscape.Normals,
+                out landscape.Faces);
     }
 
 
@@ -38,7 +50,6 @@ namespace Flight
     {
       Gl.glEnable(Gl.GL_LIGHTING);
       Gl.glEnable(Gl.GL_LIGHT0);
-      Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1.0f, 1.0f, 1.0f });
     }
 
 
@@ -56,18 +67,24 @@ namespace Flight
     public void Update(double timeElapsed) {}
 
 
+
     public void Draw(double timeElapsed)
     {
       Gfx.ClearScreen();
       Camera();
 
-      Gl.glMatrixMode(Gl.GL_MODELVIEW);
-      Gl.glLoadIdentity();
-      Gl.glTranslatef(0, 0, -10);
-      Gl.glRotatef(15, 0, 0, 1);
-      Gl.glRotatef(App.Instance.Tick, 0, 1, 0);
-      Gl.glRotatef(App.Instance.Tick / 2, 1, 0, 0);
+      Gl.glRotatef(App.Instance.Tick, 0, 0, 1);
 
+      Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, lightPos);
+
+      Gl.glPushMatrix();
+      Gl.glTranslatef(-terrainSize / 2, -terrainSize / 2, -16);
+
+      Gfx.GlColor(Color.Olivedrab);
+      landscape.Draw();
+      Gl.glPopMatrix();
+
+      Gl.glTranslatef(0, 0, 10);
 
       Gfx.GlColor(Color.Orange);
 
@@ -76,6 +93,7 @@ namespace Flight
 
       Gfx.GlColor(Color.Orchid);
       Octahedron();
+
     }
 
 
@@ -103,6 +121,12 @@ namespace Flight
         60.0,
         (float)App.Service<ITaoService>().PixelWidth / (float)App.Service<ITaoService>().PixelHeight,
         0.1, 1000.0);
+
+      Gl.glMatrixMode(Gl.GL_MODELVIEW);
+      Gl.glLoadIdentity();
+      Glu.gluLookAt(-10, -10, 30,
+                    0, 0, 0,
+                    0, 0, 1);
     }
 
 
@@ -141,7 +165,94 @@ namespace Flight
     }
 
 
-    void Tetrahedron()
+    public static Vec3 HeightMapNormal(
+      Func<double, double, double> heightFunc,
+      double x, double y, double xScale, double yScale)
+    {
+      Vec3 result = new Vec3(0, 0, 0);
+
+      // Sum the normals of four cardinal arcs from this point to +/-
+      // xScale/yScale.
+
+      result += Vec3.Cross(
+        HeightLine(heightFunc, x, y, x - xScale, y),
+        new Vec3(0, -1, 0));
+      result += Vec3.Cross(
+        HeightLine(heightFunc, x, y, x, y - yScale),
+        new Vec3(1, 0, 0));
+      result += Vec3.Cross(
+        HeightLine(heightFunc, x, y, x + xScale, y),
+        new Vec3(0, 1, 0));
+      result += Vec3.Cross(
+        HeightLine(heightFunc, x, y, x, y + yScale),
+        new Vec3(-1, 0, 0));
+
+      return result.Unit();
+
+    }
+
+
+    static Vec3 HeightLine(
+      Func<double, double, double> heightFunc,
+      double x0, double y0, double x1, double y1)
+    {
+      return
+        new Vec3(x1, y1, heightFunc(x1, y1)) -
+        new Vec3(x0, y0, heightFunc(x0, y0));
+    }
+
+
+    public static void HeightMap(
+      Func<double, double, double> heightFunc,
+      double x0, double y0, double xScale, double yScale,
+      int w, int h,
+      out float[,] vertices,
+      out float[,] normals,
+      out short[,] faces)
+    {
+      int nVertices = (w + 1) * (h + 1);
+      vertices = new float[nVertices, 3];
+      normals = new float[nVertices, 3];
+      faces = new short[w * h * 2, 3];
+
+      for (int y = 0; y <= h; y++)
+      {
+        for (int x = 0; x <= w; x++)
+        {
+          int idx = x + y * (w + 1);
+          double z = heightFunc(x0 + x * xScale, y0 + y * yScale);
+          vertices[idx, 0] = (float)(x * xScale);
+          vertices[idx, 1] = (float)(y * yScale);
+          vertices[idx, 2] = (float)z;
+
+          var normal = HeightMapNormal(
+            heightFunc, x0 + x * xScale, y0 + y * yScale, xScale, yScale);
+          normals[idx, 0] = (float)normal.X;
+          normals[idx, 1] = (float)normal.Y;
+          normals[idx, 2] = (float)normal.Z;
+        }
+      }
+
+      int faceIdx = 0;
+      for (int y = 0; y < h; y++)
+      {
+        for (int x = 0; x < w; x++)
+        {
+          faces[faceIdx, 0] = (short)(x + y * (w + 1));
+          faces[faceIdx, 1] = (short)((x + 1) + (y + 1) * (w + 1));
+          faces[faceIdx, 2] = (short)(x + (y + 1) * (w + 1));
+          faceIdx++;
+
+          faces[faceIdx, 0] = (short)(x + y * (w + 1));
+          faces[faceIdx, 1] = (short)((x + 1) + y * (w + 1));
+          faces[faceIdx, 2] = (short)((x + 1) + (y + 1) * (w + 1));
+          faceIdx++;
+        }
+      }
+    }
+
+
+    public static void Tetrahedron()
     {
       float[,] vertices = {
         { 1,  1,  1},
@@ -169,7 +280,7 @@ namespace Flight
     }
 
 
-    void Octahedron()
+    public void Octahedron()
     {
       float[,] vertices = {
         { 0,  0,  1},
@@ -204,12 +315,37 @@ namespace Flight
     }
 
 
-    double TerrainHeight(double x, double y)
+    static double TerrainHeight(double x, double y)
     {
       // TODO: Perlin noise..
-      return (1.0 + Math.Sin(x / 10.0) * Math.Sin(y / 10.0)) * 5.0;
+      return (1.0 + Math.Sin(x / 5.0) * Math.Sin(y / 5.0)) * 5.0 + Num.Noise((int)x, (int)y);
     }
 
 
+    Model landscape;
+
+    static Rng rng = new DefaultRng();
+  }
+
+
+  struct Model
+  {
+    public float[,] Vertices;
+    public float[,] Normals;
+    public short[,] Faces;
+
+
+    public Model(float[,] vertices, float[,] normals, short[,] faces)
+    {
+      this.Vertices = vertices;
+      this.Normals = normals;
+      this.Faces = faces;
+    }
+
+
+    public void Draw()
+    {
+      Gfx.DrawTriMesh(Vertices, Normals, Faces);
+    }
   }
 }
