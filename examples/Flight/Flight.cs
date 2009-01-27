@@ -27,14 +27,26 @@ namespace Flight
 
 
     public void Init() {
+      Gl.glEnable(Gl.GL_DEPTH_TEST);
+
+      InitLighting();
+      InitShading();
+    }
+
+
+    void InitLighting()
+    {
       Gl.glEnable(Gl.GL_LIGHTING);
+      Gl.glEnable(Gl.GL_LIGHT0);
+      Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1.0f, 1.0f, 1.0f });
+    }
+
+
+    void InitShading()
+    {
       Gl.glEnable(Gl.GL_COLOR_MATERIAL);
       Gl.glColorMaterial(Gl.GL_FRONT_AND_BACK, Gl.GL_AMBIENT_AND_DIFFUSE);
-      Gl.glEnable(Gl.GL_LIGHT0);
-      Gl.glEnable(Gl.GL_DEPTH_TEST);
       Gl.glShadeModel(Gl.GL_SMOOTH);
-
-      Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1.0f, 1.0f, 1.0f });
     }
 
 
@@ -59,10 +71,11 @@ namespace Flight
 
       Gfx.GlColor(Color.Orange);
 
-//      Gl.glPolygonMode(Gl.GL_FRONT_AND_BACK, Gl.GL_LINE);
-
-//      Gfx.DrawCube(-1, -1, -1, 2, 2, 2);
       MengerSponge((App.Instance.Tick / 30) % 4, -2, -2, -2, 4, 4, 4);
+      Gl.glTranslatef(0, 4, 0);
+
+      Gfx.GlColor(Color.Orchid);
+      Octahedron();
     }
 
 
@@ -126,5 +139,77 @@ namespace Flight
         }
       }
     }
+
+
+    void Tetrahedron()
+    {
+      float[,] vertices = {
+        { 1,  1,  1},
+        {-1, -1,  1},
+        {-1,  1, -1},
+        { 1, -1, -1},
+      };
+
+      float c = (float)Math.Sqrt(3);
+      float[,] normals = {
+        { c,  c,  c},
+        {-c, -c,  c},
+        {-c,  c, -c},
+        { c, -c, -c},
+      };
+
+      short[,] faces = {
+        {0, 3, 1},
+        {0, 3, 2},
+        {0, 2, 1},
+        {1, 2, 3},
+      };
+
+      Gfx.DrawTriMesh(vertices, normals, faces);
+    }
+
+
+    void Octahedron()
+    {
+      float[,] vertices = {
+        { 0,  0,  1},
+        {-1,  0,  0},
+        { 0, -1,  0},
+        { 1,  0,  0},
+        { 0,  1,  0},
+        { 0,  0, -1},
+      };
+
+      float[,] normals = {
+        {  0,  0,  1},
+        { -1,  0,  0},
+        {  0, -1,  0},
+        {  1,  0,  0},
+        {  0,  1,  0},
+        {  0,  0, -1},
+      };
+
+      short[,] faces = {
+        {0, 2, 1},
+        {0, 3, 2},
+        {0, 4, 3},
+        {0, 1, 4},
+        {5, 1, 2},
+        {5, 2, 3},
+        {5, 3, 4},
+        {5, 4, 1},
+      };
+
+      Gfx.DrawTriMesh(vertices, normals, faces);
+    }
+
+
+    double TerrainHeight(double x, double y)
+    {
+      // TODO: Perlin noise..
+      return (1.0 + Math.Sin(x / 10.0) * Math.Sin(y / 10.0)) * 5.0;
+    }
+
+
   }
 }

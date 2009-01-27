@@ -10,6 +10,15 @@ namespace Behemoth.TaoUtil
   /// </summary>
   public static class Gfx
   {
+    public enum VertexFlags
+    {
+      Pos = 1 << 0,
+      Normal = 1 << 1,
+      Color = 1 << 2,
+      Texture = 1 << 3,
+    }
+
+
     /// <summary>
     /// Draw a sprite from a sheet of sprites as a texture mapped quad.
     /// </summary>
@@ -233,6 +242,57 @@ namespace Behemoth.TaoUtil
       Gl.glVertex3f(x + w, y + h, z + d);
       Gl.glVertex3f(x, y + h, z + d);
       Gl.glEnd();
+    }
+
+
+    /// <summary>
+    /// Draw a triangle mesh. Vertices and normals are arrays which contain
+    /// positions and normal coordinates of the mesh vertices. Indices is a
+    /// list of the vertex triplets that make the faces of the mesh.
+    /// </summary>
+    public static void DrawTriMesh(float[,] vertices, float[,] normals, short[,] indices)
+    {
+      var types = VertexFlags.Pos | VertexFlags.Normal;
+
+      InitArrayState(types);
+
+      Gl.glVertexPointer(3, Gl.GL_FLOAT, 0, vertices);
+      Gl.glNormalPointer(Gl.GL_FLOAT, 0, normals);
+      Gl.glDrawElements(Gl.GL_TRIANGLES, indices.Length, Gl.GL_UNSIGNED_SHORT, indices);
+
+      UninitArrayState(types);
+    }
+
+
+    /// <summary>
+    /// Initialize OpenGL for drawing an element array.
+    /// </summary>
+    public static void InitArrayState(VertexFlags types)
+    {
+      if ((types & VertexFlags.Pos) != 0)
+        Gl.glEnableClientState(Gl.GL_VERTEX_ARRAY);
+      if ((types & VertexFlags.Normal) != 0)
+        Gl.glEnableClientState(Gl.GL_NORMAL_ARRAY);
+      if ((types & VertexFlags.Color) != 0)
+        Gl.glEnableClientState(Gl.GL_COLOR_ARRAY);
+      if ((types & VertexFlags.Texture) != 0)
+        Gl.glEnableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
+    }
+
+
+    /// <summary>
+    /// Uninitialize OpenGL element array drawing.
+    /// </summary>
+    public static void UninitArrayState(VertexFlags types)
+    {
+      if ((types & VertexFlags.Pos) != 0)
+        Gl.glDisableClientState(Gl.GL_VERTEX_ARRAY);
+      if ((types & VertexFlags.Normal) != 0)
+        Gl.glDisableClientState(Gl.GL_NORMAL_ARRAY);
+      if ((types & VertexFlags.Color) != 0)
+        Gl.glDisableClientState(Gl.GL_COLOR_ARRAY);
+      if ((types & VertexFlags.Texture) != 0)
+        Gl.glDisableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
     }
   }
 }
