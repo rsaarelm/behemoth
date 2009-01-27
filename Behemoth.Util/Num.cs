@@ -62,6 +62,31 @@ namespace Behemoth.Util
     }
 
 
+    /// <summary>
+    /// Noise between 1.0 and -1.0 from an integer seed.
+    /// </summary>
+    /// <remarks>
+    /// From Hugo Elias, http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
+    /// </remarks>
+    public static double Noise(int x)
+    {
+      x = (x << 13) ^ x;
+      return (1.0 - ((x * (x * x * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+    }
+
+
+    public static double Noise(int x, int y)
+    {
+      return Noise(HashPoint(x, y));
+    }
+
+
+    public static double Noise(int x, int y, int z)
+    {
+      return Noise(HashPoint(x, y, z));
+    }
+
+
     public const double Epsilon = 0.000001;
   }
 }
