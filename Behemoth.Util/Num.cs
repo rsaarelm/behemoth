@@ -88,7 +88,7 @@ namespace Behemoth.Util
 
 
     /// <summary>
-    /// A modulo operation that doesn't return negative numbers. Mod(k, n) is
+    /// A modulo function that doesn't return negative numbers. Mod(k, n) is
     /// equivalent to ((k % n) + n) % n.
     /// </summary>
     public static int Mod(int k, int n)

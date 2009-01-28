@@ -15,7 +15,7 @@ namespace Flight
   /// </summary>
   public class Flight : IScreen
   {
-    const int terrainSize = 64;
+    const int terrainSize = 128;
 
     static float[] lightPos = {0.2f, 1.0f, 1.0f};
 
@@ -36,6 +36,11 @@ namespace Flight
 
       InitLighting();
       InitShading();
+
+      Media.AddPhysFsPath("Flight.zip");
+      Media.AddPhysFsPath("build", "Flight.zip");
+
+      heightmap = Media.LoadPixels("heightmap.png");
 
       landscape = new Model();
 
@@ -124,7 +129,7 @@ namespace Flight
 
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
-      Glu.gluLookAt(-10, -10, 30,
+      Glu.gluLookAt(-10, -50, 80,
                     0, 0, 0,
                     0, 0, 1);
     }
@@ -317,12 +322,15 @@ namespace Flight
 
     static double TerrainHeight(double x, double y)
     {
-      // TODO: Perlin noise..
-      return (1.0 + Math.Sin(x / 5.0) * Math.Sin(y / 5.0)) * 5.0 + Num.Noise((int)x, (int)y);
+      int xPix = Num.Mod((int)x, heightmap.GetLength(1));
+      int yPix = Num.Mod((int)y, heightmap.GetLength(0));
+      return ((double)heightmap[xPix, yPix].R) / 8.0;
     }
 
 
     Model landscape;
+
+    static Color[,] heightmap;
 
     static Rng rng = new DefaultRng();
   }
