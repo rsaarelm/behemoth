@@ -17,7 +17,7 @@ namespace Flight
   {
     const int terrainSize = 64;
 
-    const float[] lightPos = {0.2f, 1.0f, 1.0f};
+    static float[] lightPos = {0.2f, 1.0f, 1.0f};
 
 
     public static void Main(String[] args)
