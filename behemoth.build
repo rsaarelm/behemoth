@@ -299,7 +299,7 @@
 
 
   <!-- Flight demo -->
-  <target name="Flight.exe" depends="libs">
+  <target name="Flight.exe" depends="libs,Flight.zip">
     <csc target="exe"
          output="${build.dir}/Flight.exe">
       <sources>
@@ -314,6 +314,16 @@
         <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
       </references>
     </csc>
+  </target>
+
+
+  <!-- Data files for flight demo -->
+  <target name="Flight.zip" depends="init">
+    <zip zipfile="${build.dir}/Flight.zip">
+      <fileset basedir="examples/Flight/data">
+        <include name="**/*"/>
+      </fileset>
+    </zip>
   </target>
 
 
