@@ -131,8 +131,6 @@ namespace Behemoth.TaoUtil
 
 
     /// <summary>
-    /// Load a DevIL image from a named PhysFS file.
-    /// <summary>
     /// Load a sound from PhysFs into SDL Mixer.
     /// </summary>
     static IntPtr LoadSound(string filename)
