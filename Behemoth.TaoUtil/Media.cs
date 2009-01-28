@@ -4,10 +4,11 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
 
-
 using Tao.OpenGl;
 using Tao.PhysFs;
 using Tao.Sdl;
+
+using Behemoth.Util;
 
 namespace Behemoth.TaoUtil
 {
@@ -78,15 +79,25 @@ namespace Behemoth.TaoUtil
 
 
     /// <summary>
+    /// Load an image from PhysFS, convert it to a 32-bit SDL surface. Return
+    /// a pointer to the SDL surface. The caller must free the surface with
+    /// Sdl.SDL_FreeSurface.
+    /// </summary>
+    public static IntPtr Load32BitSurface(string filename)
+    {
+      IntPtr ptr = SdlImage.IMG_Load_RW(GetPfsFileRwop(filename), 1);
+      IntPtr result = SdlSurfaceTo32Bit(ptr);
+      Sdl.SDL_FreeSurface(ptr);
+      return result;
+    }
+
+
+    /// <summary>
     /// Make an OpenGL texture from an image loaded from PhysFS.
     /// </summary>
     public static int LoadGlTexture(string filename, int texFlags)
     {
-      IntPtr texturePtr =
-        SdlImage.IMG_Load_RW(GetPfsFileRwop(filename), 1);
-
-      IntPtr texture32BitPtr = SdlSurfaceTo32Bit(texturePtr);
-      Sdl.SDL_FreeSurface(texturePtr);
+      IntPtr texture32BitPtr = Load32BitSurface(filename);
 
       Sdl.SDL_Surface texture = GetSdlSurface(texture32BitPtr);
 
@@ -127,6 +138,35 @@ namespace Behemoth.TaoUtil
         Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, pixels);
 
       return textureHandle;
+    }
+
+
+    /// <summary>
+    /// Load the RGBA pixel array of an image in PhysFS.
+    /// </summary>
+    public static unsafe Color[,] LoadPixels(string filename)
+    {
+      IntPtr surfacePtr = Load32BitSurface(filename);
+
+      Sdl.SDL_Surface surface = GetSdlSurface(surfacePtr);
+
+      byte* pixels = (byte*)surface.pixels.ToPointer();
+      int w = surface.w;
+      int h = surface.h;
+
+      Color[,] result = new Color[h, w];
+
+      int idx = 0;
+      for (int y = 0; y < h; y++)
+      {
+        for (int x = 0; x < w; x++)
+        {
+          result[y, x] = new Color(
+            pixels[idx++], pixels[idx++], pixels[idx++], pixels[idx++]);
+        }
+      }
+
+      return result;
     }
 
 
