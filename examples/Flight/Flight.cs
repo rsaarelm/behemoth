@@ -48,6 +48,8 @@ namespace Flight
                 out landscape.Vertices,
                 out landscape.Normals,
                 out landscape.Faces);
+
+      things.Add(new Creep(new Vec3(0, 30, 15), new Vec3(0, -5, 0)));
     }
 
 
@@ -69,7 +71,13 @@ namespace Flight
     public void Uninit() {}
 
 
-    public void Update(double timeElapsed) {}
+    public void Update(double timeElapsed)
+    {
+      foreach (Thing o in things)
+      {
+        o.Update(timeElapsed);
+      }
+    }
 
 
 
@@ -81,6 +89,12 @@ namespace Flight
       Gl.glRotatef(App.Instance.Tick, 0, 0, 1);
 
       Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, lightPos);
+
+      foreach (Thing o in things)
+      {
+        o.Draw(timeElapsed);
+      }
+
 
       Gl.glPushMatrix();
       Gl.glTranslatef(-terrainSize / 2, -terrainSize / 2, -16);
@@ -129,7 +143,7 @@ namespace Flight
 
       Gl.glMatrixMode(Gl.GL_MODELVIEW);
       Gl.glLoadIdentity();
-      Glu.gluLookAt(-10, -50, 80,
+      Glu.gluLookAt(-10, -50, 40,
                     0, 0, 0,
                     0, 0, 1);
     }
@@ -285,7 +299,7 @@ namespace Flight
     }
 
 
-    public void Octahedron()
+    public static Model MakeOctahedron()
     {
       float[,] vertices = {
         { 0,  0,  1},
@@ -316,8 +330,20 @@ namespace Flight
         {5, 4, 1},
       };
 
-      Gfx.DrawTriMesh(vertices, normals, faces);
+      return new Model(vertices, normals, faces);
     }
+
+
+    public static Model Octahedron()
+    {
+      if (octahedron == null)
+      {
+        octahedron = MakeOctahedron();
+      }
+      return (Model)octahedron;
+    }
+
+    static Model? octahedron = null;
 
 
     static double TerrainHeight(double x, double y)
@@ -328,15 +354,22 @@ namespace Flight
     }
 
 
+    public IDictionary<string, Model> Models { get { return models; } }
+
+
     Model landscape;
 
     static Color[,] heightmap;
 
-    static Rng rng = new DefaultRng();
+    public Rng Rng = new DefaultRng();
+
+    IDictionary<string, Model> models = new Dictionary<string, Model>();
+
+    ICollection<Thing> things = new List<Thing>();
   }
 
 
-  struct Model
+  public struct Model
   {
     public float[,] Vertices;
     public float[,] Normals;
@@ -354,6 +387,56 @@ namespace Flight
     public void Draw()
     {
       Gfx.DrawTriMesh(Vertices, Normals, Faces);
+    }
+  }
+
+
+  public enum ThingType { Creep, Tower }
+
+
+  public abstract class Thing
+  {
+    public Vec3 Pos;
+
+    public Model Model;
+
+    public ThingType Type;
+
+    public bool IsAlive = true;
+
+    public Color Color = Color.Aliceblue;
+
+    public abstract void Update(double timeElapsed);
+
+    public virtual void Draw(double timeElapsed)
+    {
+      Gl.glPushMatrix();
+      Gfx.GlColor(Color);
+
+      Gl.glTranslatef((float)Pos.X, (float)Pos.Y, (float)Pos.Z);
+      // TODO: Rotation.
+      Model.Draw();
+      Gl.glPopMatrix();
+    }
+  }
+
+
+  public class Creep : Thing
+  {
+    public Vec3 velocity;
+
+    public Creep(Vec3 pos, Vec3 velocity)
+    {
+      this.Model = Flight.Octahedron();
+      this.Type = ThingType.Creep;
+      this.velocity = velocity;
+      this.Pos = pos;
+    }
+
+
+    public override void Update(double timeElapsed)
+    {
+      Pos += velocity * timeElapsed;
     }
   }
 }
