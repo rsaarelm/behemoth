@@ -10,10 +10,22 @@ using Behemoth.Util;
 
 namespace Flight
 {
+  public interface IFlightService : IAppService
+  {
+    IEnumerable<Thing> Things { get; }
+
+    void AddThing(Thing thing);
+
+    void RemoveThing(Thing thing);
+
+    Rng Rng { get; }
+  }
+
+
   /// <summary>
   /// A 3D flight demo.
   /// </summary>
-  public class Flight : IScreen
+  public class Flight : IScreen, IFlightService
   {
     const int terrainSize = 128;
 
@@ -23,7 +35,9 @@ namespace Flight
     public static void Main(String[] args)
     {
       var app = new TaoApp(640, 480, "Flight");
-      app.RegisterService(typeof(IScreen), new Flight());
+      var flight = new Flight();
+      app.RegisterService(typeof(IScreen), flight);
+      app.RegisterService(typeof(IFlightService), flight);
       app.Run();
     }
 
@@ -49,7 +63,12 @@ namespace Flight
                 out landscape.Normals,
                 out landscape.Faces);
 
-      things.Add(new Creep(new Vec3(0, 30, 15), new Vec3(0, -5, 0)));
+      things.Add(new Creep(new Vec3(0, 0, 15), new Vec3(0, -5, 0)));
+      things.Add(new Creep(new Vec3(0, 5, 15), new Vec3(0, -5, 0)));
+
+      things.Add(new Tower(new Vec3(10, -30, 15)));
+      things.Add(new Tower(new Vec3(-10, -30, 15)));
+
     }
 
 
@@ -73,9 +92,13 @@ namespace Flight
 
     public void Update(double timeElapsed)
     {
-      foreach (Thing o in things)
+      foreach (Thing o in new List<Thing>(things))
       {
         o.Update(timeElapsed);
+        if (!o.IsAlive)
+        {
+          RemoveThing(o);
+        }
       }
     }
 
@@ -98,20 +121,9 @@ namespace Flight
 
       Gl.glPushMatrix();
       Gl.glTranslatef(-terrainSize / 2, -terrainSize / 2, -16);
-
       Gfx.GlColor(Color.Olivedrab);
       landscape.Draw();
       Gl.glPopMatrix();
-
-      Gl.glTranslatef(0, 0, 10);
-
-      Gfx.GlColor(Color.Orange);
-
-      MengerSponge((App.Instance.Tick / 30) % 4, -2, -2, -2, 4, 4, 4);
-      Gl.glTranslatef(0, 4, 0);
-
-      Gfx.GlColor(Color.Orchid);
-      Octahedron();
 
     }
 
@@ -149,7 +161,7 @@ namespace Flight
     }
 
 
-    void MengerSponge(
+    public static void MengerSponge(
       int degree,
       float x, float y, float z, float w, float h, float d)
     {
@@ -357,11 +369,35 @@ namespace Flight
     public IDictionary<string, Model> Models { get { return models; } }
 
 
+    public IEnumerable<Thing> Things { get { return things; } }
+
+
+    public void AddThing(Thing thing)
+    {
+      things.Add(thing);
+    }
+
+
+    public void RemoveThing(Thing thing)
+    {
+      things.Remove(thing);
+    }
+
+
+    public static void Spawn(Thing thing)
+    {
+      App.Service<IFlightService>().AddThing(thing);
+    }
+
+
+    public Rng Rng { get { return rng; } }
+
+
     Model landscape;
 
     static Color[,] heightmap;
 
-    public Rng Rng = new DefaultRng();
+    public Rng rng = new DefaultRng();
 
     IDictionary<string, Model> models = new Dictionary<string, Model>();
 
@@ -391,7 +427,7 @@ namespace Flight
   }
 
 
-  public enum ThingType { Creep, Tower }
+  public enum ThingType { Creep = 1, Tower = 2 }
 
 
   public abstract class Thing
@@ -418,12 +454,24 @@ namespace Flight
       Model.Draw();
       Gl.glPopMatrix();
     }
+
+
+    public virtual void Damage(double amount)
+    {
+    }
+
+
+    public virtual double Dist(Thing other)
+    {
+      return (this.Pos - other.Pos).Abs();
+    }
   }
 
 
   public class Creep : Thing
   {
     public Vec3 velocity;
+    public double health = 100.0;
 
     public Creep(Vec3 pos, Vec3 velocity)
     {
@@ -438,5 +486,153 @@ namespace Flight
     {
       Pos += velocity * timeElapsed;
     }
+
+
+    public override void Damage(double amount)
+    {
+      health -= amount;
+      for (int i = 0; i < (int)amount + 1; i++)
+      {
+        Flight.Spawn(new Particle(
+                       Pos,
+                       App.Service<IFlightService>().Rng.UnitVec() * 10.0,
+                       Color.Red,
+                       1.0,
+                       0.1));
+
+      }
+      if (health < 0.0)
+      {
+        IsAlive = false;
+      }
+    }
+  }
+
+
+  public class Tower : Thing
+  {
+    public Tower(Vec3 pos)
+    {
+      this.Type = ThingType.Tower;
+      this.Pos = pos;
+      this.Color = Color.Orange;
+    }
+
+
+    public override void Draw(double timeElapsed)
+    {
+      // XXX: Repeating the matrix & color & translation code from parent. Ugly.
+      Gl.glPushMatrix();
+      Gfx.GlColor(Color);
+
+      Gl.glTranslatef((float)Pos.X, (float)Pos.Y, (float)Pos.Z);
+
+      Flight.MengerSponge(Math.Abs(stage), -2, -2, -2, 4, 4, 4);
+
+      Gl.glPopMatrix();
+    }
+
+
+    public override void Update(double timeElapsed)
+    {
+      time += timeElapsed;
+      if (time > switchDelay)
+      {
+        time -= switchDelay;
+        stage++;
+        if (stage > 2)
+        {
+          stage = -2;
+        }
+      }
+
+      Thing target = ClosestCreep();
+      if (target != null && Dist(target) < KillRange)
+      {
+        Shoot(target);
+      }
+    }
+
+
+    Thing ClosestCreep()
+    {
+      Thing result = null;
+      foreach (Thing o in App.Service<IFlightService>().Things)
+      {
+        if (o.Type == ThingType.Creep)
+        {
+          if (result == null || Dist(o) < Dist(result))
+          {
+            result = o;
+          }
+        }
+      }
+      return result;
+    }
+
+
+    void Shoot(Thing target)
+    {
+      // TODO: Shoot effect
+      // TODO: Cooldown until next shot.
+      target.Damage(power);
+    }
+
+
+
+    double time = 0.0;
+    int stage = -2;
+
+    double power = 10.0;
+
+    const double switchDelay = 1.0;
+
+    const double KillRange = 15.0;
+  }
+
+
+  public class Particle : Thing
+  {
+    public Particle(Vec3 pos, Vec3 velocity, Color color, double lifetime, double scale)
+    {
+      // XXX: Use proper particles.
+      this.Model = Flight.Octahedron();
+
+      this.Pos = pos;
+      this.Color = color;
+      this.velocity = velocity;
+      this.lifetime = lifetime;
+      this.scale = scale;
+    }
+
+
+    public override void Update(double timeElapsed)
+    {
+      Pos += velocity * timeElapsed;
+      lifetime -= timeElapsed;
+      if (lifetime < 0)
+      {
+        IsAlive = false;
+      }
+    }
+
+
+    public override void Draw(double timeElapsed)
+    {
+      // XXX: Code repetition
+      Gl.glPushMatrix();
+      Gfx.GlColor(Color);
+
+      Gl.glTranslatef((float)Pos.X, (float)Pos.Y, (float)Pos.Z);
+      Gl.glScalef((float)scale, (float)scale, (float)scale);
+      // TODO: Use proper simple particles, not meshes.
+      Model.Draw();
+      Gl.glPopMatrix();
+    }
+
+
+    Vec3 velocity;
+    double lifetime;
+    double scale;
   }
 }
