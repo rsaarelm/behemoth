@@ -18,9 +18,7 @@ namespace Behemoth.Util
     private byte a;
 
 
-    public Color(byte r, byte g, byte b) : this(r, g, b, 0xff)
-    {
-    }
+    public Color(byte r, byte g, byte b) : this(r, g, b, 0xff) {}
 
 
     public Color(byte r, byte g, byte b, byte a)
@@ -30,6 +28,18 @@ namespace Behemoth.Util
       this.b = b;
       this.a = a;
     }
+
+
+    public Color(double r, double g, double b) : this(r, g, b, 1.0) {}
+
+
+    public Color(double r, double g, double b, double a) :
+      this(
+        (byte)(r * 255),
+        (byte)(g * 255),
+        (byte)(b * 255),
+        (byte)(a * 255))
+    {}
 
 
     public Color(String desc)
