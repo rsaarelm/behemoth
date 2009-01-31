@@ -144,5 +144,61 @@ namespace Behemoth.Util
       Array.Copy(array, 0, result, 0, array.Length);
       return result;
     }
+
+
+    /// <summary>
+    /// Get the dimensions of a 2d array.
+    /// </summary>
+    public static void GetArrayDims<T>(
+      T[,] array, out int width, out int height)
+    {
+      width = array.GetLength(1);
+      height = array.GetLength(0);
+    }
+
+
+    /// <summary>
+    /// Create a two-dimensional array with values sampled from a function.
+    /// The value are assigned with the following form: result[y, x] =
+    /// sourceFunc(x, y).
+    /// </summary>
+    public static T[,] MakeArray<T>(
+      int width, int height, Func<int, int, T> sourceFunc)
+    {
+      T[,] result = new T[height, width];
+      for (int y = 0; y < height; y++)
+      {
+        for (int x = 0; x < width; x++)
+        {
+          result[y, x] = sourceFunc(x, y);
+        }
+      }
+      return result;
+    }
+
+
+
+    /// <summary>
+    /// Create a two-dimensional array sampling the source function for cell
+    /// centers from range [-1, 1] in x and y.
+    /// </summary>
+    public static T[,] MakeArray<T>(
+      int width, int height, Func<double, double, T> sourceFunc)
+    {
+      T[,] result = new T[height, width];
+      for (int y = 0; y < height; y++)
+      {
+        for (int x = 0; x < width; x++)
+        {
+          // Point the sampling positions at points in [0, 1] corresponding to
+          // cell centers.
+          double sampleX = (2.0 + (double)x * 4.0) / (width * 4.0) - 1;
+          double sampleY = (2.0 + (double)y * 4.0) / (height * 4.0) - 1;
+
+          result[y, x] = sourceFunc(sampleX, sampleY);
+        }
+      }
+      return result;
+    }
   }
 }
