@@ -142,31 +142,88 @@ namespace Behemoth.TaoUtil
 
 
     /// <summary>
-    /// Load the RGBA pixel array of an image in PhysFS.
+    /// Convert a (32-bit RGBA) SDL surface into a pixel array.
     /// </summary>
-    public static unsafe Color[,] LoadPixels(string filename)
+    public static unsafe Color[,] SurfaceToPixels(Sdl.SDL_Surface surface)
     {
-      IntPtr surfacePtr = Load32BitSurface(filename);
-
-      Sdl.SDL_Surface surface = GetSdlSurface(surfacePtr);
-
-      byte* pixels = (byte*)surface.pixels.ToPointer();
+      int* data = (int*)surface.pixels.ToPointer();
       int w = surface.w;
       int h = surface.h;
 
       Color[,] result = new Color[h, w];
 
-      int idx = 0;
       for (int y = 0; y < h; y++)
       {
         for (int x = 0; x < w; x++)
         {
-          result[y, x] = new Color(
-            pixels[idx++], pixels[idx++], pixels[idx++], pixels[idx++]);
+          byte r, g, b, a;
+          // XXX: Breaks if surface pitch != width_in_pixels * bpp
+          Sdl.SDL_GetRGBA(
+            data[x + y * w], surface.format,
+            out r, out g, out b, out a);
+          result[y, x] = new Color(r, g, b, a);
         }
       }
 
       return result;
+    }
+
+
+    public static unsafe int PixelsToGlTexture(Color[,] pixels, int texFlags)
+    {
+      IntPtr texturePtr = PixelsToSurface(pixels);
+      Sdl.SDL_Surface texture = GetSdlSurface(texturePtr);
+
+      int result = MakeGlTexture(
+        texture.pixels, texture.w, texture.h, texFlags);
+
+      Sdl.SDL_FreeSurface(texturePtr);
+
+      return result;
+    }
+
+
+    /// <summary>
+    /// Make a 32-bit SDL surface from a pixel array.
+    /// </summary>
+    public static unsafe IntPtr PixelsToSurface(Color[,] pixels)
+    {
+      int w, h;
+      MemUtil.GetArrayDims(pixels, out w, out h);
+
+      IntPtr surfacePtr = Make32BitSurface(w, h);
+
+      Sdl.SDL_Surface surface = GetSdlSurface(surfacePtr);
+      int* data = (int*)surface.pixels.ToPointer();
+
+      for (int y = 0; y < h; y++)
+      {
+        for (int x = 0; x < w; x++)
+        {
+          Color col = pixels[y, x];
+          int result = Sdl.SDL_MapRGBA(
+            surface.format,
+            col.R, col.G, col.B, col.A);
+
+          // XXX: Breaks if surface pitch != width_in_pixels * bpp
+          data[x + y * w] = result;
+        }
+      }
+
+      return surfacePtr;
+    }
+
+
+    /// <summary>
+    /// Load the RGBA pixel array of an image in PhysFS.
+    /// </summary>
+    public static Color[,] LoadPixels(string filename)
+    {
+      IntPtr surfacePtr = Load32BitSurface(filename);
+
+      Sdl.SDL_Surface surface = GetSdlSurface(surfacePtr);
+
+      return SurfaceToPixels(surface);
     }
 
 
@@ -315,43 +372,24 @@ namespace Behemoth.TaoUtil
     }
 
 
+    /// <summary>
+    /// Generate the SDL_PixelFormat structure for a 32-bit surface.
+    /// </summary>
     private static Sdl.SDL_PixelFormat PixelFormat32Bit
     {
       get
       {
         byte rloss = 0, gloss = 0, bloss = 0, aloss = 0;
+
         byte rshift, gshift, bshift, ashift;
         uint rmask, gmask, bmask, amask;
+        ColorShifts(out rshift, out gshift, out bshift, out ashift);
+        ColorMasks(out rmask, out gmask, out bmask, out amask);
 
         byte bitsPerPixel = 32;
         byte bytesPerPixel = 4;
         int colorkey = 0;
         byte alpha = 0;
-
-        if (Sdl.SDL_BYTEORDER == Sdl.SDL_BIG_ENDIAN)
-        {
-          rshift = 24;
-          gshift = 16;
-          bshift = 8;
-          ashift = 0;
-
-          rmask = 0xff000000;
-          gmask = 0x00ff0000;
-          bmask = 0x0000ff00;
-          amask = 0x000000ff;
-        }
-        else
-        {
-          rshift = 0;
-          gshift = 8;
-          bshift = 16;
-          ashift = 24;
-
-          rmask = 0x000000ff;
-          gmask = 0x0000ff00;
-          bmask = 0x00ff0000;
-          amask = 0xff000000;
-        }
 
         var result = new Sdl.SDL_PixelFormat(
           IntPtr.Zero,
@@ -363,6 +401,73 @@ namespace Behemoth.TaoUtil
           alpha);
 
         return result;
+      }
+    }
+
+
+    public static IntPtr Make32BitSurface(int width, int height)
+    {
+        uint rmask, gmask, bmask, amask;
+        ColorMasks(out rmask, out gmask, out bmask, out amask);
+
+        IntPtr ptr = Sdl.SDL_CreateRGBSurface(
+          0,
+          width,
+          height,
+          32,
+          rmask,
+          gmask,
+          bmask,
+          amask);
+
+        return ptr;
+    }
+
+
+    /// <summary>
+    /// Output the bit shift values for color channels for a 32-bit SDL
+    /// surface. The values depend on the endianness of the system.
+    /// </summary>
+    private static void ColorShifts(
+      out byte rshift, out byte gshift, out byte bshift, out byte ashift)
+    {
+      if (Sdl.SDL_BYTEORDER == Sdl.SDL_BIG_ENDIAN)
+      {
+        rshift = 24;
+        gshift = 16;
+        bshift = 8;
+        ashift = 0;
+      }
+      else
+      {
+        rshift = 0;
+        gshift = 8;
+        bshift = 16;
+        ashift = 24;
+      }
+    }
+
+
+    /// <summary>
+    /// Output the color channel mask values for a 32-bit SDL surface. The
+    /// values depend on the endianness of the system.
+    /// </summary>
+    private static void ColorMasks(
+      out uint rmask, out uint gmask, out uint bmask, out uint amask)
+    {
+      if (Sdl.SDL_BYTEORDER == Sdl.SDL_BIG_ENDIAN)
+      {
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+      }
+      else
+      {
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
       }
     }
 

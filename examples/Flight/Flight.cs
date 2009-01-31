@@ -56,6 +56,13 @@ namespace Flight
 
       heightmap = Media.LoadPixels("heightmap.png");
 
+      var particleTexture = Media.PixelsToGlTexture(
+        MemUtil.MakeArray(
+          32, 32,
+          (double x, double y) =>
+          new Color(1.0, 1.0, 1.0, Math.Cos(Math.Sqrt(x*x + y*y * Math.PI / 2)))),
+          0);
+
       landscape = new Model();
 
       HeightMap(TerrainHeight, 0.0, 0.0, 1.0, 1.0, terrainSize, terrainSize,
