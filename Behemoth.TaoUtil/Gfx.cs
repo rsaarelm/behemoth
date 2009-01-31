@@ -294,5 +294,26 @@ namespace Behemoth.TaoUtil
       if ((types & VertexFlags.Texture) != 0)
         Gl.glDisableClientState(Gl.GL_TEXTURE_COORD_ARRAY);
     }
+
+
+    /// <summary>
+    /// Draws a single particle using point sprites. Might be less efficient
+    /// than drawing a batch of them at once. Doesn't bind texture or set
+    /// color, do these before calling.
+    /// </summary>
+    public static void DrawParticle(float x, float y, float z, float size)
+    {
+      Gl.glPointSize(size);
+      Gl.glTexEnvf(Gl.GL_POINT_SPRITE_ARB, Gl.GL_COORD_REPLACE_ARB, Gl.GL_TRUE);
+      Gl.glEnable(Gl.GL_POINT_SPRITE_ARB);
+
+      Gl.glBegin(Gl.GL_POINTS);
+      // Set normal so that existing normal state doesn't affect particle shading.
+      Gl.glNormal3f(0, 0, 1);
+      Gl.glVertex3f(x, y, z);
+      Gl.glEnd();
+
+      Gl.glDisable(Gl.GL_POINT_SPRITE_ARB);
+    }
   }
 }
