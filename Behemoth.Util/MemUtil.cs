@@ -182,7 +182,7 @@ namespace Behemoth.Util
     /// Create a two-dimensional array sampling the source function for cell
     /// centers from range [-1, 1] in x and y.
     /// </summary>
-    public static T[,] MakeArray<T>(
+    public static T[,] MakeScaledArray<T>(
       int width, int height, Func<double, double, T> sourceFunc)
     {
       T[,] result = new T[height, width];
@@ -192,8 +192,8 @@ namespace Behemoth.Util
         {
           // Point the sampling positions at points in [0, 1] corresponding to
           // cell centers.
-          double sampleX = (2.0 + (double)x * 4.0) / (width * 4.0) - 1;
-          double sampleY = (2.0 + (double)y * 4.0) / (height * 4.0) - 1;
+          double sampleX = (2.0 + (double)x * 4.0) / (width * 2.0) - 1.0;
+          double sampleY = (2.0 + (double)y * 4.0) / (height * 2.0) - 1.0;
 
           result[y, x] = sourceFunc(sampleX, sampleY);
         }

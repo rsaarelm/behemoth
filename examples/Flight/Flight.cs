@@ -56,11 +56,11 @@ namespace Flight
 
       heightmap = Media.LoadPixels("heightmap.png");
 
-      var particleTexture = Media.PixelsToGlTexture(
-        MemUtil.MakeArray(
+      particleTexture = Media.PixelsToGlTexture(
+        MemUtil.MakeScaledArray(
           32, 32,
           (double x, double y) =>
-          new Color(1.0, 1.0, 1.0, Math.Cos(Math.Sqrt(x*x + y*y * Math.PI / 2)))),
+          new Color(1.0, 1.0, 1.0, Num.CosSpread(x, y))),
           0);
 
       landscape = new Model();
@@ -132,6 +132,17 @@ namespace Flight
       landscape.Draw();
       Gl.glPopMatrix();
 
+
+      Gl.glPushMatrix();
+      Gl.glLoadIdentity();
+      Gl.glTranslatef(0, 0, -10);
+
+      Gl.glNormal3f(0, 0, 1);
+      Gfx.DrawSprite(0, 0, 0, 1, 1, particleTexture, 1, 1, 0, 0, Color.White);
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+;
+
+      Gl.glPopMatrix();
     }
 
 
@@ -409,6 +420,8 @@ namespace Flight
     IDictionary<string, Model> models = new Dictionary<string, Model>();
 
     ICollection<Thing> things = new List<Thing>();
+
+    int particleTexture;
   }
 
 

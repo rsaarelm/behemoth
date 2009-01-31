@@ -96,6 +96,14 @@ namespace Behemoth.Util
       return ((k % n) + n) % n;
     }
 
+
+    public static double CosSpread(double x, double y)
+    {
+      double dist = Math.Min(1.0, Math.Sqrt(x * x + y * y));
+      return Math.Cos(dist * Math.PI / 2);
+    }
+
+
     public const double Epsilon = 0.000001;
   }
 }
