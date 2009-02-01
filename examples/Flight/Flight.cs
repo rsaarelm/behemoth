@@ -408,8 +408,6 @@ namespace Flight
     IDictionary<string, Model> models = new Dictionary<string, Model>();
 
     ICollection<Thing> things = new List<Thing>();
-
-    int particleTexture;
   }
 
 
@@ -581,7 +579,17 @@ namespace Flight
 
     void Shoot(Thing target)
     {
-      // TODO: Shoot effect
+      Vec3 targetPos = new Vec3(target.Pos);
+      Flight.Spawn(
+        new Fx(
+          0.2,
+          time =>
+          Gfx.DrawBeam(Pos,
+                       targetPos,
+                       0.4,
+                       Color.White,
+                       Color.Cyan)));
+
       // TODO: Cooldown until next shot.
       target.Damage(power);
     }
@@ -637,5 +645,36 @@ namespace Flight
     Vec3 velocity;
     double lifetime;
     double scale;
+  }
+
+
+  public class Fx : Thing
+  {
+    public Fx(double lifetime, Action<double> drawFunc)
+    {
+      this.drawFunc = drawFunc;
+      this.lifetime = lifetime;
+    }
+
+
+    public override void Update(double timeElapsed)
+    {
+      currentLife += timeElapsed;
+      if (currentLife > lifetime)
+      {
+        IsAlive = false;
+      }
+    }
+
+
+    public override void Draw(double timeElapsed)
+    {
+      drawFunc(currentLife);
+    }
+
+
+    Action<double> drawFunc;
+    double lifetime;
+    double currentLife = 0.0;
   }
 }
