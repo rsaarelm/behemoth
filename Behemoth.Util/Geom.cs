@@ -204,5 +204,35 @@ namespace Behemoth.Util
         return false;
       }
     }
+
+
+
+    /// <summary>
+    /// Generate an axis + angle rotation that aligns a vector with
+    /// the given direction vector.
+    /// </summary>
+    public static void OrientTowards(Vec3 init, Vec3 dir, out Vec3 axis, out double angle)
+    {
+      axis = Vec3.Cross(init, dir).Unit();
+      angle = Vec3.Angle(init, dir);
+    }
+
+
+    /// <summary>
+    /// Convert radians to degrees.
+    /// </summary>
+    public static double Rad2Deg(double radian)
+    {
+      return radian * 180.0 / Math.PI;
+    }
+
+
+    /// <summary>
+    /// Convert degrees to radians.
+    /// </summary>
+    public static double Deg2Rad(double degree)
+    {
+      return degree * Math.PI / 180.0;
+    }
   }
 }
