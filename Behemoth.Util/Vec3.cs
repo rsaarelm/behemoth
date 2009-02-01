@@ -21,6 +21,14 @@ namespace Behemoth.Util
     }
 
 
+    public Vec3(Vec3 other)
+    {
+      this.X = other.X;
+      this.Y = other.Y;
+      this.Z = other.Z;
+    }
+
+
     public override bool Equals(Object obj)
     {
       return obj is Vec3 && this == (Vec3)obj;
@@ -66,6 +74,15 @@ namespace Behemoth.Util
     public static double Dot(Vec3 lhs, Vec3 rhs)
     {
       return lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z;
+    }
+
+
+    /// <summary>
+    /// The smallest angle in radians between two vectors.
+    /// </summary>
+    public static double Angle(Vec3 lhs, Vec3 rhs)
+    {
+      return Math.Acos(Dot(lhs.Unit(), rhs.Unit()));
     }
 
 
