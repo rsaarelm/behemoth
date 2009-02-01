@@ -171,6 +171,16 @@ namespace Behemoth.TaoUtil
     }
 
 
+    /// <summary>
+    /// Set OpenGL color for emissive objects.
+    /// </summary>
+    public static void GlEmissionColor(Color color)
+    {
+      GlColor(color);
+      Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, color.FloatArray);
+    }
+
+
     public static void DrawRect(double x, double y, double w, double h, byte r, byte g, byte b)
     {
       // Clear the bound texture.
@@ -314,6 +324,44 @@ namespace Behemoth.TaoUtil
       Gl.glEnd();
 
       Gl.glDisable(Gl.GL_POINT_SPRITE_ARB);
+    }
+
+
+    /// <summary>
+    /// Draw a glowing laser beam.
+    /// </summary>
+    public static void DrawBeam(
+      Vec3 start, Vec3 end, double size, Color inner, Color outer)
+    {
+      // TODO: Push translation and rotation to get the result point from start to end.
+
+      Vec3 dir = end - start;
+
+      Vec3 axis;
+      double angle;
+      Geom.OrientTowards(new Vec3(1, 0, 0), dir, out axis, out angle);
+
+      float length = (float)dir.Abs();
+      float unit = (float)size / 4;
+
+      Gl.glPushMatrix();
+
+      Gl.glTranslated(start.X, start.Y, start.Z);
+      Gl.glRotated(Geom.Rad2Deg(angle), axis.X, axis.Y, axis.Z);
+
+      Gl.glPushAttrib(Gl.GL_LIGHTING_BIT | Gl.GL_ENABLE_BIT);
+      Gl.glBlendFunc(Gl.GL_ONE, Gl.GL_ONE);
+
+      Gfx.GlEmissionColor(inner);
+      Gfx.DrawCube(unit, -unit, -unit, length - 2 * unit, 2 * unit, 2 * unit);
+
+      Gfx.GlEmissionColor(outer);
+      Gfx.DrawCube(0, -2 * unit, -2 * unit, length, 4 * unit, 4 * unit);
+
+      Gl.glBlendFunc(Gl.GL_ONE, Gl.GL_ZERO);
+      Gl.glPopAttrib();
+
+      Gl.glPopMatrix();
     }
   }
 }
