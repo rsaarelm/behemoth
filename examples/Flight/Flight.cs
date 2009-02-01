@@ -131,16 +131,6 @@ namespace Flight
       Gfx.GlColor(Color.Olivedrab);
       landscape.Draw();
       Gl.glPopMatrix();
-
-      // Draw particle using point sprites.
-
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, App.Service<ITaoService>().Textures["particle"]);
-
-      Gfx.GlColor(Color.White);
-
-      Gfx.DrawParticle(0, 0, 10, 10);
-
-      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
     }
 
 
@@ -516,7 +506,7 @@ namespace Flight
                        App.Service<IFlightService>().Rng.UnitVec() * 10.0,
                        Color.Red,
                        1.0,
-                       0.1));
+                       2.0));
 
       }
       if (health < 0.0)
@@ -613,9 +603,6 @@ namespace Flight
   {
     public Particle(Vec3 pos, Vec3 velocity, Color color, double lifetime, double scale)
     {
-      // XXX: Use proper particles.
-      this.Model = Flight.Octahedron();
-
       this.Pos = pos;
       this.Color = color;
       this.velocity = velocity;
@@ -637,15 +624,13 @@ namespace Flight
 
     public override void Draw(double timeElapsed)
     {
-      // XXX: Code repetition
-      Gl.glPushMatrix();
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, App.Service<ITaoService>().Textures["particle"]);
+
       Gfx.GlColor(Color);
 
-      Gl.glTranslatef((float)Pos.X, (float)Pos.Y, (float)Pos.Z);
-      Gl.glScalef((float)scale, (float)scale, (float)scale);
-      // TODO: Use proper simple particles, not meshes.
-      Model.Draw();
-      Gl.glPopMatrix();
+      Gfx.DrawParticle((float)Pos.X, (float)Pos.Y, (float)Pos.Z, (float)scale);
+
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
     }
 
 
