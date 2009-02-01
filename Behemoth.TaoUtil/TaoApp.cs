@@ -17,9 +17,17 @@ namespace Behemoth.TaoUtil
       this.pixelHeight = pixelHeight;
       this.windowTitle = title;
 
+      CacheInit();
       LibInit();
 
       RegisterService(typeof(ITaoService), this);
+    }
+
+
+    private void CacheInit()
+    {
+      imageCache = new ImageCache();
+      textureCache = new TextureCache(imageCache, 0);
     }
 
 
@@ -189,6 +197,14 @@ namespace Behemoth.TaoUtil
     }
 
 
+    /// <summary>
+    /// Add a procedurally generated texture with a given name.
+    /// </summary>
+    public void AddTexture(string name, Color[,] pixels)
+    {
+      imageCache[name] = Media.PixelsToSurface(pixels);
+    }
+
 
     public int PixelWidth { get { return pixelWidth; } }
 
@@ -209,7 +225,7 @@ namespace Behemoth.TaoUtil
 
     private string windowTitle;
 
-    private TextureCache textureCache = new TextureCache(new ImageCache(), 0);
-
+    private ImageCache imageCache;
+    private TextureCache textureCache;
   }
 }

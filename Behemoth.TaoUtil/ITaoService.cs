@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using Behemoth.Apps;
+using Behemoth.Util;
 
 namespace Behemoth.TaoUtil
 {
@@ -13,6 +14,8 @@ namespace Behemoth.TaoUtil
     void Resize(int w, int h);
 
     void PixelProjection();
+
+    void AddTexture(string name, Color[,] pixels);
 
     int PixelWidth { get; }
 

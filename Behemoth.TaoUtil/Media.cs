@@ -346,6 +346,14 @@ namespace Behemoth.TaoUtil
     }
 
 
+    /// <summary>
+    /// Convert a pointer to a SDL_Surface into a Tao SDL_Surface structure.
+    /// </summary>
+    /// <remarks>
+    /// The structure returned from this function can't be converted back into
+    /// the pointer, so you'll want to keep track of the pointer as well if
+    /// you want to, say, free the surface at some point.
+    /// </remarks>
     public static Sdl.SDL_Surface GetSdlSurface(IntPtr surfacePtr)
     {
       return (Sdl.SDL_Surface)Marshal.PtrToStructure(surfacePtr, typeof(Sdl.SDL_Surface));

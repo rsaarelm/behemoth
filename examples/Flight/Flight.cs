@@ -56,12 +56,12 @@ namespace Flight
 
       heightmap = Media.LoadPixels("heightmap.png");
 
-      particleTexture = Media.PixelsToGlTexture(
+      App.Service<ITaoService>().AddTexture(
+        "particle",
         MemUtil.MakeScaledArray(
           32, 32,
           (double x, double y) =>
-          new Color(1.0, 1.0, 1.0, Num.CosSpread(x, y))),
-          0);
+          new Color(1.0, 1.0, 1.0, Num.CosSpread(x, y))));
 
       landscape = new Model();
 
@@ -132,17 +132,15 @@ namespace Flight
       landscape.Draw();
       Gl.glPopMatrix();
 
+      // Draw particle using point sprites.
 
-      Gl.glPushMatrix();
-      Gl.glLoadIdentity();
-      Gl.glTranslatef(0, 0, -10);
+      Gl.glBindTexture(Gl.GL_TEXTURE_2D, App.Service<ITaoService>().Textures["particle"]);
 
-      Gl.glNormal3f(0, 0, 1);
-      Gfx.DrawSprite(0, 0, 0, 1, 1, particleTexture, 1, 1, 0, 0, Color.White);
+      Gfx.GlColor(Color.White);
+
+      Gfx.DrawParticle(0, 0, 10, 10);
+
       Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-;
-
-      Gl.glPopMatrix();
     }
 
 
