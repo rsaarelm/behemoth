@@ -60,6 +60,23 @@ namespace Behemoth.Util
     }
 
 
+    public float[] FloatArray
+    {
+      get
+      {
+        return new float[] {
+          (float)R / 255.0f, (float)G / 255.0f,
+          (float)B / 255.0f, (float)A / 255.0f};
+      }
+    }
+
+
+    public Color WithAlpha(byte alpha)
+    {
+      return new Color(R, G, B, alpha);
+    }
+
+
     public static bool operator==(Color lhs, Color rhs)
     {
       return lhs.R == rhs.R && lhs.G == rhs.G && lhs.B == rhs.B && lhs.A == rhs.A;
