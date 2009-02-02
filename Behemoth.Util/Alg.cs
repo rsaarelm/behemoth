@@ -233,5 +233,17 @@ namespace Behemoth.Util
         return null;
       };
     }
+
+
+    public static void Iter2(int x0, int x1, int y0, int y1, Action<int, int> fn)
+    {
+      for (int y = y0; y < y1; y++)
+      {
+        for (int x = x0; x < x1; x++)
+        {
+          fn(x, y);
+        }
+      }
+    }
   }
 }
