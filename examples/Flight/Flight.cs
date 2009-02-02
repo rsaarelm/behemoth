@@ -27,7 +27,7 @@ namespace Flight
   /// </summary>
   public class Flight : IScreen, IFlightService
   {
-    const int terrainSize = 128;
+    const int terrainSize = 36;
 
     static float[] lightPos = {0.2f, 1.0f, 1.0f};
 
@@ -63,12 +63,7 @@ namespace Flight
           (double x, double y) =>
           new Color(1.0, 1.0, 1.0, Num.CosSpread(x, y))));
 
-      landscape = new Model();
-
-      HeightMap(TerrainHeight, 0.0, 0.0, 1.0, 1.0, terrainSize, terrainSize,
-                out landscape.Vertices,
-                out landscape.Normals,
-                out landscape.Faces);
+      InitTerrain();
 
       things.Add(new Creep(new Vec3(0, 0, 15), new Vec3(0, -5, 0)));
       things.Add(new Creep(new Vec3(0, 5, 15), new Vec3(0, -5, 0)));
@@ -94,6 +89,60 @@ namespace Flight
     }
 
 
+    void InitTerrain()
+    {
+      var terrainData = Alg.A(
+        ".E......X...",
+        ".#......###.",
+        ".#.####...#.",
+        ".#.#..##..#.",
+        ".#.#...#..#.",
+        ".###...#..#.",
+        ".......#..#.",
+        ".####..#..#.",
+        ".#..####..#.",
+        ".#........#.",
+        ".##########.",
+        "............");
+
+      int width, height;
+
+      Tile.AsciiTableDims(terrainData, out width, out height);
+
+      Field2<byte> terrainField = new Field2<byte>();
+
+      int cellSize = 9;
+
+      Tile.AsciiTableIter(
+        (ch, x, y) => {
+          Alg.Iter2(x * cellSize, x * cellSize + cellSize,
+                    y * cellSize, y * cellSize + cellSize,
+                    (x2, y2) =>
+                    // A sort of flowing downhill progression from entry and road to
+                    // exit.
+
+                    terrainField[x2, y2] = (byte)Alg.Dict<char, int>(
+                      '.', 4,
+                      'E', 2,
+                      '#', 1,
+                      'X', 0)[ch]);
+        },
+        terrainData);
+
+      landscape = new Model();
+
+      Func<double, double, double> heightFn = (x, y) =>
+        (double)terrainField[(int)x, (int)y];
+
+      HeightMap(
+        heightFn, 0.0, 0.0, 1.0, 1.0, width * cellSize, height * cellSize,
+        out landscape.Vertices,
+        out landscape.Normals,
+        out landscape.Faces);
+
+    }
+
+
     public void Uninit() {}
 
 
@@ -116,7 +165,7 @@ namespace Flight
       Gfx.ClearScreen();
       Camera();
 
-      Gl.glRotatef(App.Instance.Tick, 0, 0, 1);
+//      Gl.glRotatef(App.Instance.Tick, 0, 0, 1);
 
       Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, lightPos);
 
