@@ -104,6 +104,15 @@ namespace Behemoth.Util
     }
 
 
+    /// <summary>
+    /// Return whether two numbers are the same within epsilon.
+    /// </summary>
+    public static bool AlmostEqual(double a, double b)
+    {
+      return Math.Abs(a - b) <= Epsilon;
+    }
+
+
     public const double Epsilon = 0.000001;
   }
 }

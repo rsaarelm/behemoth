@@ -234,5 +234,38 @@ namespace Behemoth.Util
     {
       return degree * Math.PI / 180.0;
     }
+
+
+    /// <summary>
+    /// Determine the point where a ray hits a plane if it does. Return
+    /// whether the ray hits the plane or not.
+    /// </summary>
+    public static bool RayPlaneIntersection(
+      Ray ray, Plane plane, out Vec3 intersection)
+    {
+      double rayPlaneDot = Vec3.Dot(ray.Dir, plane.Normal);
+
+      if (Num.AlmostEqual(rayPlaneDot, 0.0))
+      {
+        // Ray is practically parallel to the plane.
+        intersection = new Vec3(0, 0, 0);
+
+        return false;
+      }
+
+      // How far along the ray is the intersection?
+      double t = (plane.Distance - Vec3.Dot(plane.Normal, ray.Origin)) / rayPlaneDot;
+
+      if (t >= 0.0) {
+        intersection = ray.Origin + ray.Dir * t;
+        return true;
+      }
+      else
+      {
+        intersection = new Vec3(0, 0, 0);
+
+        return false;
+      }
+    }
   }
 }

@@ -107,6 +107,7 @@
         <include name="Behemoth.Util/Guid.cs"/>
         <include name="Behemoth.Util/MemUtil.cs"/>
         <include name="Behemoth.Util/Num.cs"/>
+        <include name="Behemoth.Util/Primitives.cs"/>
         <include name="Behemoth.Util/Properties.cs"/>
         <include name="Behemoth.Util/Rng.cs"/>
         <include name="Behemoth.Util/SchemaProperties.cs"/>
