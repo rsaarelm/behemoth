@@ -132,7 +132,7 @@ namespace Flight
       landscape = new Model();
 
       Func<double, double, double> heightFn = (x, y) =>
-        (double)terrainField[(int)x, (int)y];
+        (double)terrainField[(int)x, (int)y] + 0.4 * Num.Noise((int)x, (int)y);
 
       HeightMap(
         heightFn, 0.0, 0.0, 1.0, 1.0, width * cellSize, height * cellSize,
