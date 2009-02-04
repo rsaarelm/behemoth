@@ -126,6 +126,40 @@ namespace Behemoth.Util
     }
 
 
+    public static T Minimum<T>(ICollection<T> items, Func<T, double> measure)
+    {
+      if (items.Count == 0)
+      {
+        // Item might not be nullable, no default value to return.
+        throw new ArgumentException("Empty collection", "items");
+      }
+
+      Console.WriteLine("Processing collection of size {0}.", items.Count);
+
+      T result;
+      double currentVal = double.MaxValue;
+
+      foreach (var node in items)
+      {
+        Console.WriteLine("Minimum of elements... "+node);
+      }
+
+
+      foreach (var item in items)
+      {
+        Console.WriteLine("Considering item: "+item);
+        double newVal = measure(item);
+        Console.WriteLine("Measure taken: "+newVal);
+        if (newVal < currentVal) {
+          currentVal = newVal;
+          result = item;
+        }
+      }
+
+      return result;
+    }
+
+
     /// <summary>
     /// Clamp a value between two bounds.
     /// </summary>
