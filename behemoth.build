@@ -94,10 +94,12 @@
         <include name="Behemoth.Util/IField3.cs"/>
 
         <include name="Behemoth.Util/Alg.cs"/>
+        <include name="Behemoth.Util/AStar.cs"/>
         <include name="Behemoth.Util/Cache.cs"/>
         <include name="Behemoth.Util/Color.cs"/>
         <include name="Behemoth.Util/Component.cs"/>
         <include name="Behemoth.Util/ComponentTemplate.cs"/>
+        <include name="Behemoth.Util/Cons.cs"/>
         <include name="Behemoth.Util/DefaultRng.cs"/>
         <include name="Behemoth.Util/Entity.cs"/>
         <include name="Behemoth.Util/EntityTemplate.cs"/>

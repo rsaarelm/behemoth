@@ -16,6 +16,12 @@ namespace Behemoth.Util
     public T2 Second { get { return second; } }
 
 
+    public override String ToString()
+    {
+      return String.Format("[{0}, {1}]", First, Second);
+    }
+
+
     private T1 first;
     private T2 second;
   }

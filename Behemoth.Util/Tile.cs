@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 
 namespace Behemoth.Util
 {
+  using Point = Tuple2<int, int>;
+
   /// <summary>
   /// Utilities for operating on tile grids.
   /// </summary>
@@ -187,5 +190,85 @@ namespace Behemoth.Util
             u + 1);
       }
     }
+
+
+    public static double EuclideanDist(Point p1, Point p2)
+    {
+      var dx = p2.First - p1.First;
+      var dy = p2.Second - p1.Second;
+      return Math.Sqrt(dx * dx + dy * dy);
+    }
+
+
+    /// <summary>
+    /// Find a path using A* and allowing 8-directional movement.
+    /// </summary>
+    public static IList<Point> FindPath8(
+      Func<int, int, bool> isPassable,
+      Point startPos,
+      Point targetPos,
+      int maxIterations)
+    {
+      return AStar.Search(
+        startPos,
+        targetPos,
+        EuclideanDist,
+        EuclideanDist,
+        point => Neighbors8(isPassable, point.First, point.Second),
+        maxIterations);
+    }
+
+
+    /// <summary>
+    /// Find a path using A* and allowing 4-directional movement.
+    /// </summary>
+    public static IList<Point> FindPath4(
+      Func<int, int, bool> isPassable,
+      Point startPos,
+      Point targetPos,
+      int maxIterations)
+    {
+      return AStar.Search(
+        startPos,
+        targetPos,
+        EuclideanDist,
+        EuclideanDist,
+        point => Neighbors4(isPassable, point.First, point.Second),
+        maxIterations);
+    }
+
+
+
+    public static IEnumerable<Point> Neighbors8(
+      Func<int, int, bool> isPassable,
+      int cx, int cy)
+    {
+      for (int y = cy - 1; y <= cy + 1; y++)
+      {
+        for (int x = cx - 1; x <= cx + 1; x++)
+        {
+          if (x == cx && y == cy)
+          {
+            continue;
+          }
+          if (isPassable(x, y))
+          {
+            yield return new Point(x, y);
+          }
+        }
+      }
+    }
+
+
+    public static IEnumerable<Point> Neighbors4(
+      Func<int, int, bool> isPassable,
+      int cx, int cy)
+    {
+      if (isPassable(cx, cy - 1)) yield return new Point(cx, cy - 1);
+      if (isPassable(cx + 1, cy)) yield return new Point(cx + 1, cy);
+      if (isPassable(cx, cy + 1)) yield return new Point(cx, cy + 1);
+      if (isPassable(cx - 1, cy)) yield return new Point(cx - 1, cy);
+    }
+
   }
 }
