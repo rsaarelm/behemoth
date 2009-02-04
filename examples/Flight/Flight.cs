@@ -10,6 +10,8 @@ using Behemoth.Util;
 
 namespace Flight
 {
+  using Point = Tuple2<int, int>;
+
   public interface IFlightService : IAppService
   {
     IEnumerable<Thing> Things { get; }
@@ -42,7 +44,10 @@ namespace Flight
     }
 
 
-    public Flight() {}
+    public Flight()
+    {
+      InitTerrain();
+    }
 
 
     public void Init() {
@@ -62,8 +67,6 @@ namespace Flight
           32, 32,
           (double x, double y) =>
           new Color(1.0, 1.0, 1.0, Num.CosSpread(x, y))));
-
-      InitTerrain();
 
       things.Add(new Creep(new Vec3(0, 0, 15), new Vec3(0, -5, 0)));
       things.Add(new Creep(new Vec3(0, 5, 15), new Vec3(0, -5, 0)));
@@ -91,6 +94,7 @@ namespace Flight
 
     void InitTerrain()
     {
+      // Create map from ASCII data.
       var terrainData = Alg.A(
         ".E......X...",
         ".#......###.",
@@ -113,26 +117,58 @@ namespace Flight
 
       int cellSize = 9;
 
+      Point entrance = new Point(-1, -1);
+      Point exit = new Point(-1, -1);
+
       Tile.AsciiTableIter(
         (ch, x, y) => {
-          Alg.Iter2(x * cellSize, x * cellSize + cellSize,
-                    y * cellSize, y * cellSize + cellSize,
-                    (x2, y2) =>
-                    // A sort of flowing downhill progression from entry and road to
-                    // exit.
+          // A sort of flowing downhill progression from entry and road to
+          // exit.
 
-                    terrainField[x2, y2] = (byte)Alg.Dict<char, int>(
-                      '.', 4,
-                      'E', 2,
-                      '#', 1,
-                      'X', 0)[ch]);
+          terrainField[x, y] = (byte)Alg.Dict<char, int>(
+            '.', 5,
+            'E', 3,
+            '#', 2,
+            'X', 1)[ch];
+          if (ch == 'E')
+          {
+            entrance = new Point(x, y);
+          }
+          else if (ch == 'X')
+          {
+            exit = new Point(x, y);
+          }
         },
         terrainData);
+
+      // Find a path for the creeps from map entry to map exit.
+      var creepPath = Tile.FindPath4(
+        (x, y) => {
+          var h = terrainField[x, y];
+          return h > 0 && h < 5;
+        },
+        entrance,
+        exit,
+        1000);
+
+      if (creepPath != null)
+      {
+        Console.WriteLine("Creep path:");
+        foreach (var pt in creepPath)
+        {
+          Console.Write("({0}, {1}) ", pt.First, pt.Second);
+        }
+        Console.WriteLine();
+      }
+      else
+      {
+        Console.WriteLine("No path found.");
+      }
 
       landscape = new Model();
 
       Func<double, double, double> heightFn = (x, y) =>
-        (double)terrainField[(int)x, (int)y] + 0.4 * Num.Noise((int)x, (int)y);
+        (double)terrainField[(int)(x / cellSize), (int)(y / cellSize)] + 0.4 * Num.Noise((int)x, (int)y);
 
       HeightMap(
         heightFn, 0.0, 0.0, 1.0, 1.0, width * cellSize, height * cellSize,
@@ -164,8 +200,6 @@ namespace Flight
     {
       Gfx.ClearScreen();
       Camera();
-
-//      Gl.glRotatef(App.Instance.Tick, 0, 0, 1);
 
       Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, lightPos);
 
