@@ -113,6 +113,12 @@ namespace Behemoth.Util
     }
 
 
+    public static int Signum(double num)
+    {
+      return num < 0 ? -1 : (num > 0 ? 1 : 0);
+    }
+
+
     public const double Epsilon = 0.000001;
   }
 }
