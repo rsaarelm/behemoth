@@ -34,5 +34,17 @@ namespace Behemoth.Util
       Assert.AreEqual(17, dict["quux"]);
 
     }
+
+
+    [Test]
+    public void TestSeqSetOps()
+    {
+      var seq1 = Alg.L(1, 2, 3, 5);
+      var seq2 = Alg.L(2, 4, 5, 6);
+
+      Assert.AreEqual(Alg.L(1, 2, 3, 4, 5, 6), new List<int>(Alg.SortedUnion(seq1, seq2)));
+      Assert.AreEqual(Alg.L(2, 5), new List<int>(Alg.SortedIntersection(seq1, seq2)));
+      Assert.AreEqual(Alg.L(1, 3), new List<int>(Alg.SortedDifference(seq1, seq2)));
+    }
   }
 }

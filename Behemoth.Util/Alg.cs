@@ -279,5 +279,159 @@ namespace Behemoth.Util
         }
       }
     }
+
+
+    /// <summary>
+    /// Return whehter the IComparable lhs is smaller than the IComparable rhs.
+    /// </summary>
+    public static bool LessThan<T>(T lhs, T rhs) where T : IComparable<T>
+    {
+      return lhs.CompareTo(rhs) < 0;
+    }
+
+
+    public static bool ComparableEqual<T>(T lhs, T rhs) where T : IComparable<T>
+    {
+      return lhs.CompareTo(rhs) == 0;
+    }
+
+
+    /// <summary>
+    /// Do a set operation, union, intersection or difference, on the values
+    /// of two sorted sequences. The yieldMask value specifies the operation
+    /// to perform. For each item encountered, a value mask, initially 0, is
+    /// created. If the item is present in sequence 1, bit 0 of the value mask
+    /// is set to 1. If the item is present in sequence 2, bit 1 of the value
+    /// mask is set to 1. The resulting value mask can range from 0 to 3. The
+    /// result is yielded if value (1 << mask) & yieldMask != 0.
+    ///
+    /// Example yieldMasks:
+    /// union: 14
+    /// intersection: 8
+    /// difference: 2
+    /// </summary>
+    public static IEnumerable<T> GenericSortedSetOperation<T>(
+      IEnumerable<T> sortedSeq1, IEnumerable<T> sortedSeq2, int yieldMask)
+      where T : IComparable<T>
+    {
+      const int only1Mask = 1 << 1;
+      const int only2Mask = 1 << 2;
+      const int bothMask = 1 << 3;
+
+      // Enumerators for the sequences.
+      var en1 = sortedSeq1.GetEnumerator();
+      var en2 = sortedSeq2.GetEnumerator();
+      // Whether either sequence has items left.
+      bool itemsLeft1 = en1.MoveNext();
+      bool itemsLeft2 = en2.MoveNext();
+
+      while (true)
+      {
+        if (itemsLeft1 && itemsLeft2)
+        {
+          var item1 = en1.Current;
+          var item2 = en2.Current;
+          if (ComparableEqual(item1, item2))
+          {
+            // The same item in both sequences.
+            if ((yieldMask & bothMask) != 0)
+            {
+              yield return item1;
+            }
+            itemsLeft1 = en1.MoveNext();
+            itemsLeft2 = en2.MoveNext();
+          }
+          else if (LessThan(item1, item2))
+          {
+            // The item only in the first sequence.
+            if ((yieldMask & only1Mask) != 0)
+            {
+              yield return item1;
+            }
+            itemsLeft1 = en1.MoveNext();
+          }
+          else
+          {
+            // The item only in the second sequence.
+            if ((yieldMask & only2Mask) != 0)
+            {
+              yield return item2;
+            }
+            itemsLeft2 = en2.MoveNext();
+          }
+        }
+        else if (itemsLeft1)
+        {
+          // Only the first sequence has items.
+          if ((yieldMask & only1Mask) != 0)
+          {
+            // If the mask cares about the first sequence without the second,
+            // return values from it.
+            yield return en1.Current;
+            itemsLeft1 = en1.MoveNext();
+          }
+          else
+          {
+            // Otherwise there isn't anything more to do, exit the loop.
+            break;
+          }
+        }
+        else if (itemsLeft2)
+        {
+          // Only the second sequence has items.
+          if ((yieldMask & only2Mask) != 0)
+          {
+            yield return en2.Current;
+            itemsLeft2 = en2.MoveNext();
+          }
+          else
+          {
+            break;
+          }
+        }
+        else
+        {
+          // Everything's gone.
+          break;
+        }
+      }
+    }
+
+
+    /// <summary>
+    /// Union of two sequences of sorted values.
+    /// </summary>
+    public static IEnumerable<T> SortedUnion<T>(
+      IEnumerable<T> sortedSeq1,
+      IEnumerable<T> sortedSeq2)
+      where T : IComparable<T>
+    {
+      return GenericSortedSetOperation(sortedSeq1, sortedSeq2, 14);
+    }
+
+
+    /// <summary>
+    /// Intersection of two sequences of sorted values.
+    /// </summary>
+    public static IEnumerable<T> SortedIntersection<T>(
+      IEnumerable<T> sortedSeq1,
+      IEnumerable<T> sortedSeq2)
+      where T : IComparable<T>
+    {
+      return GenericSortedSetOperation(sortedSeq1, sortedSeq2, 8);
+    }
+
+
+    /// <summary>
+    /// Yield the values in the first but not in the second sequence of sorted
+    /// values.
+    /// </summary>
+    public static IEnumerable<T> SortedDifference<T>(
+      IEnumerable<T> sortedSeq1,
+      IEnumerable<T> sortedSeq2)
+      where T : IComparable<T>
+    {
+      return GenericSortedSetOperation(sortedSeq1, sortedSeq2, 2);
+    }
   }
 }
