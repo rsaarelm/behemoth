@@ -136,7 +136,7 @@ namespace Behemoth.Util
 
       Console.WriteLine("Processing collection of size {0}.", items.Count);
 
-      T result;
+      T result = default(T);
       double currentVal = double.MaxValue;
 
       foreach (var node in items)

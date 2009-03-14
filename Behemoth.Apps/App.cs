@@ -52,6 +52,7 @@ namespace Behemoth.Apps
       }
       else
       {
+        service = default(T);
         return false;
       }
     }

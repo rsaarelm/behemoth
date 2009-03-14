@@ -46,7 +46,7 @@ namespace Behemoth.Util
 
     public override Properties<TKey, TValue> Set(TKey key, TValue val)
     {
-      Func<TValue, string> pred;
+      Func<TValue, string> pred = null;
       if (constraints.TryGet(key, out pred))
       {
         string errorMsg = pred(val);

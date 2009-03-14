@@ -30,6 +30,7 @@ namespace Behemoth.Util
       }
       else
       {
+        component = default(T);
         return false;
       }
     }

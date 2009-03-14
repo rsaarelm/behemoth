@@ -118,6 +118,7 @@ namespace Behemoth.Util
       }
       else
       {
+        val = default(TValue);
         return false;
       }
     }
