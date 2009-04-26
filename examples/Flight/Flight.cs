@@ -211,7 +211,7 @@ namespace Flight
 
       Gl.glPushMatrix();
       Gl.glTranslatef(-terrainSize / 2, -terrainSize / 2, -16);
-      Gfx.GlColor(Color.Olivedrab);
+      Gfx.GlColor(Color.OliveDrab);
       landscape.Draw();
       Gl.glPopMatrix();
     }
@@ -447,7 +447,7 @@ namespace Flight
     static Model? octahedron = null;
 
 
-    static double TerrainHeight(double x, double y)
+    public static double TerrainHeight(double x, double y)
     {
       int xPix = Num.Mod((int)x, heightmap.GetLength(1));
       int yPix = Num.Mod((int)y, heightmap.GetLength(0));
@@ -529,7 +529,7 @@ namespace Flight
 
     public bool IsAlive = true;
 
-    public Color Color = Color.Aliceblue;
+    public Color Color = Color.AliceBlue;
 
     public abstract void Update(double timeElapsed);
 

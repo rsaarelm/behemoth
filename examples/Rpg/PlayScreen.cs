@@ -189,7 +189,7 @@ namespace Rpg
       foreach (string line in Rpg.Service.MsgLines)
       {
         y -= Rpg.fontH;
-        DrawString(line, 0, y, Color.Aliceblue);
+        DrawString(line, 0, y, Color.AliceBlue);
       }
     }
 
