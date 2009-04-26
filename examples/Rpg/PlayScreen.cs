@@ -74,8 +74,8 @@ namespace Rpg
 
     void DrawWorld(Vec3 center)
     {
-      int cols = Rpg.pixelWidth / Rpg.spriteWidth;
-      int rows = Rpg.pixelHeight / Rpg.spriteHeight;
+      int cols = Rpg.pixelWidth / (int)Rpg.iconFontW;
+      int rows = Rpg.pixelHeight / (int)Rpg.iconFontH;
 
       int xOff = (int)center.X - cols / 2;
       int yOff = (int)center.Y - rows / 2;
@@ -90,9 +90,10 @@ namespace Rpg
 
           if (Rpg.Service.IsMapped(mapX, mapY, mapZ))
           {
-            DrawSprite(
-              x * Rpg.spriteWidth, y * Rpg.spriteHeight,
-              TerrainIcon(mapX, mapY, mapZ));
+            DrawTileChar(
+              TerrainIcon(mapX, mapY, mapZ),
+              x * Rpg.iconFontW, y * Rpg.iconFontH,
+              Color.DeepPink);
           }
         }
       }
@@ -122,37 +123,16 @@ namespace Rpg
         if ((core.IsStatic && Rpg.Service.Player.Get<CLos>().IsMapped(core.Pos)) ||
             (Rpg.Service.Player.Get<CLos>().IsVisible(core.Pos)))
         {
-          DrawEntity(entity, xOff * Rpg.spriteWidth, yOff * Rpg.spriteHeight);
+          DrawEntity(entity, xOff * Rpg.iconFontW, yOff * Rpg.iconFontH);
         }
       }
     }
 
 
-    int TerrainIcon(int x, int y, int z)
+    char TerrainIcon(int x, int y, int z)
     {
       var tile = Rpg.Service.World.Space[x, y, z];
-      var nextTile = Rpg.Service.World.Space[x, y - 1, z];
-
-      var useBackIcon = TerrainUtil.IsWall(tile) && TerrainUtil.IsWall(nextTile);
-      return useBackIcon ? tile.Type.BackIcon : tile.Type.Icon;
-    }
-
-
-    void DrawSprite(double x, double y, int frame)
-    {
-      Gfx.DrawSprite(
-        x, y, frame,
-        Rpg.spriteWidth, Rpg.spriteHeight, App.Service<ITaoService>().Textures[Rpg.spriteTexture],
-        16, 16);
-    }
-
-
-    void DrawMirroredSprite(double x, double y, int frame)
-    {
-      Gfx.DrawMirroredSprite(
-        x, y, frame,
-        Rpg.spriteWidth, Rpg.spriteHeight, App.Service<ITaoService>().Textures[Rpg.spriteTexture],
-        16, 16);
+      return (char)tile.Type.Icon;
     }
 
 
@@ -167,18 +147,12 @@ namespace Rpg
       CCore core;
       if (e.TryGet(out core))
       {
-        int frame = core.Icon + (core.ActionPose ? 1 : 0);
-        double x = -xOff + Rpg.spriteWidth * core.Pos.X;
-        double y = -yOff + Rpg.spriteHeight * core.Pos.Y;
+        int frame = core.Icon;
+        double x = -xOff + Rpg.iconFontW * core.Pos.X;
+        double y = -yOff + Rpg.iconFontH * core.Pos.Y;
 
-        if (IsFacingLeft(core.Facing))
-        {
-          DrawMirroredSprite(x, y, frame);
-        }
-        else
-        {
-          DrawSprite(x, y, frame);
-        }
+        DrawTileChar(
+          (char)frame, x, y, Color.Chartreuse);
       }
     }
 
@@ -227,5 +201,12 @@ namespace Rpg
       }
     }
 
+
+    void DrawTileChar(char ch, double x, double y, Color color)
+    {
+      Gfx.DrawChar(
+        ch, x, y, Rpg.iconFontW, Rpg.iconFontH,
+        App.Service<ITaoService>().Textures[Rpg.iconFontTexture], color);
+    }
   }
 }

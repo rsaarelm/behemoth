@@ -380,15 +380,16 @@ namespace Rpg
     public const int pixelWidth = 640;
     public const int pixelHeight = 480;
 
-    public const int spriteWidth = 32;
-    public const int spriteHeight = 32;
-
     public const string spriteTexture = "tiles.png";
 
     public const string fontTexture = "font8x16.png";
     public const double fontW = 8.0;
     public const double fontH = 16.0;
     public const double fontPixelScale = 1.0;
+
+    public const string iconFontTexture = "font8x8.png";
+    public const double iconFontW = 16.0;
+    public const double iconFontH = 16.0;
 
     public const int ConsoleColumns = 40;
   }
