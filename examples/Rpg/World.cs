@@ -13,9 +13,6 @@ namespace Rpg
   {
     public World()
     {
-      terrainCache = new EasyCache<int, TerrainData>(
-        (icon) => TerrainUtil.FindData(terrainData, icon),
-        (index) => {});
     }
 
 
@@ -132,14 +129,14 @@ namespace Rpg
 
     public World AddTerrain(TerrainData data)
     {
-      terrainData.Add(data);
+      terrainData[data.Name] = data;
       return this;
     }
 
 
-    public TerrainData GetTerrain(int icon)
+    public TerrainData GetTerrain(string name)
     {
-      return terrainCache[icon];
+      return terrainData[name];
     }
 
 
@@ -188,9 +185,7 @@ namespace Rpg
 
     private Properties<String, Object> globals = new Properties<String, Object>();
 
-    private IList<TerrainData> terrainData = new List<TerrainData>();
-
-    private Cache<int, TerrainData> terrainCache;
+    private IDictionary<string, TerrainData> terrainData = new Dictionary<string, TerrainData>();
 
     private IDictionary<string, EntityTemplate> templates =
       new Dictionary<string, EntityTemplate>();

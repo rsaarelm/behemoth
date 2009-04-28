@@ -15,7 +15,7 @@
 
   <!-- The program that gets run with "nant run" -->
   <property name="currentprogram"
-            value="Flight.exe"/>
+            value="Rpg.exe"/>
 
   <if test="${platform::is-win32()}">
     <property name="nant.settings.currentframework" value="net-3.5"/>

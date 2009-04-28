@@ -41,48 +41,42 @@ namespace Rpg
     public TerrainFamily Family { get { return family; } }
 
     public int Icon { get { return icon; } }
-    // Icon for wall tiles which have another wall tile in front of them.
-    public int BackIcon { get { return backIcon; } }
+    public Color Foreground { get { return foreground; } }
+    public Color Background { get { return background; } }
 
-    public TerrainData(string name, TerrainFamily family, int icon)
+    public TerrainData(
+      string name, TerrainFamily family, int icon,
+      Color foreground, Color background)
     {
-      if (TerrainUtil.IsWallType(family))
-      {
-        throw new ArgumentException("Wall-type families must be specified with a backicon.", "family");
-      }
       this.name = name;
       this.family = family;
       this.icon = icon;
-      this.backIcon = icon;
+      this.foreground = foreground;
+      this.background = background;
     }
 
 
-    public TerrainData(string name, TerrainFamily family, int icon, int backIcon)
+    public TerrainData(
+      string name, TerrainFamily family, char icon,
+      Color foreground, Color background) :  this(name, family, (int)icon, foreground, background)
     {
-      this.name = name;
-      this.family = family;
-      this.icon = icon;
-      this.backIcon = backIcon;
     }
 
 
     /// <summary>
     /// Build a TerrainData from raw value list. Valid data formats are (name
     /// : string, family enum name : string, icon : int) and (name : string,
-    /// family enum name : string, icon : int, backIcon : int).
+    /// family enum name : string, icon : int, foreground color :
+    /// Behemoth.Util.Color, background color : Behemoth.Util.Color).
     /// </summary>
     public static TerrainData FromDataRow(Object[] dataRow)
     {
-      var validator = Alg.Either(
-        Alg.ArrayP(
-          Alg.TypeP<Object>(typeof(string)),
-          Alg.TypeP<Object>(typeof(string)),
-          Alg.TypeP<Object>(typeof(int))),
-        Alg.ArrayP(
-          Alg.TypeP<Object>(typeof(string)),
-          Alg.TypeP<Object>(typeof(string)),
-          Alg.TypeP<Object>(typeof(int)),
-          Alg.TypeP<Object>(typeof(int))));
+      var validator = Alg.ArrayP(
+        Alg.TypeP<Object>(typeof(string)),
+        Alg.TypeP<Object>(typeof(string)),
+        Alg.Either(Alg.TypeP<Object>(typeof(char)), Alg.TypeP<Object>(typeof(int))),
+        Alg.TypeP<Object>(typeof(Color)),
+        Alg.TypeP<Object>(typeof(Color)));
 
       var err = validator(dataRow);
       if (err != null)
@@ -90,38 +84,33 @@ namespace Rpg
         throw new ArgumentException("Bad data: "+err, "dataRow");
       }
 
-      if (dataRow.Length == 3)
-      {
-        return new TerrainData(
-          (string)dataRow[0],
-          (TerrainFamily)Enum.Parse(typeof(TerrainFamily), (string)dataRow[1]),
-          (int)dataRow[2]);
-      }
-      else if (dataRow.Length == 4)
-      {
-        return new TerrainData(
-          (string)dataRow[0],
-          (TerrainFamily)Enum.Parse(typeof(TerrainFamily), (string)dataRow[1]),
-          (int)dataRow[2], (int)dataRow[3]);
-      }
-      else
-      {
-        throw new ArgumentException("Bad number of arguments in data row", "dataRow");
-      }
+      // XXX: I could probably librarize calling a function based on the
+      // function, a datarow and a datarow interpretation spec, with the
+      // signature of the function to call based on the spec...
+
+      int icon = dataRow[2] is char ? (char)dataRow[2] : (int)dataRow[2];
+
+      return new TerrainData(
+        (string)dataRow[0],
+        (TerrainFamily)Enum.Parse(typeof(TerrainFamily), (string)dataRow[1]),
+        icon,
+        (Color)dataRow[3],
+        (Color)dataRow[4]);
     }
 
 
     private string name;
     private TerrainFamily family;
     private int icon;
-    private int backIcon;
+    private Color foreground;
+    private Color background;
   }
 
 
   /// <summary>
   /// Find a terrain data value corresponding to an icon index from a list of
   /// terrain data values. Throws KeyNotFoundException if no value in the list
-  /// has the icon as either it's Icon or BackIcon value.
+  /// has the icon as it's Icon value.
   /// </summary>
   public static class TerrainUtil
   {
@@ -129,7 +118,7 @@ namespace Rpg
     {
       foreach (var terrain in data)
       {
-        if (terrain.Icon == icon || terrain.BackIcon == icon)
+        if (terrain.Icon == icon)
         {
           return terrain;
         }

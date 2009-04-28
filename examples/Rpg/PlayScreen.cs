@@ -90,10 +90,16 @@ namespace Rpg
 
           if (Rpg.Service.IsMapped(mapX, mapY, mapZ))
           {
-            DrawTileChar(
-              TerrainIcon(mapX, mapY, mapZ),
+            var tile = Rpg.Service.World.Space[mapX, mapY, mapZ];
+
+            DrawCharBackground(
               x * Rpg.iconFontW, y * Rpg.iconFontH,
-              Color.DeepPink);
+              tile.Type.Background);
+
+            DrawTileChar(
+              (char)tile.Type.Icon,
+              x * Rpg.iconFontW, y * Rpg.iconFontH,
+              tile.Type.Foreground);
           }
         }
       }
@@ -129,13 +135,6 @@ namespace Rpg
     }
 
 
-    char TerrainIcon(int x, int y, int z)
-    {
-      var tile = Rpg.Service.World.Space[x, y, z];
-      return (char)tile.Type.Icon;
-    }
-
-
     public static bool IsFacingLeft(int facing)
     {
       return facing >= 4;
@@ -151,6 +150,10 @@ namespace Rpg
         double x = -xOff + Rpg.iconFontW * core.Pos.X;
         double y = -yOff + Rpg.iconFontH * core.Pos.Y;
 
+        DrawCharBackground(
+          x, y, Color.Black);
+
+        // TODO: Entity colors.
         DrawTileChar(
           (char)frame, x, y, Color.Chartreuse);
       }
@@ -199,6 +202,13 @@ namespace Rpg
           break;
         }
       }
+    }
+
+
+    void DrawCharBackground(double x, double y, Color color)
+    {
+      Gfx.DrawRect(x, y, Rpg.iconFontW, Rpg.iconFontH,
+                   color.R, color.G, color.B);
     }
 
 

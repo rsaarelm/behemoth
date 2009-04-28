@@ -128,31 +128,19 @@ namespace Rpg
       rng = new DefaultRng();
 
       var terrainTable = new Object[][] {
-        Alg.OA("nothing", "NoTerrain", 0x00, 0x00),
-        Alg.OA("ground", "Ground", 0x01),
-        Alg.OA("water", "Water", 0x02),
-        Alg.OA("grass", "Ground", 0x03),
-        Alg.OA("stones", "Ground", 0x04),
-        Alg.OA("tree", "Wall", 0x15, 0x05),
-        Alg.OA("wall", "Wall", 0x07, 0x06),
-        Alg.OA("rock", "Wall", 0x09, 0x08),
-        Alg.OA("shrub", "Ground", 0x0A),
-        Alg.OA("stalagmite", "Pillar", 0x0B),
-        Alg.OA("glyph", "Ground", 0x0C),
+        Alg.OA("nothing", "NoTerrain", 'x', Color.HotPink, Color.Black),
+        Alg.OA("ground", "Ground", '.', Color.Gray, Color.Black),
+        Alg.OA("water", "Water", 247, Color.DeepSkyBlue, Color.MediumBlue),
+        Alg.OA("grass", "Ground", ',', Color.Green, Color.Black),
+        Alg.OA("wall", "Wall", '#', Color.DarkGray, Color.Black),
+        Alg.OA("rock", "Wall", '#', Color.Brown, Color.Black),
+        Alg.OA("stalagmite", "Pillar", 'i', Color.Red, Color.Black),
         // Door opening not yet supported, so now the work like walls you
         // can't see through but can walk through.
-        Alg.OA("door", "IllusionWall", 0x0D, 0x0D),
-        Alg.OA("soot", "Ground", 0x0F),
-        Alg.OA("rubble", "Ground", 0x10),
-        Alg.OA("window", "TransparentWall", 0x11, 0x12),
-        Alg.OA("dirt", "Ground", 0x13),
-        Alg.OA("bookshelf", "Pillar", 0x14),
-        Alg.OA("table", "Pillar", 0x16),
-        Alg.OA("chest", "Ground", 0x17),
-        Alg.OA("pillar", "Pillar", 0x19),
-        Alg.OA("broken wall", "WallGap", 0x1A, 0x1B),
-        Alg.OA("boards", "Ground", 0x1C),
-        Alg.OA("boards", "Ground", 0x1D),
+        Alg.OA("door", "IllusionWall", '+', Color.Gray, Color.Black),
+        Alg.OA("window", "TransparentWall", '#', Color.White, Color.Black),
+        Alg.OA("dirt", "Ground", '.', Color.Peru, Color.Black),
+        Alg.OA("pillar", "Pillar", 'I', Color.White, Color.Black),
         };
 
       foreach (var row in terrainTable)
@@ -177,8 +165,7 @@ namespace Rpg
       world.Add("gib", new EntityTemplate(
                   CoreTemplate.FloorStatic("gib", 0x40)));
 
-
-      LoadMap("example_map.tmx", 0, 0, 0);
+      GenerateExampleMap();
 
       Entity pc = world.MakeEntity("avatar");
       var core = new CCore();
@@ -233,70 +220,17 @@ namespace Rpg
     }
 
 
-
-
-    void LoadMap(string name, int xOff, int yOff, int zOff)
+    public void GenerateExampleMap()
     {
-      int width;
-      int height;
-      IDictionary<String, int> tilesets;
-      IList<Tuple2<String, int[]>> layers;
-
-      TiledImport.LoadMapData(
-        Media.GetPfsFileData(name),
-        out width, out height,
-        out tilesets,
-        out layers);
-
-      // XXX: Not verifying that the map data has the expected layers & tilesets
-      // (terrain, entity and zone layers, terrain and zone tilesets)
-
-      int[] tiles = layers[0].Second;
-      int[] entities = layers[1].Second;
-
-// TODO: Do zones too.
-//      int[] zones = layers[2].Second;
-
-      for (int y = 0; y < height; y++)
+      int z = 0;
+      for (int y = 0; y < 80; y++)
       {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < 320; x++)
         {
-          int idx = x + (height - y - 1) * width;
-
-          world.Space[x + xOff, y + yOff, zOff] =
-            new TerrainTile(world.GetTerrain(tiles[idx] - 1));
-
-          if (entities[idx] > 0)
+          world.Space[x, y, z] = new TerrainTile(world.GetTerrain("ground"));
+          if (x == 30)
           {
-            string spawn = null;
-            switch ((Sprite)(entities[idx] - 1))
-            {
-            case Sprite.Chest:
-              spawn = "chest";
-              break;
-            case Sprite.Beastman:
-              spawn = "beastman";
-              break;
-            case Sprite.Ooze:
-              spawn = "ooze";
-              break;
-            case Sprite.Zombie:
-              spawn = "zombie";
-              break;
-            case Sprite.DeathKnight:
-              spawn = "deathKnight";
-              break;
-            default:
-              Console.WriteLine("Warning: Unknown entity {0} in map.", entities[idx]);
-              break;
-            }
-
-            if (spawn != null)
-            {
-              var entity = world.Spawn(spawn);
-              entity.Get<CCore>().SetPos(x + xOff, y + yOff, zOff);
-              world.Add(entity);
-            }
+            world.Space[x, y, z] = new TerrainTile(world.GetTerrain("water"));
           }
         }
       }
