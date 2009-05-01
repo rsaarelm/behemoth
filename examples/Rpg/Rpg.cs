@@ -17,48 +17,6 @@ namespace Rpg
 {
   public class Rpg : IRpgService
   {
-    public enum Sprite {
-      Empty = 0x00,
-      Ground = 0x01,
-      Water = 0x02,
-      Grass = 0x03,
-      Rocks = 0x04,
-      TreeTop = 0x05,
-      Wall = 0x06,
-      WallEdge = 0x07,
-      Rock = 0x08,
-      RockEdge = 0x09,
-      Shrub = 0x0a,
-      Stalagmite = 0x0b,
-      Glyph = 0x0c,
-      ClosedDoor = 0x0d,
-      OpenDoor = 0x0e,
-      Waste = 0x0f,
-
-      Window = 0x11,
-      Window2 = 0x12,
-      Dirt = 0x13,
-      Bookshelf = 0x14,
-      TreeBottom = 0x15,
-      Table = 0x16,
-      Chest = 0x17,
-      Chest2 = 0x18,
-      Pillar = 0x19,
-      BrokenWallEdge = 0x1a,
-      BrokenWall = 0x1b,
-      WoodenFloor = 0x1c,
-      WoodenFloor2 = 0x1d,
-
-      Gib = 0x40,
-      Flash = 0x41,
-      Beastman = 0x50,
-      Fighter = 0x52,
-      Ooze = 0x54,
-      Zombie = 0x56,
-      DeathKnight = 0x58,
-    }
-
-
     public static void Main(string[] args)
     {
       var app = new TaoApp(pixelWidth, pixelHeight, "Rpg demo");
@@ -149,21 +107,19 @@ namespace Rpg
       }
 
       world.Add("beastman", new EntityTemplate(
-                  CoreTemplate.Default("beastman", 0x50),
+                  CoreTemplate.Default("beastman", 'h', Color.Coral),
                   new BrainTemplate()));
       world.Add("ooze", new EntityTemplate(
-                  CoreTemplate.Default("ooze", 0x54),
+                  CoreTemplate.Default("ooze", 'j', Color.GreenYellow),
                   new BrainTemplate()));
       world.Add("zombie", new EntityTemplate(
-                  CoreTemplate.Default("zombie", 0x56),
+                  CoreTemplate.Default("zombie", 'h', Color.DarkCyan),
                   new BrainTemplate()));
       world.Add("deathKnight", new EntityTemplate(
-                  CoreTemplate.Default("death knight", 0x58),
+                  CoreTemplate.Default("death knight", 'h', Color.Gray),
                   new BrainTemplate()));
-      world.Add("chest", new EntityTemplate(
-                  CoreTemplate.FloorStatic("chest", 0x17)));
       world.Add("gib", new EntityTemplate(
-                  CoreTemplate.FloorStatic("gib", 0x40)));
+                  CoreTemplate.FloorStatic("gib", '*', Color.DarkRed)));
 
       GenerateExampleMap();
 
@@ -181,12 +137,15 @@ namespace Rpg
       brain.Might = 20.0;
       brain.Resistance = 4.0;
 
-      core.Icon = (int)Sprite.Fighter;
+      core.Icon = (int)'@';
+      core.Color = Color.GhostWhite;
       core.SetPos(1, 44, 0);
 
       world.Add(pc);
 
       world.Globals["player"] = pc;
+
+      world.Spawn("ooze", new Vec3(2, 48, 0));
 
       DoLos();
     }

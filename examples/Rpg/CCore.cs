@@ -18,6 +18,8 @@ namespace Rpg
 
     public int Icon;
 
+    public Color Color;
+
     public String Name;
 
     public byte Facing;
@@ -62,18 +64,19 @@ namespace Rpg
     private CoreTemplate() {}
 
 
-    public static CoreTemplate Default(string name, int icon)
+    public static CoreTemplate Default(string name, int icon, Color color)
     {
       var result = new CoreTemplate();
       result.name = name;
       result.icon = icon;
+      result.color = color;
       return result;
     }
 
 
-    public static CoreTemplate FloorStatic(string name, int icon)
+    public static CoreTemplate FloorStatic(string name, int icon, Color color)
     {
-      var result = Default(name, icon);
+      var result = Default(name, icon, color);
       result.drawPriority = -1;
       result.isObstacle = false;
       result.isStatic = true;
@@ -81,9 +84,9 @@ namespace Rpg
     }
 
 
-    public static CoreTemplate BlockStatic(string name, int icon)
+    public static CoreTemplate BlockStatic(string name, int icon, Color color)
     {
-      var result = Default(name, icon);
+      var result = Default(name, icon, color);
       result.isStatic = true;
       return result;
     }
@@ -97,6 +100,7 @@ namespace Rpg
       CCore result = new CCore();
       result.Name = name;
       result.Icon = icon;
+      result.Color = color;
       result.DrawPriority = drawPriority;
       result.IsStatic = isStatic;
       result.IsObstacle = isObstacle;
@@ -108,6 +112,8 @@ namespace Rpg
     private string name;
 
     private int icon;
+
+    private Color color;
 
     private int drawPriority = 0;
 

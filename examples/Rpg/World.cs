@@ -19,7 +19,7 @@ namespace Rpg
     /// <summary>
     /// Make a new entity using an entity template.
     /// </summary>
-    public Entity Spawn(EntityTemplate template)
+    public Entity Create(EntityTemplate template)
     {
       string id = guids.Next(template.Name);
       Entity result = template.Make(id);
@@ -28,9 +28,27 @@ namespace Rpg
     }
 
 
-    public Entity Spawn(string templateName)
+    public Entity Create(string templateName)
     {
-      return Spawn(templates[templateName]);
+      return Create(templates[templateName]);
+    }
+
+
+    /// <summary>
+    /// Make a new entity usind a template and place it in the world.
+    /// </summary>
+    public Entity Spawn(EntityTemplate template, Vec3 pos)
+    {
+      var result = Create(template);
+      result.Get<CCore>().Pos = pos;
+      Add(result);
+      return result;
+    }
+
+
+    public Entity Spawn(string templateName, Vec3 pos)
+    {
+      return Spawn(templates[templateName], pos);
     }
 
 

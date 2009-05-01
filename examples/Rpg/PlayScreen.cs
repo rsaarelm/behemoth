@@ -155,7 +155,7 @@ namespace Rpg
 
         // TODO: Entity colors.
         DrawTileChar(
-          (char)frame, x, y, Color.Chartreuse);
+          (char)frame, x, y, core.Color);
       }
     }
 
