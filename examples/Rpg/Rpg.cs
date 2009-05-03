@@ -182,15 +182,37 @@ namespace Rpg
     public void GenerateExampleMap()
     {
       int z = 0;
+      
       for (int y = 0; y < 80; y++)
       {
         for (int x = 0; x < 320; x++)
         {
-          world.Space[x, y, z] = new TerrainTile(world.GetTerrain("ground"));
-          if (x == 30)
+          double scale = 0.03;
+          double noise = Num.PerlinNoise(0.5, 6, (double)x * scale, (double)y * scale, 0.0);
+          noise += 0.5;
+          
+          var terr = "";
+          if (noise < 0.15)
           {
-            world.Space[x, y, z] = new TerrainTile(world.GetTerrain("water"));
+            terr = "water";
           }
+          else if (noise < 0.25)
+          {
+            terr = "dirt";
+          }
+          else if (noise < 0.6)
+          {
+            terr = "grass";
+          }
+          else if (noise < 0.8)
+          {
+            terr = "ground";
+          }
+          else if (noise >= 0.8)
+          {
+            terr = "door";
+          }
+          world.Space[x, y, z] = new TerrainTile(world.GetTerrain(terr));
         }
       }
     }

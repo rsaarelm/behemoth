@@ -10,7 +10,7 @@ namespace Rpg
     public void DoLos()
     {
       visible.Clear();
-      int radius = 8;
+      int radius = 24;
 
       var core = Entity.Get<CCore>();
 
