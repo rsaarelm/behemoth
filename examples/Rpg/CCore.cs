@@ -109,6 +109,12 @@ namespace Rpg
     }
 
 
+    public override void AddToEntityTemplateHook(EntityTemplate template)
+    {
+      template.Name = name;
+    }
+
+
     private string name;
 
     private int icon;

@@ -106,19 +106,14 @@ namespace Rpg
         world.AddTerrain(TerrainData.FromDataRow(row));
       }
 
-      world.Add("beastman", new EntityTemplate(
-                  CoreTemplate.Default("beastman", 'h', Color.Coral),
-                  new BrainTemplate()));
-      world.Add("ooze", new EntityTemplate(
+      world.Add(new EntityTemplate(
                   CoreTemplate.Default("ooze", 'j', Color.GreenYellow),
                   new BrainTemplate()));
-      world.Add("zombie", new EntityTemplate(
-                  CoreTemplate.Default("zombie", 'h', Color.DarkCyan),
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("bat", 'b', Color.SlateBlue),
                   new BrainTemplate()));
-      world.Add("deathKnight", new EntityTemplate(
-                  CoreTemplate.Default("death knight", 'h', Color.Gray),
-                  new BrainTemplate()));
-      world.Add("gib", new EntityTemplate(
+
+      world.Add(new EntityTemplate(
                   CoreTemplate.FloorStatic("gib", '*', Color.DarkRed)));
 
       GenerateExampleMap();

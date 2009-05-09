@@ -52,9 +52,9 @@ namespace Rpg
     }
 
 
-    public void Add(string name, EntityTemplate template)
+    public void Add(EntityTemplate template)
     {
-      templates[name] = template;
+      templates[template.Name] = template;
     }
 
 

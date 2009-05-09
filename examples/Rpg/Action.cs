@@ -73,7 +73,7 @@ namespace Rpg
         if (brain.Gibs)
         {
           UI.Msg("Splodey!");
-          var gib = world.Spawn("gib", entity.Get<CCore>().Pos);
+          world.Spawn("gib", entity.Get<CCore>().Pos);
         }
       }
 

@@ -23,6 +23,7 @@ namespace Behemoth.Util
     public EntityTemplate AddComponent(ComponentTemplate template)
     {
       components.Add(template);
+      template.AddToEntityTemplateHook(this);
       return this;
     }
 

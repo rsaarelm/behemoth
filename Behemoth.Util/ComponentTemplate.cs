@@ -36,5 +36,15 @@ namespace Behemoth.Util
     /// Make method which does the actual addition.
     /// </summary>
     protected abstract Component BuildComponent(Entity entity);
+
+
+    /// <summary>
+    /// A method that is called when this component template is added to an
+    /// entity template. May modify the entity template (set it's name for
+    /// example)
+    /// </summary>
+    public virtual void AddToEntityTemplateHook(EntityTemplate template)
+    {
+    }
   }
 }
