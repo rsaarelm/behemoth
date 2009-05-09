@@ -90,10 +90,8 @@ namespace Rpg
       if (entity.TryGet(out brain1) && target.TryGet(out brain2))
       {
         UI.Msg("Whup!");
-        brain2.Damage(entity, brain1.Might);
+        brain2.Damage(entity, brain1.Might / 4);
 
-        var core = entity.Get<CCore>();
-        core.AnimActTime = TimeUtil.CurrentSeconds + CCore.ActSpeed;
         // TODO: Attack message
       }
     }
@@ -114,6 +112,23 @@ namespace Rpg
       }
       return Action.MoveRel(entity, moveVec);
 
+    }
+
+
+    public static void MakePlayer(Entity entity)
+    {
+      // TODO: Make the previous player entity lose player stuff.
+
+      CBrain brain = entity.Get<CBrain>();
+
+      brain.AiActive = false;
+
+      brain.Alignment = 1;
+
+      Query.WorldOf(entity).Globals["player"] = entity;
+
+      // Give it a line-of-sight component.
+      entity.Set(new CLos());
     }
   }
 }

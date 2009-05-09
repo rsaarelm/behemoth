@@ -108,37 +108,21 @@ namespace Rpg
 
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("ooze", 'j', Color.GreenYellow),
-                  new BrainTemplate()));
+                  BrainTemplate.Default(2, 1)));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("bat", 'b', Color.SlateBlue),
-                  new BrainTemplate()));
-
+                  BrainTemplate.Default(1, 3)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("avatar", '@', Color.GhostWhite),
+                  BrainTemplate.Default(13, 16)));
       world.Add(new EntityTemplate(
                   CoreTemplate.FloorStatic("gib", '*', Color.DarkRed)));
-
+      
       GenerateExampleMap();
 
-      Entity pc = world.MakeEntity("avatar");
-      var core = new CCore();
-      pc.Set(core);
-      pc.Set(new CLos());
-
-      var brain = new CBrain();
-      pc.Set(brain);
-      // No AI for player. Use human control instead.
-      brain.AiActive = false;
-      // Different from standard creatures, create hostility.
-      brain.Alignment = 1;
-      brain.Might = 20.0;
-      brain.Resistance = 4.0;
-
-      core.Icon = (int)'@';
-      core.Color = Color.GhostWhite;
-      core.SetPos(1, 44, 0);
-
-      world.Add(pc);
-
-      world.Globals["player"] = pc;
+      Entity pc = world.Spawn("avatar", new Vec3(1, 44, 0));
+                
+      Action.MakePlayer(pc);
 
       world.Spawn("ooze", new Vec3(2, 48, 0));
 
