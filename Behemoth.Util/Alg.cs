@@ -445,6 +445,15 @@ namespace Behemoth.Util
     }
 
 
+    public static IEnumerable<U> Map<T, U>(Func<T, U> func, IEnumerable<T> seq)
+    {
+      foreach(var item in seq)
+      {
+        yield return func(item);
+      }
+    }
+
+
     public static T Fold<T, U>(IEnumerable<U> items, Func<T, U, T> func, T acc)
     {
       foreach (var item in items)
@@ -500,6 +509,27 @@ namespace Behemoth.Util
         {
           yield return item;
         }
+      }
+    }
+
+
+    public static IEnumerable<Tuple2<T, U>> Zip<T, U>(
+      IEnumerable<T> seq1, IEnumerable<U> seq2)
+    {
+      var enum1 = seq1.GetEnumerator();
+      var enum2 = seq2.GetEnumerator();
+      while (enum1.MoveNext() && enum2.MoveNext())
+      {
+        yield return new Tuple2<T, U>(enum1.Current, enum2.Current);
+      }
+    }
+
+
+    public static void Times(int times, Action<int> func)
+    {
+      for (int i = 0; i < times; i++)
+      {
+        func(i);
       }
     }
   }
