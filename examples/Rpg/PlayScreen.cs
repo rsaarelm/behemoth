@@ -31,18 +31,38 @@ namespace Rpg
       case Sdl.SDLK_q:
         Rpg.Service.GameOver("Quit.");
         break;
-      case Sdl.SDLK_UP:
+      case Sdl.SDLK_KP8:
         Rpg.Service.MoveCmd(0);
         break;
-      case Sdl.SDLK_RIGHT:
+      case Sdl.SDLK_KP9:
+        Rpg.Service.MoveCmd(1);
+        break;
+      case Sdl.SDLK_KP6:
         Rpg.Service.MoveCmd(2);
         break;
-      case Sdl.SDLK_DOWN:
+      case Sdl.SDLK_KP3:
+        Rpg.Service.MoveCmd(3);
+        break;
+      case Sdl.SDLK_KP2:
         Rpg.Service.MoveCmd(4);
         break;
-      case Sdl.SDLK_LEFT:
+      case Sdl.SDLK_KP1:
+        Rpg.Service.MoveCmd(5);
+        break;
+      case Sdl.SDLK_KP4:
         Rpg.Service.MoveCmd(6);
         break;
+      case Sdl.SDLK_KP7:
+        Rpg.Service.MoveCmd(7);
+        break;
+      case Sdl.SDLK_UP:
+        goto case Sdl.SDLK_KP8;
+      case Sdl.SDLK_RIGHT:
+        goto case Sdl.SDLK_KP6;
+      case Sdl.SDLK_DOWN:
+        goto case Sdl.SDLK_KP2;
+      case Sdl.SDLK_LEFT:
+        goto case Sdl.SDLK_KP4;
       case Sdl.SDLK_SPACE:
         Rpg.Service.NewTurn();
         break;
