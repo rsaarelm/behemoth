@@ -87,17 +87,17 @@ namespace Rpg
 
       var terrainTable = new Object[][] {
         Alg.OA("nothing", "NoTerrain", 'x', Color.HotPink, Color.Black),
-        Alg.OA("ground", "Ground", '.', Color.Gray, Color.Black),
+        Alg.OA("ground", "Ground", '.', Color.Black, Color.Gray),
         Alg.OA("water", "Water", 247, Color.DeepSkyBlue, Color.MediumBlue),
-        Alg.OA("grass", "Ground", ',', Color.Green, Color.Black),
+        Alg.OA("grass", "Ground", ',', Color.Black, Color.Green),
         Alg.OA("wall", "Wall", '#', Color.DarkGray, Color.Black),
-        Alg.OA("rock", "Wall", '#', Color.Brown, Color.Black),
+        Alg.OA("rock", "Wall", '#', Color.Chocolate, Color.Black),
         Alg.OA("stalagmite", "Pillar", 'i', Color.Red, Color.Black),
         // Door opening not yet supported, so now the work like walls you
         // can't see through but can walk through.
         Alg.OA("door", "IllusionWall", '+', Color.Gray, Color.Black),
         Alg.OA("window", "TransparentWall", '#', Color.White, Color.Black),
-        Alg.OA("dirt", "Ground", '.', Color.Peru, Color.Black),
+        Alg.OA("dirt", "Ground", '.', Color.Black, Color.Peru),
         Alg.OA("pillar", "Pillar", 'I', Color.White, Color.Black),
         };
 
@@ -124,7 +124,7 @@ namespace Rpg
                 
       Action.MakePlayer(pc);
 
-      world.Spawn("ooze", new Vec3(2, 48, 0));
+      world.Spawn("ooze", new Vec3(5, 43, 0));
 
       DoLos();
     }
@@ -164,7 +164,7 @@ namespace Rpg
       
       for (int y = 0; y < 80; y++)
       {
-        for (int x = 0; x < 320; x++)
+        for (int x = 0; x < 1024; x++)
         {
           double scale = 0.03;
           double noise = Num.PerlinNoise(0.5, 6, (double)x * scale, (double)y * scale, 0.0);
@@ -189,7 +189,7 @@ namespace Rpg
           }
           else if (noise >= 0.8)
           {
-            terr = "door";
+            terr = "rock";
           }
           world.Space[x, y, z] = new TerrainTile(world.GetTerrain(terr));
         }
