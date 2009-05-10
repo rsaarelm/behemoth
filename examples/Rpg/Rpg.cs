@@ -163,7 +163,7 @@ namespace Rpg
                   BrainTemplate.Default(16, 30))
                 .AddProps("powerLevel", 10.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
-                  CoreTemplate.Default("special ops", 'W', Color.Aquamarine),
+                  CoreTemplate.Default("special ops marine", 'W', Color.Aquamarine),
                   BrainTemplate.Default(25, 22))
                 .AddProps("powerLevel", 12.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
@@ -221,9 +221,9 @@ namespace Rpg
     {
       int z = 0;
       
-      for (int y = 0; y < 80; y++)
+      for (int y = 0; y < WorldHeight; y++)
       {
-        for (int x = 0; x < 1024; x++)
+        for (int x = 0; x < WorldWidth; x++)
         {
           double scale = 0.03;
           double noise = Num.PerlinNoise(0.5, 6, (double)x * scale, (double)y * scale, 0.0);
@@ -345,5 +345,8 @@ namespace Rpg
     public const double iconFontH = 16.0;
 
     public const int ConsoleColumns = 40;
+
+    public const int WorldHeight = 80;
+    public const int WorldWidth = 1024;
   }
 }

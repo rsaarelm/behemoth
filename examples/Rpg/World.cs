@@ -139,7 +139,7 @@ namespace Rpg
     public Field3<TerrainTile> Space { get { return space; } }
 
 
-    public Random Rng { get { return rng; } }
+    public Rng Rng { get { return rng; } }
 
 
     /// <summary>
@@ -197,7 +197,7 @@ namespace Rpg
 
 
     // XXX: Use something like Mersenne Twister instead of the default rng.
-    private Random rng = new Random();
+    private Rng rng = new DefaultRng();
 
     private Behemoth.Util.Guid guids = new Behemoth.Util.Guid();
     private IDictionary<String, Entity> entities = new Dictionary<String, Entity>();
