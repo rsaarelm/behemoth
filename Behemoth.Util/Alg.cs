@@ -79,18 +79,28 @@ namespace Behemoth.Util
     /// </summary>
     public static IDictionary<K, V> Dict<K, V>(params Object[] args)
     {
+      IDictionary<K, V> result = new Dictionary<K, V>();
+
+      ApplyPairs<K, V>((k, v) => { result[k] = v; }, args);
+
+      return result;
+    }
+
+
+    /// <summary>
+    /// Give pairs of typed values from the vararg list to the action.
+    /// </summary>
+    public static void ApplyPairs<K, V>(Action<K, V> func, params Object[] args)
+    {
       if (args.Length % 2 != 0)
       {
         throw new ArgumentException("Incomplete key-value pair in arguments.", "args");
       }
 
-      IDictionary<K, V> result = new Dictionary<K, V>();
       for (int i = 0; i < args.Length / 2; i++)
       {
-        result[(K)args[i * 2]] = (V)args[i * 2 + 1];
+        func((K)args[i * 2], (V)args[i * 2 + 1]);
       }
-
-      return result;
     }
 
 
