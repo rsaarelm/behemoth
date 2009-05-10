@@ -113,6 +113,49 @@ namespace Rpg
                   CoreTemplate.Default("bat", 'b', Color.SlateBlue),
                   BrainTemplate.Default(1, 3)));
       world.Add(new EntityTemplate(
+                  CoreTemplate.Default("carnivorous worm", 's', Color.Orchid),
+                  BrainTemplate.Default(4, 2)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("plasma wisp", 'q', Color.Aquamarine),
+                  BrainTemplate.Default(2, 8)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("garm", 'c', Color.DarkRed),
+                  BrainTemplate.Default(6, 7)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("feral octopus", 'o', Color.LightSeaGreen),
+                  BrainTemplate.Default(8, 10)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("pirate", 'V', Color.OrangeRed),
+                  BrainTemplate.Default(11, 14)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("hermit", 'H', Color.Goldenrod),
+                  BrainTemplate.Default(9, 16)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("shard AI", 'd', Color.DarkSlateGray),
+                  BrainTemplate.Default(11, 20)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("praetor", 'V', Color.MediumVioletRed),
+                  BrainTemplate.Default(16, 18)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("pirate reaver", 'V', Color.Red),
+                  BrainTemplate.Default(20, 15)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("marine", 'W', Color.Teal),
+                  BrainTemplate.Default(17, 20)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("huww", 'G', Color.OliveDrab),
+                  BrainTemplate.Default(28, 11)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("roamer AI", 'd', Color.SteelBlue),
+                  BrainTemplate.Default(16, 30)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("special ops", 'W', Color.Aquamarine),
+                  BrainTemplate.Default(25, 22)));
+      world.Add(new EntityTemplate(
+                  CoreTemplate.Default("simulacrum AI", 'K', Color.Chartreuse),
+                  BrainTemplate.Default(30, 35)));
+
+      world.Add(new EntityTemplate(
                   CoreTemplate.Default("avatar", '@', Color.GhostWhite),
                   BrainTemplate.Default(13, 16)));
       world.Add(new EntityTemplate(
