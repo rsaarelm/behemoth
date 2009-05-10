@@ -61,6 +61,23 @@ namespace Rpg
     }
 
 
+    public static bool CanSpawnIn(EntityTemplate template, Vec3 pos)
+    {
+      var world = Rpg.Service.World;
+
+      var tile = world.Space[pos];
+
+      foreach (var entity in world.EntitiesIn(pos))
+      {
+        if (entity.Get<CCore>().IsObstacle)
+        {
+          return false;
+        }
+      }
+
+      return !TerrainUtil.BlocksMoving(tile);
+    }
+
     public static bool CanSeeThrough(Entity e, Vec3 pos)
     {
       var world = WorldOf(e);
@@ -146,14 +163,56 @@ namespace Rpg
 
       var result = Rpg.Service.Rng.RandDouble() < prob;
 
-      /*
-      UI.Msg("{0} is looking for a target, {1} chance to spot... {2}",
-             observer.Get<CCore>().Name,
-             prob,
-             result ? "Saw it!" : "Didn't see it.");
-      */
-
       return result;
     }
+
+
+    public static double SpawnProb(EntityTemplate template, double threatLevel)
+    {
+      double powerLevel = (double)template.Prop["powerLevel"];
+      double rarity = (double)template.Prop["rarity"];
+
+      double p = rarity;
+      if (powerLevel <= threatLevel)
+      {
+        return p;
+      }
+      else
+      {
+        // Decay the probability for power levels beyond the threat range.
+        // The formula is ad hoc and can probably use some tweaking.
+        return p * (1 - Math.Atan(powerLevel - threatLevel) / (Math.PI / 2));
+      }
+    }
+
+
+    /// <summary>
+    /// Given a random number x and a threat level, return a suitable spawn
+    /// from a set of templates.
+    /// </summary>
+    public static EntityTemplate ChooseSpawn(
+      double x, double threatLevel, IEnumerable<EntityTemplate> templates)
+    {
+      // Only sample from templates with the required parameters.
+      templates = Alg.Filter(
+        t => t.Prop.ContainsKey("powerLevel") && t.Prop.ContainsKey("rarity"),
+        templates);
+
+      return Alg.WeightedChoice(
+        x,
+        Alg.Zip(Alg.Map<EntityTemplate, double>(
+                  t => SpawnProb(t, threatLevel), templates), templates));
+    }
+
+
+    /// <summary>
+    /// Convenience function that takes the random number.
+    /// </summary>
+    public static EntityTemplate ChooseSpawn(
+      double threatLevel, IEnumerable<EntityTemplate> templates)
+    {
+      return ChooseSpawn(Rpg.Service.Rng.RandDouble(), threatLevel, templates);
+    }
+
   }
 }

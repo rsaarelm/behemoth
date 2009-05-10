@@ -183,7 +183,7 @@ namespace Rpg
                 
       Action.MakePlayer(pc);
 
-      world.Spawn("ooze", new Vec3(5, 43, 0));
+      Alg.Times(64, i => SpawnCreature());
 
       DoLos();
     }
@@ -252,6 +252,29 @@ namespace Rpg
           }
           world.Space[x, y, z] = new TerrainTile(world.GetTerrain(terr));
         }
+      }
+    }
+
+
+    public bool SpawnCreature()
+    {
+      int x = World.Rng.RandInt(WorldWidth);
+      int y = World.Rng.RandInt(WorldHeight);
+
+      double threatLevel = (double)x / 32.0;
+
+      var template = Query.ChooseSpawn(threatLevel, World.Templates);
+
+      var pos = new Vec3(x, y, 0);
+
+      if (Query.CanSpawnIn(template, pos))
+      {
+        World.Spawn(template, pos);
+        return true;
+      }
+      else
+      {
+        return false;
       }
     }
 
