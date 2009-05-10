@@ -5,6 +5,10 @@ using Behemoth.Util;
 
 namespace Rpg
 {
+  /// <summary>
+  /// The Query module is for all kinds of miscellaneous functions which
+  /// determine things about the game world but do not alter it.
+  /// </summary>
   public static class Query
   {
     public static Vec3 Pos(Entity e)
@@ -130,7 +134,7 @@ namespace Rpg
       const double sightDecay = 0.3;
       // TODO: Check line of sight.
       // TODO: Observer state modifiers.
-      // TODO: Targer stealth modifiers.
+      // TODO: Target stealth modifiers.
 
       var dist = Distance(observer, target);
       if (dist > cutoff)

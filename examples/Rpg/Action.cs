@@ -7,6 +7,10 @@ using Behemoth.Util;
 
 namespace Rpg
 {
+  /// <summary>
+  /// The Action module is for functions that change the state of the game
+  /// world or its contents.
+  /// </summary>
   public static class Action
   {
     /// <summary>
