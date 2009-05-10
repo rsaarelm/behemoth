@@ -27,6 +27,13 @@ namespace Behemoth.Util
       return this;
     }
 
+    
+    public EntityTemplate AddProps(params Object[] args)
+    {
+      Alg.ApplyPairs<string, Object>((k, v) => Prop.Set(k, v), args);
+      return this;
+    }
+
 
     public Entity Make(string id)
     {
@@ -42,6 +49,12 @@ namespace Behemoth.Util
 
 
     public string Name = String.Empty;
+
+
+    /// <summary>
+    /// Miscellaneous data about this template.
+    /// </summary>
+    public Properties<string, Object> Prop = new Properties<string, Object>();
 
 
     private IList<ComponentTemplate> components = new List<ComponentTemplate>();

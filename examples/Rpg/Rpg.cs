@@ -89,7 +89,7 @@ namespace Rpg
         Alg.OA("nothing", "NoTerrain", 'x', Color.HotPink, Color.Black),
         Alg.OA("ground", "Ground", '.', Color.Black, Color.Gray),
         Alg.OA("water", "Water", 247, Color.DeepSkyBlue, Color.MediumBlue),
-        Alg.OA("grass", "Ground", ',', Color.Black, Color.Green),
+        Alg.OA("grass", "Ground", '.', Color.Black, Color.Green),
         Alg.OA("wall", "Wall", '#', Color.DarkGray, Color.Black),
         Alg.OA("rock", "Wall", '#', Color.Chocolate, Color.Black),
         Alg.OA("stalagmite", "Pillar", 'i', Color.Red, Color.Black),
@@ -108,52 +108,68 @@ namespace Rpg
 
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("ooze", 'j', Color.GreenYellow),
-                  BrainTemplate.Default(2, 1)));
+                  BrainTemplate.Default(2, 1))
+                .AddProps("powerlevel", 1.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("bat", 'b', Color.SlateBlue),
-                  BrainTemplate.Default(1, 3)));
+                  BrainTemplate.Default(1, 3))
+                .AddProps("powerLevel", 1.0, "rarity", 80.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("carnivorous worm", 's', Color.Orchid),
-                  BrainTemplate.Default(4, 2)));
+                  BrainTemplate.Default(4, 2))
+                .AddProps("powerLevel", 3.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("plasma wisp", 'q', Color.Aquamarine),
-                  BrainTemplate.Default(2, 8)));
+                  BrainTemplate.Default(2, 8))
+                .AddProps("powerLevel", 3.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("garm", 'c', Color.DarkRed),
-                  BrainTemplate.Default(6, 7)));
+                  BrainTemplate.Default(6, 7))
+                .AddProps("powerLevel", 4.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("feral octopus", 'o', Color.LightSeaGreen),
-                  BrainTemplate.Default(8, 10)));
+                  BrainTemplate.Default(8, 10))
+                .AddProps("powerLevel", 5.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("pirate", 'V', Color.OrangeRed),
-                  BrainTemplate.Default(11, 14)));
+                  BrainTemplate.Default(11, 14))
+                .AddProps("powerLevel", 6.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("hermit", 'H', Color.Goldenrod),
-                  BrainTemplate.Default(9, 16)));
+                  BrainTemplate.Default(9, 16))
+                .AddProps("powerLevel", 6.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("shard AI", 'd', Color.DarkSlateGray),
-                  BrainTemplate.Default(11, 20)));
+                  BrainTemplate.Default(11, 20))
+                .AddProps("powerLevel", 7.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("praetor", 'V', Color.MediumVioletRed),
-                  BrainTemplate.Default(16, 18)));
+                  BrainTemplate.Default(16, 18))
+                .AddProps("powerLevel", 7.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("pirate reaver", 'V', Color.Red),
-                  BrainTemplate.Default(20, 15)));
+                  BrainTemplate.Default(20, 15))
+                .AddProps("powerLevel", 9.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("marine", 'W', Color.Teal),
-                  BrainTemplate.Default(17, 20)));
+                  BrainTemplate.Default(17, 20))
+                .AddProps("powerLevel", 9.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("huww", 'G', Color.OliveDrab),
-                  BrainTemplate.Default(28, 11)));
+                  BrainTemplate.Default(28, 11))
+                .AddProps("powerLevel", 10.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("roamer AI", 'd', Color.SteelBlue),
-                  BrainTemplate.Default(16, 30)));
+                  BrainTemplate.Default(16, 30))
+                .AddProps("powerLevel", 10.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("special ops", 'W', Color.Aquamarine),
-                  BrainTemplate.Default(25, 22)));
+                  BrainTemplate.Default(25, 22))
+                .AddProps("powerLevel", 12.0, "rarity", 100.0));
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("simulacrum AI", 'K', Color.Chartreuse),
-                  BrainTemplate.Default(30, 35)));
+                  BrainTemplate.Default(30, 35))
+                .AddProps("powerLevel", 13.0, "rarity", 100.0));
 
       world.Add(new EntityTemplate(
                   CoreTemplate.Default("avatar", '@', Color.GhostWhite),

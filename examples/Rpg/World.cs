@@ -58,6 +58,9 @@ namespace Rpg
     }
 
 
+    public IEnumerable<EntityTemplate> Templates { get { return templates.Values; } }
+
+
     /// <summary>
     /// Build a new empty entity. The entity isn't added to the world yet, but
     /// does get a valid Id.
