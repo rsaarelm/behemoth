@@ -199,6 +199,7 @@
         <include name="tests/Behemoth.Util/TestEntities.cs"/>
         <include name="tests/Behemoth.Util/TestGeom.cs"/>
         <include name="tests/Behemoth.Util/TestMemUtil.cs"/>
+        <include name="tests/Behemoth.Util/TestNum.cs"/>
         <include name="tests/Behemoth.Util/TestProperties.cs"/>
       </sources>
       <references>
