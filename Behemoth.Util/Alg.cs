@@ -81,7 +81,7 @@ namespace Behemoth.Util
     {
       IDictionary<K, V> result = new Dictionary<K, V>();
 
-      ApplyPairs<K, V>((k, v) => { result[k] = v; }, args);
+      ApplyPairs<K, V>((k, v) => result[k] = v, args);
 
       return result;
     }
@@ -442,6 +442,65 @@ namespace Behemoth.Util
       where T : IComparable<T>
     {
       return GenericSortedSetOperation(sortedSeq1, sortedSeq2, 2);
+    }
+
+
+    public static T Fold<T, U>(IEnumerable<U> items, Func<T, U, T> func, T acc)
+    {
+      foreach (var item in items)
+      {
+        acc = func(acc, item);
+      }
+      return acc;
+    }
+
+
+    /// <summary>
+    /// Given an index between 0 and 1, return the corresponding value from a
+    /// weighted distribution. The distribution doesn't need to be normalized.
+    /// </summary>
+    public static T WeightedChoice<T>(double x, IEnumerable<Tuple2<double, T>> dist)
+    {
+      double sum = Fold(dist, (a, i) => a + i.First, 0.0);
+
+      if (sum <= 0.0)
+      {
+        throw new ArgumentException(
+          "Distribution empty or has no positive weight.", "dist");
+      }
+
+      x *= sum;
+
+      var acc = 0.0;
+
+      T result;
+
+      foreach (var item in dist)
+      {
+        acc += item.First;
+        result = item.Second;
+        if (acc >= x)
+        {
+          break;
+        }
+      }
+
+      return result;
+    }
+
+
+    /// <summary>
+    /// Yield the members in seq for which func returns true.
+    /// </summary>
+    public static IEnumerable<T> Filter<T>(Func<T, bool> func, IEnumerable<T> seq)
+    {
+      foreach (var item in seq)
+      {
+        if (func(item))
+        {
+          yield return item;
+        }
+      }
     }
   }
 }
