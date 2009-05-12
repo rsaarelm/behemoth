@@ -93,7 +93,8 @@ namespace Rpg
       CBrain brain1, brain2;
       if (entity.TryGet(out brain1) && target.TryGet(out brain2))
       {
-        var damage = Query.Success(brain1.Might, brain2.Craft);
+        var damage = brain1.Might *
+          Query.Success(brain1.Might * brain1.Craft / 2, brain2.Craft);
         if (damage > 0.0)
         {
           // XXX: Should have special "you" text case for player.

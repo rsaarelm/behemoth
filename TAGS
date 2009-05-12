@@ -1,0 +1,1414 @@
+
+examples/Shooter/Shooter.cs,5284
+namespace ShooterShooter13,193
+  abstract class EntityEntity15,213
+    public virtual void Display(Shooter shooter, int xOffset, int yOffset)Display17,241
+    public virtual void Update(EntityManager context)Update23,399
+    public void SetHitBox(int x, int y, int w, int h)SetHitBox28,467
+    public bool Intersects(Entity other)Intersects37,611
+    public double X;X45,846
+    public double Y;Y46,867
+    public int Frame;Frame47,888
+    private int hitBoxX = 0;hitBoxX49,911
+    private int hitBoxY = 0;hitBoxY50,940
+    private int hitBoxW = Shooter.spriteWidth;hitBoxW51,969
+    private int hitBoxH = Shooter.spriteHeight;hitBoxH52,1016
+  class Explosion : EntityExplosion56,1070
+    public Explosion(double x, double y)Explosion58,1101
+    public override void Update(EntityManager context)Update67,1231
+    private const int rate = 4;rate81,1468
+    private const int startFrame = 8;startFrame82,1500
+    private const int endFrame = 12;endFrame83,1538
+    private int cooldown;cooldown84,1575
+  class Avatar : EntityAvatar88,1607
+    public Avatar()Avatar90,1635
+    public override void Update(EntityManager context)Update100,1792
+    public override void Display(Shooter shooter, int xOff, int yOff)Display126,2226
+    public void Fire(EntityManager context)Fire137,2404
+    public void Die(EntityManager context)Die146,2634
+    public bool IsMovingLeft;IsMovingLeft160,2886
+    public bool IsMovingRight;IsMovingRight162,2917
+    public bool IsShootingIsShooting164,2949
+    public bool IsAlive { get { return isAlive; } }IsAlive174,3098
+    private bool isAlive = true;isAlive176,3151
+    private bool isShooting;isShooting178,3185
+    private int cooldown = 0;cooldown180,3215
+    private const double speed = 4.0;speed182,3246
+    private const int firingRate = 2;firingRate183,3284
+    private const double minX = 0.0;minX184,3322
+    private const double maxX = Shooter.pixelWidth - Shooter.spriteWidth;maxX185,3359
+  class AvatarShot : EntityAvatarShot189,3439
+    public AvatarShot(double x, double y)AvatarShot191,3471
+    public override void Update(EntityManager context)Update199,3599
+    private const double speed = 5.0;speed218,4006
+  class Enemy : EntityEnemy222,4050
+    public Enemy(double x, double y, double dx, double dy)Enemy224,4077
+    public override void Display(Shooter shooter, int xOffset, int yOffset)Display233,4206
+    public override void Update(EntityManager context)Update246,4480
+    public void Hurt(EntityManager context)Hurt275,5193
+    public void Die(EntityManager context)Die288,5380
+    bool HasLeftStage { get { return Y < -Shooter.spriteHeight; } }HasLeftStage297,5553
+    public double DX;DX300,5623
+    public double DY;DY301,5645
+    private int frameCount = 0;frameCount303,5668
+    private int life = 10;life305,5701
+    private int damageBlink = 0;damageBlink307,5729
+    const int startFrame = 0;startFrame309,5763
+    const int numFrames = 8;numFrames310,5793
+    const int frameDelay = 4;frameDelay311,5822
+    const int blinkFrame = 14;blinkFrame312,5852
+  class EntityManagerEntityManager316,5889
+    public EntityManager(Shooter shooter)EntityManager318,5915
+    public void Update()Update324,5999
+    public void Display(Shooter shooter, int xOff, int yOff)Display335,6255
+    public void Add(Entity entity)Add344,6423
+    public void Remove(Entity entity)Remove350,6500
+    public void StartGameOver()StartGameOver356,6583
+    public IList<Entity> Entities = new List<Entity>();Entities362,6663
+    public Shooter ShooterApp;ShooterApp364,6720
+  public class Shooter : IScreenShooter368,6757
+    public const int pixelWidth = 240;pixelWidth370,6794
+    public const int pixelHeight = 320;pixelHeight371,6833
+    public const int spriteWidth = 16;spriteWidth373,6874
+    public const int spriteHeight = 16;spriteHeight374,6913
+    public const string playerShotFx = "pew.wav";playerShotFx376,6954
+    public const string playerExplodeFx = "player_explode.wav";playerExplodeFx377,7004
+    public const string enemyExplodeFx = "enemy_explode.wav";enemyExplodeFx378,7068
+    const string spriteTexture = "sprites.png";spriteTexture381,7132
+    EntityManager entities;entities383,7181
+    Avatar avatar = new Avatar();avatar385,7210
+    bool isGameOver = false;isGameOver387,7245
+    int gameOverCounter = 40;gameOverCounter390,7339
+    Random rng = new Random();rng392,7370
+    List<Vec3> starfield = new List<Vec3>();starfield394,7402
+    App App;App396,7448
+    public static void Main(string[] args)Main398,7462
+    public void Init()Init406,7668
+    public void Uninit() {}Uninit423,8046
+    void InitStarfield()InitStarfield426,8076
+    public void StartGameOver()StartGameOver435,8267
+    public void KeyPressed(int keycode, int keyMod, char ch)KeyPressed441,8338
+    public void KeyReleased(int keycode)KeyReleased461,8747
+    public void Update(double timeElapsed)Update478,9076
+    public void Draw(double timeElapsed)Draw494,9327
+    public void RandomPoint(out int x, out int y)RandomPoint510,9780
+    public void SpawnEnemy()SpawnEnemy517,9944
+    public void DrawSprite(float x, float y, int frame)DrawSprite527,10217
+
+examples/Behetris/Behetris.cs,3058
+namespace BehetrisBehetris13,193
+  public class Behetris : IScreenBehetris18,276
+    public Behetris()Behetris20,314
+    public void Init() {}Init77,1315
+    public void Uninit() {}Uninit80,1343
+    public void Update(double timeElapsed)Update83,1373
+    public void Draw(double timeElapsed)Draw105,1725
+    private void DrawFuseBlock()DrawFuseBlock133,2409
+    private bool BlinkOn { get { return (App.Instance.Tick / 4) % 2 == 0; } }BlinkOn144,2608
+    private void DrawCell(int type, int x, int y)DrawCell147,2688
+    private void DrawBlock(Block block, int x, int y)DrawBlock154,2900
+    private void PasteBlock(Block block, int x, int y)PasteBlock170,3261
+    private bool BlockFits(Block block, int x, int y)BlockFits185,3620
+    public void KeyPressed(int keycode, int keyMod, char ch)KeyPressed201,3994
+    public void KeyReleased(int keycode)KeyReleased224,4430
+    private void Steer(int dir)Steer241,4716
+    private void Unsteer(int dir)Unsteer253,5008
+    private void SpawnBlock()SpawnBlock266,5169
+    private bool MoveBlock(int dir)MoveBlock281,5445
+    private void BlockFusePos(out int fuseX, out int fuseY)BlockFusePos304,5856
+    private bool RotateBlock(int dir)RotateBlock320,6199
+    private bool StepBlock()StepBlock360,6955
+    private void FuseBlock()FuseBlock375,7181
+    public bool OverflowOverflow390,7402
+    private void GameOver()GameOver406,7632
+    private void ClearLine(int lineY)ClearLine414,7792
+    private int LineCount(int lineY)LineCount426,8006
+    private bool IsFullLine(int lineY)IsFullLine440,8229
+    private void CheckClears()CheckClears446,8323
+    Block CurrentBlockCurrentBlock458,8499
+    public static void Main(string[] args)Main462,8589
+    private Field2<int> field = new Field2<int>();field471,8823
+    private Block[][] blocks;blocks473,8875
+    private int currentBlockIdx;currentBlockIdx475,8906
+    private int currentBlockRot;currentBlockRot476,8939
+    private int blockX;blockX477,8972
+    private int blockY;blockY478,8996
+    private int dropSpeed = 30;dropSpeed480,9021
+    private int dropCounter = 0;dropCounter481,9053
+    private int steerSpeed = 5;steerSpeed483,9087
+    private int steerCounter = 0;steerCounter484,9119
+    private int steerDir = 0;steerDir485,9153
+    private Random rng = new Random();rng487,9184
+    private bool speedDrop = false;speedDrop489,9224
+    const int fieldW = 10;fieldW491,9261
+    const int fieldH = 18;fieldH492,9288
+  class BlockBlock501,9387
+    private Block()Block503,9405
+    public Block(int type, params string[] shape)Block507,9438
+    public int Width { get { return width; } }Width516,9669
+    public int Height { get { return height; } }Height519,9718
+    public Block RotatedCopy()RotatedCopy527,9903
+    public static Block[] MakeSet(int type, params string[] shape)MakeSet545,10241
+    private int width;width559,10523
+    private int height;height560,10546
+    private Field2<int> shape = new Field2<int>();shape562,10571
+
+examples/Flight/Flight.cs,5091
+namespace FlightFlight11,150
+  public interface IFlightService : IAppServiceIFlightService15,204
+    IEnumerable<Thing> Things { get; }Things17,256
+    void AddThing(Thing thing);AddThing19,296
+    void RemoveThing(Thing thing);RemoveThing21,329
+    Rng Rng { get; }Rng23,365
+  public class Flight : IScreen, IFlightServiceFlight30,449
+    const int terrainSize = 36;terrainSize32,501
+    static float[] lightPos = {0.2f, 1.0f, 1.0f};lightPos34,534
+    public static void Main(String[] args)Main37,586
+    public Flight()Flight47,852
+    public void Init() {Init53,907
+    void InitLighting()InitLighting80,1623
+    void InitShading()InitShading87,1729
+    void InitTerrain()InitTerrain95,1919
+    public void Uninit() {}Uninit182,4008
+    public void Update(double timeElapsed)Update185,4038
+    public void Draw(double timeElapsed)Draw199,4264
+    public void KeyPressed(int keycode, int keyMod, char ch)KeyPressed220,4676
+    public void KeyReleased(int keycode)KeyReleased231,4862
+    void Camera()Camera236,4917
+    public static void MengerSponge(MengerSponge253,5342
+    public static Vec3 HeightMapNormal(HeightMapNormal288,6137
+    static Vec3 HeightLine(HeightLine315,6897
+    public static void HeightMap(HeightMap325,7142
+    public static void Tetrahedron()Tetrahedron375,8709
+    public static Model MakeOctahedron()MakeOctahedron403,9208
+    public static Model Octahedron()Octahedron438,9845
+    static Model? octahedron = null;octahedron447,10012
+    public static double TerrainHeight(double x, double y)TerrainHeight450,10051
+    public IDictionary<string, Model> Models { get { return models; } }Models458,10294
+    public IEnumerable<Thing> Things { get { return things; } }Things461,10368
+    public void AddThing(Thing thing)AddThing464,10434
+    public void RemoveThing(Thing thing)RemoveThing470,10511
+    public static void Spawn(Thing thing)Spawn476,10594
+    public Rng Rng { get { return rng; } }Rng482,10703
+    Model landscape;landscape485,10748
+    static Color[,] heightmap;heightmap487,10770
+    public Rng rng = new DefaultRng();rng489,10802
+    IDictionary<string, Model> models = new Dictionary<string, Model>();models491,10842
+    IDictionary<string, Model> models = new Dictionary<string, Model>();Model491,10842
+    ICollection<Thing> things = new List<Thing>();things493,10916
+  public struct ModelModel497,10973
+    public float[,] Vertices;Vertices499,10999
+    public float[,] Normals;Normals500,11029
+    public short[,] Faces;Faces501,11058
+    public Model(float[,] vertices, float[,] normals, short[,] faces)Model504,11087
+    public void Draw()Draw512,11259
+  public enum ThingType { Creep = 1, Tower = 2 }ThingType519,11349
+  public enum ThingType { Creep = 1, Tower = 2 }Creep519,11349
+  public enum ThingType { Creep = 1, Tower = 2 }Tower519,11349
+  public abstract class ThingThing522,11400
+    public Vec3 Pos;Pos524,11434
+    public Model Model;Model526,11456
+    public ThingType Type;Type528,11481
+    public bool IsAlive = true;IsAlive530,11509
+    public Color Color = Color.AliceBlue;Color532,11542
+    public abstract void Update(double timeElapsed);Update534,11585
+    public virtual void Draw(double timeElapsed)Draw536,11639
+    public virtual void Damage(double amount)Damage548,11888
+    public virtual double Dist(Thing other)Dist553,11948
+  public class Creep : ThingCreep560,12053
+    public Vec3 velocity;velocity562,12086
+    public double health = 100.0;health563,12112
+    public Creep(Vec3 pos, Vec3 velocity)Creep565,12147
+    public override void Update(double timeElapsed)Update574,12332
+    public override void Damage(double amount)Damage580,12435
+  public class Tower : ThingTower601,12884
+    public Tower(Vec3 pos)Tower603,12917
+    public override void Draw(double timeElapsed)Draw611,13048
+    public override void Update(double timeElapsed)Update625,13401
+    Thing ClosestCreep()ClosestCreep646,13782
+    void Shoot(Thing target)Shoot663,14112
+    double time = 0.0;time682,14504
+    int stage = -2;stage683,14527
+    double power = 10.0;power685,14548
+    const double switchDelay = 1.0;switchDelay687,14574
+    const double KillRange = 15.0;KillRange689,14611
+  public class Particle : ThingParticle693,14652
+    public Particle(Vec3 pos, Vec3 velocity, Color color, double lifetime, double scale)Particle695,14688
+    public override void Update(double timeElapsed)Update705,14929
+    public override void Draw(double timeElapsed)Draw716,15128
+    Vec3 velocity;velocity728,15437
+    double lifetime;lifetime729,15456
+    double scale;scale730,15477
+  public class Fx : ThingFx734,15501
+    public Fx(double lifetime, Action<double> drawFunc)Fx736,15531
+    public override void Update(double timeElapsed)Update743,15665
+    public override void Draw(double timeElapsed)Draw753,15840
+    Action<double> drawFunc;drawFunc759,15933
+    double lifetime;lifetime760,15962
+    double currentLife = 0.0;currentLife761,15983
+
+examples/Rpg/CCore.cs,1620
+namespace RpgRpg5,37
+  public class CCore : ComponentCCore8,70
+    public Vec3 Pos;Pos10,107
+    public void SetPos(int x, int y, int z)SetPos12,129
+    public int Icon;Icon19,237
+    public Color Color;Color21,259
+    public String Name;Name23,284
+    public byte Facing;Facing25,309
+    public World World;World27,334
+    public bool ActionPose { get { return AnimActTime > TimeUtil.CurrentSeconds; } }ActionPose29,359
+    public double AnimActTime = double.MinValue;AnimActTime36,711
+    public const double ActSpeed = 0.5;ActSpeed37,760
+    public bool IsObstacle;IsObstacle41,803
+    public bool IsStatic;IsStatic47,967
+    public int DrawPriority;DrawPriority53,1171
+    new public static Type GetFamily()GetFamily55,1201
+  public class CoreTemplate : ComponentTemplateCoreTemplate62,1286
+    private CoreTemplate() {}CoreTemplate64,1338
+    public static CoreTemplate Default(string name, int icon, Color color)Default67,1370
+    public static CoreTemplate FloorStatic(string name, int icon, Color color)FloorStatic77,1599
+    public static CoreTemplate BlockStatic(string name, int icon, Color color)BlockStatic87,1855
+    public override Type Family { get { return CCore.GetFamily(); } }Family95,2046
+    protected override Component BuildComponent(Entity entity)BuildComponent98,2118
+    private string name;name112,2445
+    private int icon;icon114,2471
+    private Color color;color116,2494
+    private int drawPriority = 0;drawPriority118,2520
+    private bool isStatic = false;isStatic120,2555
+    private bool isObstacle = true;isObstacle122,2591
+
+examples/Rpg/Rpg.cs,2222
+namespace RpgRpg16,251
+  public class Rpg : IRpgServiceRpg18,267
+    public static void Main(string[] args)Main20,304
+    private void PrintTable(IDictionary<Object, Object> table)PrintTable31,562
+    public void Init()Init48,992
+    public void Uninit() {}Uninit78,1689
+    public void NewGame()NewGame81,1719
+    public Vec3 PlayerPos { get { return Player.Get<CCore>().Pos; } }PlayerPos149,3988
+    public Entity Player { get { return (Entity)world.Globals["player"]; } }Player152,4060
+    public void Msg(string fmt, params Object[] args)Msg155,4139
+    public IEnumerable<string> MsgLines { get { return messages; } }MsgLines168,4461
+    public void ClearMsg()ClearMsg171,4532
+    public void GenerateExampleMap()GenerateExampleMap177,4597
+    public void MoveCmd(int dir8)MoveCmd216,5456
+    void DoLos()DoLos224,5575
+    public void NewTurn()NewTurn230,5640
+    void UpdateBrains()UpdateBrains236,5702
+    public bool IsMapped(int x, int y, int z)IsMapped249,5897
+    public void GameOver(string msg)GameOver255,6018
+    public Rng Rng { get { return rng; } }Rng262,6108
+    public bool IsGameOver { get { return gameOver; } }IsGameOver265,6153
+    public World World { get { return world; } }World268,6211
+    public static IRpgService ServiceService275,6373
+    private World world;world281,6474
+    private List<string> messages = new List<string>();messages283,6500
+    private bool gameOver;gameOver285,6557
+    private Rng rng;rng287,6585
+    public const int pixelWidth = 640;pixelWidth290,6608
+    public const int pixelHeight = 480;pixelHeight291,6647
+    public const string spriteTexture = "tiles.png";spriteTexture293,6688
+    public const string fontTexture = "font8x16.png";fontTexture295,6742
+    public const double fontW = 8.0;fontW296,6796
+    public const double fontH = 16.0;fontH297,6833
+    public const double fontPixelScale = 1.0;fontPixelScale298,6871
+    public const string iconFontTexture = "font8x8.png";iconFontTexture300,6918
+    public const double iconFontW = 16.0;iconFontW301,6975
+    public const double iconFontH = 16.0;iconFontH302,7017
+    public const int ConsoleColumns = 40;ConsoleColumns304,7060
+
+examples/Rpg/Terrain.cs,1814
+namespace RpgRpg6,71
+  public struct TerrainTileTerrainTile9,104
+    public TerrainTile(TerrainData type)TerrainTile11,136
+    public TerrainData Type;Type17,243
+  public enum TerrainFamilyTerrainFamily21,278
+    NoTerrain = 0,NoTerrain23,310
+    Wall,Wall24,329
+    TransparentWall,TransparentWall25,339
+    IllusionWall,IllusionWall26,360
+    WallGap,WallGap27,378
+    FenceWall,FenceWall28,391
+    Pillar,Pillar29,406
+    Ground,Ground30,418
+    Water,Water31,430
+    Lava,Lava32,441
+    VoidVoid33,451
+  public struct TerrainDataTerrainData38,483
+    public string Name { get { return name; } }Name40,515
+    public TerrainFamily Family { get { return family; } }Family41,563
+    public int Icon { get { return icon; } }Icon43,623
+    public Color Foreground { get { return foreground; } }Foreground44,668
+    public Color Background { get { return background; } }Background45,727
+    public TerrainData(TerrainData47,787
+    public TerrainData(TerrainData59,1066
+    public static TerrainData FromDataRow(Object[] dataRow)FromDataRow72,1583
+    private string name;name102,2581
+    private TerrainFamily family;family103,2606
+    private int icon;icon104,2640
+    private Color foreground;foreground105,2662
+    private Color background;background106,2692
+  public static class TerrainUtilTerrainUtil115,2957
+    public static bool IsWallType(TerrainFamily family)IsWallType130,3296
+    public static bool IsWall(TerrainTile tile)IsWall141,3604
+    public static bool BlocksMoving(TerrainTile tile)BlocksMoving150,3813
+    public static bool BlocksFlying(TerrainTile tile)BlocksFlying168,4398
+    public static bool BlocksSight(TerrainTile tile)BlocksSight183,4846
+    public static bool BlocksShot(TerrainTile tile)BlocksShot197,5266
+
+examples/Rpg/CLos.cs,403
+namespace RpgRpg5,37
+  public class CLos : ComponentCLos8,70
+    public void DoLos()DoLos10,106
+    public bool IsVisible(Vec3 pos)IsVisible42,891
+    public bool IsMapped(Vec3 pos)IsMapped48,968
+    private Field3<bool> mapped = new Field3<bool>();mapped54,1043
+    private Field3<bool> visible = new Field3<bool>();visible55,1097
+    new public static Type GetFamily()GetFamily57,1153
+
+examples/Rpg/Action.cs,492
+namespace RpgRpg8,118
+  public static class ActionAction10,134
+    public static bool MoveRel(Entity e, Vec3 delta)MoveRel18,337
+    public static void Place(Entity e, Vec3 pos)Place50,1215
+    public static bool IsVerticalDir(int dir8)IsVerticalDir60,1404
+    public static void Kill(Entity entity, Entity slayer)Kill66,1502
+    public static void Attack(Entity entity, Entity target)Attack87,2000
+    public static bool AttackMove(Entity entity, int dir8)AttackMove102,2397
+
+examples/Rpg/World.cs,2597
+namespace RpgRpg9,133
+  public class WorldWorld12,166
+    public World()World14,191
+    public Entity Create(EntityTemplate template)Create22,313
+    public Entity Create(string templateName)Create31,485
+    public Entity Spawn(EntityTemplate template, Vec3 pos)Spawn40,698
+    public Entity Spawn(string templateName, Vec3 pos)Spawn49,885
+    public void Add(string name, EntityTemplate template)Add55,1004
+    public Entity MakeEntity(String prefix)MakeEntity68,1360
+    public void Add(Entity entity)Add76,1515
+    public void Remove(Entity entity)Remove86,1729
+    public IEnumerable<Entity> EntitiesEntities96,1957
+    public IEnumerable<Entity> EntitiesIn(Vec3 pos)EntitiesIn105,2087
+    public IEnumerable<Entity> EntitiesInRect(int x, int y, int z, int width, int height)EntitiesInRect113,2300
+    public IEnumerable<Entity> EntitiesNear(Vec3 pos)EntitiesNear128,2859
+    public Field3<TerrainTile> Space { get { return space; } }Space136,3028
+    public Random Rng { get { return rng; } }Rng139,3093
+    public Properties<String, Object> Globals { get { return globals; } }String145,3223
+    public Properties<String, Object> Globals { get { return globals; } }Globals145,3223
+    public World AddTerrain(TerrainData data)AddTerrain148,3299
+    public TerrainData GetTerrain(string name)GetTerrain155,3415
+    private void Register(Entity entity)Register161,3508
+    private void Unregister(Entity entity)Unregister178,3867
+    private Random rng = new Random();rng197,4251
+    private IDictionary<String, Entity> entities = new Dictionary<String, Entity>();String200,4356
+    private IDictionary<String, Entity> entities = new Dictionary<String, Entity>();entities200,4356
+    private IDictionary<String, Entity> entities = new Dictionary<String, Entity>();Entity200,4356
+    Field3<TerrainTile> space = new Field3<TerrainTile>();space202,4442
+    private Properties<String, Object> globals = new Properties<String, Object>();String204,4502
+    private Properties<String, Object> globals = new Properties<String, Object>();globals204,4502
+    private Properties<String, Object> globals = new Properties<String, Object>();Object204,4502
+    private IDictionary<string, TerrainData> terrainData = new Dictionary<string, TerrainData>();terrainData206,4586
+    private IDictionary<string, TerrainData> terrainData = new Dictionary<string, TerrainData>();TerrainData206,4586
+    private IDictionary<string, EntityTemplate> templates =templates208,4685
+      new Dictionary<string, EntityTemplate>();EntityTemplate209,4745
+
+examples/Rpg/PlayScreen.cs,958
+namespace RpgRpg11,150
+  public class PlayScreen : IScreenPlayScreen13,166
+    public void Init() {}Init15,206
+    public void Uninit() {}Uninit18,234
+    public void KeyPressed(int keycode, int keyMod, char ch)KeyPressed21,264
+    public void KeyReleased(int keycode) {}KeyReleased53,987
+    public void Update(double timeElapsed)Update56,1033
+    public void Draw(double timeElapsed)Draw67,1263
+    void DrawWorld(Vec3 center)DrawWorld75,1405
+    public static bool IsFacingLeft(int facing)IsFacingLeft138,3618
+    public void DrawEntity(Entity e, double xOff, double yOff)DrawEntity144,3706
+    void DrawMessages()DrawMessages163,4144
+    void DrawString(String str, double x, double y, Color color)DrawString174,4357
+    void WaitKey()WaitKey194,5033
+    void DrawCharBackground(double x, double y, Color color)DrawCharBackground208,5232
+    void DrawTileChar(char ch, double x, double y, Color color)DrawTileChar215,5409
+
+examples/Rpg/IRpgService.cs,659
+namespace RpgRpg7,92
+  public interface IRpgService : IAppServiceIRpgService9,108
+    void NewGame();NewGame11,157
+    void Msg(string fmt, params Object[] args);Msg13,178
+    IEnumerable<string> MsgLines { get; }MsgLines15,227
+    void ClearMsg();ClearMsg17,270
+    void GameOver(string msg);GameOver19,292
+    Entity Player { get; }Player21,324
+    Rng Rng { get; }Rng23,352
+    void MoveCmd(int dir8);MoveCmd26,375
+    void NewTurn();NewTurn27,403
+    bool IsGameOver { get; }IsGameOver29,424
+    bool IsMapped(int x, int y, int z);IsMapped31,454
+    World World { get; }World33,495
+    Vec3 PlayerPos { get; }PlayerPos35,521
+
+examples/Rpg/Icon.cs,183
+namespace RpgRpg5,37
+  public struct IconIcon8,70
+    public short Symbol;Symbol10,95
+    public Color Color;Color11,120
+    public Icon(char symbol, Color color)Icon13,145
+
+examples/Rpg/TitleScreen.cs,509
+namespace RpgRpg11,150
+  public class TitleScreen : IScreenTitleScreen13,166
+    public void KeyPressed(int keycode, int keyMod, char ch)KeyPressed15,207
+    public void KeyReleased(int keycode) {}KeyReleased32,519
+    public void Init() {}Init35,565
+    public void Uninit() {}Uninit38,593
+    public void Update(double timeElapsed)Update41,623
+    public void Print(string txt, int line)Print46,680
+    public void Draw(double timeElapsed)Draw56,967
+    void StartGame()StartGame70,1207
+
+examples/Rpg/UI.cs,128
+namespace RpgRpg6,71
+  public static class UIUI8,87
+    public static void Msg(string fmt, params Object[] args)Msg10,116
+
+examples/Rpg/Query.cs,779
+namespace RpgRpg6,71
+  public static class QueryQuery8,87
+    public static Vec3 Pos(Entity e)Pos10,119
+    public static bool IsInRect(Entity e, int x, int y, int z, int w, int h)IsInRect17,226
+    public static World WorldOf(Entity e)WorldOf34,555
+    public static bool CanEnter(Entity e, Vec3 pos)CanEnter40,646
+    public static bool CanSeeThrough(Entity e, Vec3 pos)CanSeeThrough60,1088
+    public static bool HostileTo(Entity e, Entity target)HostileTo71,1315
+    public static IEnumerable<Entity> NearbyEnemies(Entity e)NearbyEnemies86,1611
+    public static bool IsAlive(Entity e)IsAlive102,1978
+    public static double Distance(Entity e1, Entity e2)Distance108,2079
+    public static bool Notices(Entity observer, Entity target)Notices127,2474
+
+examples/Rpg/CBrain.cs,1311
+namespace RpgRpg6,56
+  public class CBrain : ComponentCBrain13,208
+    public enum StatesStates15,246
+      Sleep,Sleep17,275
+      Wander,Wander18,288
+      Hunt,Hunt19,302
+    public double Health = 1.0;Health24,432
+    public double Resistance = 1.0;Resistance26,465
+    public double Might = 10.0;Might28,502
+    public double Craft = 10.0;Craft30,535
+    public bool AiActive = true;AiActive32,568
+    public int Alignment = 0;Alignment34,602
+    public bool Gibs = true;Gibs36,633
+    public Entity Target = null;Target38,663
+    public States State = States.Sleep;State40,697
+    public virtual void Damage(Entity cause, double amount)Damage42,738
+    public virtual void Update()Update52,935
+    void RandomMove()RandomMove71,1299
+    void MoveTowards(Vec3 targetPos)MoveTowards79,1413
+    States StateTransition(States state)StateTransition108,1866
+    bool FindTarget(out Entity target)FindTarget147,2688
+    new public static Type GetFamily()GetFamily171,3109
+  public class BrainTemplate : ComponentTemplateBrainTemplate179,3212
+    public BrainTemplate()BrainTemplate181,3265
+    public override Type Family { get { return CBrain.GetFamily(); } }Family185,3301
+    protected override Component BuildComponent(Entity entity)BuildComponent188,3374
+
+Behemoth.Apps/IScreen.cs,323
+namespace Behemoth.AppsBehemoth.Apps3,15
+  public interface IScreen : IAppServiceIScreen8,140
+    void Draw(double timeElapsed);Draw10,185
+    void Update(double timeElapsed);Update12,221
+    void KeyPressed(int keycode, int keyMod, char ch);KeyPressed19,509
+    void KeyReleased(int keycode);KeyReleased21,565
+
+Behemoth.Apps/App.cs,1400
+namespace Behemoth.AppsBehemoth.Apps7,90
+  public class AppApp12,182
+    public App()App14,205
+    public static App Instance { get { return instance; } }Instance27,468
+    public static T Service<T>() where T : IAppServiceIAppService33,618
+    public T GetService<T>() where T : IAppServiceIAppService39,726
+    public bool TryGetService<T>(out T service) where T : IAppServiceIAppService45,828
+    public bool ContainsService(Type serviceType)ContainsService61,1123
+    public void RegisterService(Type service, IAppService provider)RegisterService67,1235
+    public void Run()Run95,1913
+    public void Exit()Exit128,2510
+    public double TargetUpdateInterval = 1.0 / 30.0;TargetUpdateInterval137,2649
+    public int Tick { get { return tick; } }Tick140,2704
+    protected virtual void Update(double timeElapsed)Update143,2751
+    protected virtual void Draw(double timeElapsed)Draw155,2945
+    protected virtual void InitApp() {}InitApp165,3120
+    protected virtual void UninitApp() {}UninitApp168,3162
+    private IDictionary<Type, IAppService> services =Type171,3206
+    private IDictionary<Type, IAppService> services =services171,3206
+      new Dictionary<Type, IAppService>();IAppService172,3260
+    private bool isRunning = false;isRunning174,3304
+    private int tick = 0;tick176,3341
+    private static App instance = null;instance179,3369
+
+Behemoth.Apps/ScreenManager.cs,810
+namespace Behemoth.AppsBehemoth.Apps4,49
+  public class ScreenManager : IScreen, IScreenManagerScreenManager6,75
+    public ScreenManager(params IScreen[] screens)ScreenManager8,134
+    public void Register(App app)Register17,281
+    public void Init() {}Init24,436
+    public void Uninit() {}Uninit27,464
+    public void Update(double timeElapsed)Update30,494
+    public void Draw(double timeElapsed)Draw39,640
+    public void KeyPressed(int keycode, int keyMod, char ch)KeyPressed48,782
+    public void KeyReleased(int keycode)KeyReleased57,958
+    public void PushScreen(IScreen screen)PushScreen66,1103
+    public IScreen PopScreen()PopScreen72,1188
+    public IScreen SwapScreen(IScreen screen)SwapScreen78,1261
+    Stack<IScreen> screens = new Stack<IScreen>();screens86,1400
+
+Behemoth.Apps/IAppService.cs,151
+namespace Behemoth.AppsBehemoth.Apps1,0
+  public interface IAppServiceIAppService3,26
+    void Init();Init8,162
+    void Uninit();Uninit14,281
+
+Behemoth.Apps/IScreenManager.cs,263
+namespace Behemoth.AppsBehemoth.Apps3,15
+  public interface IScreenManager : IAppServiceIScreenManager5,41
+    void PushScreen(IScreen screen);PushScreen7,93
+    IScreen PopScreen();PopScreen9,131
+    IScreen SwapScreen(IScreen screen);SwapScreen11,157
+
+Behemoth.Apps/IInputState.cs,361
+namespace Behemoth.AppsBehemoth.Apps3,15
+  public interface IInputStateIInputState5,41
+    int MouseX { get; }MouseX7,76
+    int MouseY { get; }MouseY8,100
+    bool MouseButton(int num);MouseButton9,124
+    int HotItem { get; set; }HotItem11,156
+    int ActiveItem { get; set; }ActiveItem12,186
+    bool KeyPressed(int keycode);KeyPressed14,220
+
+Behemoth.TaoUtil/InputUtil.cs,667
+namespace Behemoth.TaoUtilBehemoth.TaoUtil6,65
+  public static class InputUtilInputUtil8,94
+    public static JoystickInfo? InitJoystick()InitJoystick10,130
+  public struct JoystickInfoJoystickInfo31,510
+    public string Name;Name33,543
+    public int Axes;Axes34,567
+    public int Buttons;Buttons35,588
+    public int Balls;Balls36,612
+    public int Hats;Hats37,634
+    internal JoystickInfo(int index, IntPtr sdlJoyPtr)JoystickInfo40,657
+    public override string ToString()ToString50,972
+    public bool MatchesConfig(int axes, int buttons, int balls, int hats)MatchesConfig63,1371
+    public bool MatchesPS2Pad()MatchesPS2Pad69,1542
+
+Behemoth.TaoUtil/ITaoService.cs,520
+namespace Behemoth.TaoUtilBehemoth.TaoUtil7,92
+  public interface ITaoService : IAppServiceITaoService12,203
+    void Resize(int w, int h);Resize14,252
+    void PixelProjection();PixelProjection16,284
+    void AddTexture(string name, Color[,] pixels);AddTexture18,313
+    int PixelWidth { get; }PixelWidth20,365
+    int PixelHeight { get; }PixelHeight22,394
+    double PixelScale { get; }PixelScale24,424
+    TextureCache Textures { get; }Textures26,456
+    bool UseSound { get; set; }UseSound28,492
+
+Behemoth.TaoUtil/TextureCache.cs,457
+namespace Behemoth.TaoUtilBehemoth.TaoUtil7,103
+  public class TextureCache : Cache<String, int>TextureCache12,232
+    public TextureCache(ImageCache imageCache, int texFlags)TextureCache14,285
+    protected override int Load(string name)Load21,428
+    protected override void Free(int item)Free37,741
+    public override void Dispose()Dispose43,848
+    private ImageCache imageCache;imageCache50,947
+    private int texFlags;texFlags52,983
+
+Behemoth.TaoUtil/Media.cs,2610
+namespace Behemoth.TaoUtilBehemoth.TaoUtil13,197
+  public static class MediaMedia18,302
+    public const int TEX_CLAMP_EDGE = 1 << 0;TEX_CLAMP_EDGE21,356
+    public const int TEX_USE_FILTERING = 1 << 1;TEX_USE_FILTERING22,402
+    public static bool UseSound = true;UseSound25,468
+    public static void InitFacilities()InitFacilities30,590
+    public static void UninitFacilities()UninitFacilities46,1001
+    public static void AddPhysFsPath(params string[] elts)AddPhysFsPath56,1194
+    public static IntPtr Load32BitSurface(string filename)Load32BitSurface86,1951
+    public static int LoadGlTexture(string filename, int texFlags)LoadGlTexture98,2295
+    public static int MakeGlTexture(IntPtr pixels, int w, int h, int texFlags)MakeGlTexture116,2744
+    public static unsafe Color[,] SurfaceToPixels(Sdl.SDL_Surface surface)SurfaceToPixels147,3843
+    public static unsafe int PixelsToGlTexture(Color[,] pixels, int texFlags)PixelsToGlTexture172,4460
+    public static unsafe IntPtr PixelsToSurface(Color[,] pixels)PixelsToSurface189,4907
+    public static Color[,] LoadPixels(string filename)LoadPixels220,5691
+    static IntPtr LoadSound(string filename)LoadSound233,6000
+    static void PlaySound(IntPtr chunk)PlaySound247,6370
+    public static void PlaySound(string filename)PlaySound256,6572
+    public static void GetPfsFileData(GetPfsFileData274,6952
+    public static void FreePfsData(IntPtr data)FreePfsData284,7226
+    public static byte[] GetPfsFileData(string filename)GetPfsFileData293,7415
+    public static string GetPfsFileText(string filename, Encoding encoding)GetPfsFileText307,7786
+    public static string GetPfsFileText(string filename)GetPfsFileText316,8032
+    public static IntPtr GetPfsFileRwop(string filename)GetPfsFileRwop326,8250
+    private static IntPtr PfsOpenRead(string filename)PfsOpenRead336,8495
+    public static Sdl.SDL_Surface GetSdlSurface(IntPtr surfacePtr)GetSdlSurface357,9121
+    public static Sdl.SDL_PixelFormat GetPixelFormat(Sdl.SDL_Surface surface)GetPixelFormat363,9293
+    public unsafe static IntPtr SdlSurfaceTo32Bit(IntPtr sdlSurfacePtr)SdlSurfaceTo32Bit373,9630
+    private static Sdl.SDL_PixelFormat PixelFormat32BitPixelFormat32Bit386,9974
+    public static IntPtr Make32BitSurface(int width, int height)Make32BitSurface416,10771
+    private static void ColorShifts(ColorShifts439,11332
+    private static void ColorMasks(ColorMasks463,11882
+    private static Dictionary<string, IntPtr> soundBuffers =soundBuffers483,12320
+      new Dictionary<string, IntPtr>();IntPtr484,12381
+
+Behemoth.TaoUtil/TaoApp.cs,1684
+namespace Behemoth.TaoUtilBehemoth.TaoUtil10,126
+  public class TaoApp : App, ITaoServiceTaoApp12,155
+    public TaoApp(int pixelWidth, int pixelHeight, string title)TaoApp14,200
+    private void CacheInit()CacheInit27,473
+    private void LibInit()LibInit34,607
+    protected override void Draw(double timeElapsed)Draw44,757
+    protected override void InitApp()InitApp51,886
+    protected override void UninitApp()UninitApp56,938
+    public void Init()Init64,1076
+    public void Uninit() {}Uninit68,1112
+    void InitSdl()InitSdl71,1142
+    void InitGl()InitGl90,1664
+    void ReadInput()ReadInput103,2042
+    protected override void Update(double timeElapsed)Update157,3179
+    public void Resize(int w, int h)Resize164,3299
+    public void PixelProjection()PixelProjection191,4033
+    public void AddTexture(string name, Color[,] pixels)AddTexture203,4343
+    public int PixelWidth { get { return pixelWidth; } }PixelWidth209,4470
+    public int PixelHeight { get { return pixelHeight; } }PixelHeight211,4528
+    public double PixelScale { get { return pixelScale; } }PixelScale213,4588
+    public TextureCache Textures { get { return textureCache; } }Textures215,4649
+    public bool UseSound { get { return useSound; } set { useSound = value; } }UseSound217,4716
+    private int pixelWidth;pixelWidth220,4798
+    private int pixelHeight;pixelHeight221,4826
+    private double pixelScale;pixelScale222,4855
+    private bool useSound = true;useSound224,4887
+    private string windowTitle;windowTitle226,4922
+    private ImageCache imageCache;imageCache228,4955
+    private TextureCache textureCache;textureCache229,4990
+
+Behemoth.TaoUtil/ImageCache.cs,293
+namespace Behemoth.TaoUtilBehemoth.TaoUtil5,51
+  public class ImageCache : Cache<String, IntPtr>ImageCache10,182
+    protected override IntPtr Load(string name)Load12,236
+    protected override void Free(IntPtr item)Free28,633
+    protected override long Size(IntPtr item)Size34,726
+
+Behemoth.TaoUtil/Gfx.cs,1412
+namespace Behemoth.TaoUtilBehemoth.TaoUtil6,88
+  public static class GfxGfx11,184
+    public enum VertexFlagsVertexFlags13,214
+      Pos = 1 << 0,Pos15,248
+      Normal = 1 << 1,Normal16,268
+      Color = 1 << 2,Color17,291
+      Texture = 1 << 3,Texture18,313
+    public static void DrawSprite(DrawSprite25,454
+    public static void DrawSprite(DrawSprite68,1722
+    public static void DrawMirroredSprite(DrawMirroredSprite83,2215
+    public static void DrawFlippedSprite(DrawFlippedSprite98,2718
+    public static void DrawChar(DrawChar145,4021
+    public static void DrawString(DrawString158,4370
+    public static void GlColor(Color color)GlColor168,4654
+    public static void GlEmissionColor(Color color)GlEmissionColor177,4916
+    public static void DrawRect(double x, double y, double w, double h, byte r, byte g, byte b)DrawRect184,5074
+    public static void ClearScreen()ClearScreen205,5599
+    public static void DrawCube(DrawCube214,5796
+    public static void DrawTriMesh(float[,] vertices, float[,] normals, short[,] indices)DrawTriMesh263,7263
+    public static void InitArrayState(VertexFlags types)InitArrayState280,7774
+    public static void UninitArrayState(VertexFlags types)UninitArrayState296,8324
+    public static void DrawParticle(float x, float y, float z, float size)DrawParticle314,9020
+    public static void DrawBeam(DrawBeam333,9572
+
+tests/Behemoth.Util/TestMemUtil.cs,440
+namespace Behemoth.UtilBehemoth.Util9,112
+  public class TestMemUtilTestMemUtil12,154
+    public void TestStaticMethodLookup()TestStaticMethodLookup15,196
+  class BaseBase25,469
+    public static int Foo()Foo27,486
+  class Derived1 : BaseDerived134,548
+    new public static int Foo()Foo36,576
+  class Derived2 : BaseDerived243,642
+  class Derived11 : Derived1Derived1147,673
+  class Derived21 : Derived2Derived2151,709
+
+tests/Behemoth.Util/TestProperties.cs,787
+namespace Behemoth.UtilBehemoth.Util9,112
+  public class TestPropertiesTestProperties14,199
+    Props SimplePropsSimpleProps16,233
+    public void TestSimple()TestSimple28,391
+    public void TestInherit()TestInherit48,766
+    public void TestInheritAndChange()TestInheritAndChange60,1029
+    public void TestInheritAndHide()TestInheritAndHide74,1319
+    public void TestUnset()TestUnset99,1848
+    enum KeySetKeySet113,2169
+      Title,Title115,2191
+      ISBN,ISBN116,2204
+      DatePublished,DatePublished117,2216
+    public void TestKeyEnum()TestKeyEnum122,2256
+    public void TestConstraints()TestConstraints134,2569
+    public void TestComplexConstraints()TestComplexConstraints154,3006
+    public void TestSerialization()TestSerialization195,3971
+
+tests/Behemoth.Util/TestAlg.cs,238
+namespace Behemoth.UtilBehemoth.Util8,95
+  public class TestAlgTestAlg11,137
+    public void TestConcat()TestConcat14,175
+    public void TestDictLiteral()TestDictLiteral25,639
+    public void TestSeqSetOps()TestSeqSetOps40,916
+
+tests/Behemoth.Util/TestEntities.cs,1364
+namespace Behemoth.UtilBehemoth.Util9,112
+  public class TestEntitiesTestEntities12,154
+    public void TestEntitySetup()TestEntitySetup15,197
+    public void TestEntityTemplates()TestEntityTemplates95,2409
+  class StatsComponent : ComponentStatsComponent125,3454
+    new public static Type GetFamily()GetFamily127,3493
+    public int Might;Might132,3582
+    public int Craft;Craft133,3604
+    public int Speed;Speed134,3626
+  class PosComponent : ComponentPosComponent139,3671
+    new public static Type GetFamily()GetFamily141,3708
+    public int X;X146,3795
+    public int Y;Y147,3813
+  class BadComponent : ComponentBadComponent152,3854
+  class StatsTemplate : ComponentTemplateStatsTemplate158,3986
+    public StatsTemplate(int might, int craft, int speed)StatsTemplate160,4032
+    public override Type Family { get { return StatsComponent.GetFamily(); } }Family168,4182
+    protected override Component BuildComponent(Entity entity)BuildComponent171,4263
+    private int might;might181,4497
+    private int craft;craft182,4520
+    private int speed;speed183,4543
+  class RandomPosTemplate : ComponentTemplateRandomPosTemplate187,4572
+    public override Type Family { get { return PosComponent.GetFamily(); } }Family189,4622
+    protected override Component BuildComponent(Entity entity)BuildComponent192,4701
+
+tests/Behemoth.Util/TestGeom.cs,509
+namespace Behemoth.UtilBehemoth.Util8,95
+  public class TestGeomTestGeom11,137
+    String RectString(double x, double y, double w, double h)RectString13,165
+    void WillIntersect(WillIntersect19,291
+    void WontIntersect(WontIntersect35,778
+    public void TestRectanglesIntersect()TestRectanglesIntersect52,1278
+    public void TestMakeScaledViewport()TestMakeScaledViewport85,1961
+    public void TestHexadecant()TestHexadecant115,2953
+    public void TestVecToDir()TestVecToDir128,3367
+
+tests/Behemoth.Util/TestColor.cs,140
+namespace Behemoth.UtilBehemoth.Util8,95
+  public class TestColorTestColor11,137
+    public void TestParseColor()TestParseColor14,177
+
+Behemoth.Util/Field3.cs,577
+namespace Behemoth.UtilBehemoth.Util4,49
+  public class Field3<T> : IField3<T>T7,92
+    public void Clear()Clear44,767
+    public void Clear(int x, int y, int z)Clear50,827
+    public IEnumerable<Tuple3<int, int, int>> PointsPoints69,1201
+    public bool IsEmpty { get { return layers.Count == 0; } }IsEmpty84,1500
+    public T DefaultValue = default(T);DefaultValue91,1675
+    private Dictionary<int, Field2<T>> layers = new Dictionary<int, Field2<T>>();layers94,1717
+    private Dictionary<int, Field2<T>> layers = new Dictionary<int, Field2<T>>();T94,1717
+
+Behemoth.Util/Num.cs,1491
+namespace Behemoth.UtilBehemoth.Util4,49
+  public static class NumNum6,75
+    public static int HashPoint(int x, int y)HashPoint11,189
+    public static int HashPoint(int x, int y, int z)HashPoint21,418
+    public static int HashPoint(int x, int y, int z, int w)HashPoint31,669
+    public static double Lerp(double a, double b, double x)Lerp41,935
+    public static double Sigmoid(double x)Sigmoid50,1154
+    public static double Sigmoid2(double x)Sigmoid259,1349
+    public static double Noise(int x)Noise71,1661
+    public static double Noise(int x, int y)Noise78,1834
+    public static double Noise(int x, int y, int z)Noise84,1930
+    public static int Mod(int k, int n)Mod94,2191
+    public static double CosSpread(double x, double y)CosSpread100,2277
+    public static bool AlmostEqual(double a, double b)AlmostEqual110,2551
+    public static int Signum(double num)Signum116,2661
+    public static double SmoothNoise(double x, double y, double z)SmoothNoise128,2978
+    private static double FadeCurve(double t)FadeCurve170,4384
+    public static double PerlinGradient(int hash, double x, double y, double z)PerlinGradient181,4712
+    public static void InUnitCube(ref double x, ref double y, ref double z)InUnitCube193,5174
+    public static double PerlinNoise(PerlinNoise201,5346
+    private static int[] noiseSeed = new int[512];noiseSeed218,5724
+    static Num () Num221,5787
+    public const double Epsilon = 0.000001;Epsilon249,7114
+
+Behemoth.Util/SchemaProperties.cs,1299
+namespace Behemoth.UtilBehemoth.Util5,85
+  public class SchemaProperties<TKey, TValue> : Properties<TKey, TValue>TValue12,282
+    public SchemaProperties() : base()SchemaProperties17,449
+    public SchemaProperties(Properties<TKey, TValue> parent) : base(parent)SchemaProperties25,589
+    public override Properties<TKey, TValue> ParentTKey30,679
+    public override Properties<TKey, TValue> ParentParent30,679
+    public override Properties<TKey, TValue> Set(TKey key, TValue val)TKey47,1137
+    public override Properties<TKey, TValue> Set(TKey key, TValue val)Set47,1137
+    public void SetConstraint(TKey key, Func<TValue, string> constraint)SetConstraint70,1832
+    public void SetConstraint(TKey key, Type type)SetConstraint79,2041
+    public void AddConstraint(TKey key, Func<TValue, string> constraint)AddConstraint94,2526
+    public void HideConstraint(TKey key)HideConstraint107,2802
+    public void UnsetConstraint(TKey key)UnsetConstraint113,2886
+    private Properties<TKey, Func<TValue, string>> constraints =TKey119,2972
+    private Properties<TKey, Func<TValue, string>> constraints =TValue119,2972
+    private Properties<TKey, Func<TValue, string>> constraints =constraints119,2972
+      new Properties<TKey, Func<TValue, string>>();TValue120,3037
+
+Behemoth.Util/IField3.cs,162
+namespace Behemoth.UtilBehemoth.Util1,0
+  public interface IField3<T>T10,242
+    void Clear();Clear35,663
+    void Clear(int x, int y, int z);Clear40,763
+
+Behemoth.Util/Alg.cs,1735
+namespace Behemoth.UtilBehemoth.Util4,49
+  public static class AlgAlg9,145
+    public static IList<T> L<T>(params T[] args)T48,1078
+    public static T[] A<T>(params T[] args)T59,1345
+    public static Object[] OA(params Object[] args)OA69,1583
+    public static IDictionary<K, V> Dict<K, V>(params Object[] args)K80,1897
+    public static IDictionary<K, V> Dict<K, V>(params Object[] args)K80,1897
+    public static IDictionary<K, V> Dict<K, V>(params Object[] args)V80,1897
+    public static int MinIndex<T, U>(IList<U> items, Func<U, T> measure)T105,2597
+      where T : IComparable<T>T106,2670
+      where T : IComparable<T>T167,4052
+    public static Func<T, string> TypeP<T>(Type type)T187,4369
+    public static Func<T, string> TypeP<T>(Type type)T187,4369
+    public static Func<T, string> Both<T>(Func<T, string> lhs, Func<T, string> rhs)T204,4870
+    public static Func<T, string> Both<T>(Func<T, string> lhs, Func<T, string> rhs)T204,4870
+    public static Func<T, string> Either<T>(Func<T, string> lhs, Func<T, string> rhs)T224,5443
+    public static Func<T, string> Either<T>(Func<T, string> lhs, Func<T, string> rhs)T224,5443
+    public static Func<T[], string> ArrayP<T>(T244,6118
+    public static Func<T[], string> ArrayP<T>(T244,6118
+    public static void Iter2(int x0, int x1, int y0, int y1, Action<int, int> fn)Iter2272,6795
+    public static bool LessThan<T>(T lhs, T rhs) where T : IComparable<T>T287,7138
+    public static bool ComparableEqual<T>(T lhs, T rhs) where T : IComparable<T>T293,7263
+      where T : IComparable<T>T315,8202
+      where T : IComparable<T>T407,10668
+      where T : IComparable<T>T419,10996
+      where T : IComparable<T>T432,11360
+
+Behemoth.Util/Properties.cs,1632
+namespace Behemoth.UtilBehemoth.Util5,85
+  public class Properties<TKey, TValue>TValue14,379
+    public Properties()Properties19,513
+    public Properties(Properties<TKey, TValue> parent)Properties27,638
+    public Properties<TKey, TValue> Add(params Object[] contents)TKey40,969
+    public Properties<TKey, TValue> Add(params Object[] contents)Add40,969
+    public bool ContainsKey(TKey key)ContainsKey61,1561
+    public bool TryGet(TKey key, out TValue val)TryGet112,2660
+    public void Hide(TKey key)Hide131,3055
+    public void Unset(TKey key)Unset142,3305
+    public virtual Properties<TKey, TValue> ParentTKey149,3405
+    public virtual Properties<TKey, TValue> ParentParent149,3405
+    public virtual TValue Get(TKey key)Get156,3529
+    public virtual Properties<TKey, TValue> Set(TKey key, TValue val)TKey181,4019
+    public virtual Properties<TKey, TValue> Set(TKey key, TValue val)Set181,4019
+    protected Properties<TKey, TValue> parent = null;TKey192,4232
+    protected Properties<TKey, TValue> parent = null;parent192,4232
+    private IDictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();TKey194,4287
+    private IDictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();data194,4287
+    private IDictionary<TKey, TValue> data = new Dictionary<TKey, TValue>();TValue194,4287
+    private IDictionary<TKey, bool> hiddenKeys = new Dictionary<TKey, bool>();TKey195,4364
+    private IDictionary<TKey, bool> hiddenKeys = new Dictionary<TKey, bool>();hiddenKeys195,4364
+    private IDictionary<TKey, bool> hiddenKeys = new Dictionary<TKey, bool>();bool195,4364
+
+Behemoth.Util/IField2.cs,155
+namespace Behemoth.UtilBehemoth.Util1,0
+  public interface IField2<T>T10,240
+    void Clear();Clear24,482
+    void Clear(int x, int y);Clear29,582
+
+Behemoth.Util/Primitives.cs,627
+namespace Behemoth.UtilBehemoth.Util5,75
+  public struct PlanePlane7,101
+    public Plane(Vec3 normal, double distance)Plane9,127
+    public Vec3 Normal { get { return normal; } }Normal18,305
+    public double Distance { get { return distance; } }Distance21,357
+    private Vec3 normal;normal24,415
+    private double distance;distance25,440
+  public struct RayRay29,475
+    public Ray(Vec3 origin, Vec3 dir)Ray31,499
+    public Vec3 Origin { get { return origin; } }Origin40,655
+    public Vec3 Dir { get { return dir; } }Dir43,707
+    private Vec3 origin;origin46,753
+    private Vec3 dir;dir47,778
+
+Behemoth.Util/TimeUtil.cs,148
+namespace Behemoth.UtilBehemoth.Util3,15
+  public static class TimeUtilTimeUtil5,41
+    public static double CurrentSecondsCurrentSeconds7,76
+
+Behemoth.Util/Cache.cs,1369
+namespace Behemoth.UtilBehemoth.Util6,113
+  public abstract class Cache<K, V> : ICache<K, V>V11,222
+    private V Get(K name)Get23,496
+    private void Add(K name, V item)Add44,978
+    public void Clear()Clear65,1419
+    public long TotalSize { get { return totalSize; } }TotalSize76,1597
+    public virtual void Dispose()Dispose79,1655
+    ~Cache()~Cache88,1856
+    protected virtual void Dispose(bool disposing)Dispose94,1905
+    private void FreeAll()FreeAll102,2088
+    protected abstract V Load(K name);Load114,2279
+    protected abstract void Free(V item);Free119,2384
+    protected virtual long Size(V item)Size128,2666
+    private IDictionary<K, V> items = new Dictionary<K, V>();K133,2735
+    private IDictionary<K, V> items = new Dictionary<K, V>();items133,2735
+    private IDictionary<K, V> items = new Dictionary<K, V>();V133,2735
+    private bool disposed = false;disposed135,2798
+    private long totalSize = 0;totalSize137,2834
+  public class EasyCache<K, V> : Cache<K, V>V144,2976
+    public EasyCache(Func<K, V> loadFunc, Action<V> freeFunc)EasyCache146,3025
+    protected override V Load(K name)Load153,3165
+    protected override void Free(V item)Free159,3246
+    private Func<K, V> loadFunc;K164,3322
+    private Func<K, V> loadFunc;loadFunc164,3322
+    private Action<V> freeFunc;freeFunc165,3355
+
+Behemoth.Util/Set.cs,874
+namespace Behemoth.UtilBehemoth.Util5,75
+  public class Set<T> : ICollection<T>T7,101
+    public Set() {}Set9,144
+    public void Add(T item)Add18,231
+    public void Clear()Clear33,418
+    public bool Contains(T item)Contains39,479
+    public bool Remove(T item)Remove45,566
+    public void CopyTo(T[] array, int arrayIndex)CopyTo51,646
+    IEnumerator IEnumerable.GetEnumerator()GetEnumerator57,756
+    public IEnumerator<T> GetEnumerator()GetEnumerator63,870
+    public int Count { get { return members.Count; } }Count69,969
+    public bool IsReadOnly { get { return false; } }IsReadOnly72,1026
+    private IDictionary<T, bool> members = new Dictionary<T, bool>();T154,2482
+    private IDictionary<T, bool> members = new Dictionary<T, bool>();members154,2482
+    private IDictionary<T, bool> members = new Dictionary<T, bool>();bool154,2482
+
+Behemoth.Util/DefaultRng.cs,240
+namespace Behemoth.UtilBehemoth.Util3,15
+  public class DefaultRng : RngDefaultRng5,41
+    public override void Init(byte[] seed)Init7,77
+    protected override int Next()Next13,223
+    private Random rng = new Random();rng18,295
+
+Behemoth.Util/Field2.cs,593
+namespace Behemoth.UtilBehemoth.Util4,49
+  public class Field2<T> : IField2<T>T7,92
+    public void Clear()Clear38,658
+    public void Clear(int x, int y)Clear44,716
+    public IEnumerable<Tuple2<int, int>> PointsPoints63,1070
+    public bool IsEmpty { get { return rows.Count == 0; } }IsEmpty78,1334
+    public T DefaultValue = default(T);DefaultValue84,1506
+    private Dictionary<int, Dictionary<int, T>> rows = new Dictionary<int, Dictionary<int, T>>();rows86,1547
+    private Dictionary<int, Dictionary<int, T>> rows = new Dictionary<int, Dictionary<int, T>>();T86,1547
+
+Behemoth.Util/AStar.cs,483
+namespace Behemoth.UtilBehemoth.Util4,49
+  public static class AStarAStar6,75
+    public static IList<T> Search<T>(T8,107
+    private static T HeadPos<T>(Cons<Tuple2<T, double>> node)T72,1883
+    private static double PathCost<T>(Cons<Tuple2<T, double>> node)T78,1989
+    private static IList<T> BuildPath<T>(Cons<Tuple2<T, double>> node)T84,2102
+    private static Cons<Tuple2<T, double>> Node<T>(T97,2353
+    private static Cons<Tuple2<T, double>> Node<T>(T97,2353
+
+Behemoth.Util/Color.cs,13947
+namespace Behemoth.UtilBehemoth.Util5,81
+  public struct ColorColor7,107
+    public byte R { get { return r; } }R9,133
+    public byte G { get { return g; } }G10,173
+    public byte B { get { return b; } }B11,213
+    public byte A { get { return a; } }A12,253
+    private byte r;r15,295
+    private byte g;g16,315
+    private byte b;b17,335
+    private byte a;a18,355
+    public Color(byte r, byte g, byte b) : this(r, g, b, 0xff) {}Color21,377
+    public Color(byte r, byte g, byte b, byte a)Color24,445
+    public Color(double r, double g, double b) : this(r, g, b, 1.0) {}Color33,580
+    public Color(double r, double g, double b, double a) :Color36,653
+    public Color(String desc)Color45,833
+    public override bool Equals(Object obj)Equals51,908
+    public override int GetHashCode()GetHashCode57,1015
+    public float[] FloatArrayFloatArray63,1107
+    public Color WithAlpha(byte alpha)WithAlpha74,1303
+    public static bool operator==(Color lhs, Color rhs)operator ==80,1396
+    public static bool operator!=(Color lhs, Color rhs)operator !=86,1549
+    public static Color ParseColor(String desc)ParseColor99,2000
+    private static Regex longHexRGB = new Regex("^#(?<r>[0-9a-fA-F]{2})(?<g>[0-9a-fA-F]{2})(?<b>[0-9a-fA-F]{2})$");longHexRGB144,3855
+    private static Regex longHexRGBA = new Regex("^#(?<r>[0-9a-fA-F]{2})(?<g>[0-9a-fA-F]{2})(?<b>[0-9a-fA-F]{2})(?<a>[0-9a-fA-F]{2})$");longHexRGBA145,3971
+    private static Regex shortHexRGB = new Regex("^#(?<r>[0-9a-fA-F])(?<g>[0-9a-fA-F])(?<b>[0-9a-fA-F])$");shortHexRGB146,4108
+    private static Regex shortHexRGBA = new Regex("^#(?<r>[0-9a-fA-F])(?<g>[0-9a-fA-F])(?<b>[0-9a-fA-F])(?<a>[0-9a-fA-F])$");shortHexRGBA147,4216
+    public static readonly Color AliceBlue = ParseColor("#F0F8FF");AliceBlue150,4369
+    public static readonly Color AntiqueWhite = ParseColor("#FAEBD7");AntiqueWhite151,4437
+    public static readonly Color Aqua = ParseColor("#00FFFF");Aqua152,4508
+    public static readonly Color Aquamarine = ParseColor("#7FFFD4");Aquamarine153,4571
+    public static readonly Color Azure = ParseColor("#F0FFFF");Azure154,4640
+    public static readonly Color Beige = ParseColor("#F5F5DC");Beige155,4704
+    public static readonly Color Bisque = ParseColor("#FFE4C4");Bisque156,4768
+    public static readonly Color Black = ParseColor("#000000");Black157,4833
+    public static readonly Color BlanchedAlmond = ParseColor("#FFEBCD");BlanchedAlmond158,4897
+    public static readonly Color Blue = ParseColor("#0000FF");Blue159,4970
+    public static readonly Color BlueViolet = ParseColor("#8A2BE2");BlueViolet160,5033
+    public static readonly Color Brown = ParseColor("#A52A2A");Brown161,5102
+    public static readonly Color BurlyWood = ParseColor("#DEB887");BurlyWood162,5166
+    public static readonly Color CadetBlue = ParseColor("#5F9EA0");CadetBlue163,5234
+    public static readonly Color Chartreuse = ParseColor("#7FFF00");Chartreuse164,5302
+    public static readonly Color Chocolate = ParseColor("#D2691E");Chocolate165,5371
+    public static readonly Color Coral = ParseColor("#FF7F50");Coral166,5439
+    public static readonly Color CornflowerBlue = ParseColor("#6495ED");CornflowerBlue167,5503
+    public static readonly Color Cornsilk = ParseColor("#FFF8DC");Cornsilk168,5576
+    public static readonly Color Crimson = ParseColor("#DC143C");Crimson169,5643
+    public static readonly Color Cyan = ParseColor("#00FFFF");Cyan170,5709
+    public static readonly Color DarkBlue = ParseColor("#00008B");DarkBlue171,5772
+    public static readonly Color DarkCyan = ParseColor("#008B8B");DarkCyan172,5839
+    public static readonly Color DarkGoldenRod = ParseColor("#B8860B");DarkGoldenRod173,5906
+    public static readonly Color DarkGray = ParseColor("#A9A9A9");DarkGray174,5978
+    public static readonly Color DarkGreen = ParseColor("#006400");DarkGreen175,6045
+    public static readonly Color DarkKhaki = ParseColor("#BDB76B");DarkKhaki176,6113
+    public static readonly Color DarkMagenta = ParseColor("#8B008B");DarkMagenta177,6181
+    public static readonly Color DarkOliveGreen = ParseColor("#556B2F");DarkOliveGreen178,6251
+    public static readonly Color DarkOrange = ParseColor("#FF8C00");DarkOrange179,6324
+    public static readonly Color DarkOrchid = ParseColor("#9932CC");DarkOrchid180,6393
+    public static readonly Color DarkRed = ParseColor("#8B0000");DarkRed181,6462
+    public static readonly Color DarkSalmon = ParseColor("#E9967A");DarkSalmon182,6528
+    public static readonly Color DarkSeaGreen = ParseColor("#8FBC8F");DarkSeaGreen183,6597
+    public static readonly Color DarkSlateBlue = ParseColor("#483D8B");DarkSlateBlue184,6668
+    public static readonly Color DarkSlateGray = ParseColor("#2F4F4F");DarkSlateGray185,6740
+    public static readonly Color DarkTurquoise = ParseColor("#2F4F4F");DarkTurquoise186,6812
+    public static readonly Color DarkViolet = ParseColor("#9400D3");DarkViolet187,6884
+    public static readonly Color DeepPink = ParseColor("#FF1493");DeepPink188,6953
+    public static readonly Color DeepSkyBlue = ParseColor("#00BFFF");DeepSkyBlue189,7020
+    public static readonly Color DimGray = ParseColor("#696969");DimGray190,7090
+    public static readonly Color DodgerBlue = ParseColor("#1E90FF");DodgerBlue191,7156
+    public static readonly Color FireBrick = ParseColor("#B22222");FireBrick192,7225
+    public static readonly Color FloralWhite = ParseColor("#FFFAF0");FloralWhite193,7293
+    public static readonly Color ForestGreen = ParseColor("#228B22");ForestGreen194,7363
+    public static readonly Color Fuchsia = ParseColor("#FF00FF");Fuchsia195,7433
+    public static readonly Color Gainsboro = ParseColor("#DCDCDC");Gainsboro196,7499
+    public static readonly Color GhostWhite = ParseColor("#F8F8FF");GhostWhite197,7567
+    public static readonly Color Gold = ParseColor("#FFD700");Gold198,7636
+    public static readonly Color Goldenrod = ParseColor("#DAA520");Goldenrod199,7699
+    public static readonly Color Gray = ParseColor("#808080");Gray200,7767
+    public static readonly Color Green = ParseColor("#008000");Green201,7830
+    public static readonly Color GreenYellow = ParseColor("#ADFF2F");GreenYellow202,7894
+    public static readonly Color Honeydew = ParseColor("#F0FFF0");Honeydew203,7964
+    public static readonly Color HotPink = ParseColor("#FF69B4");HotPink204,8031
+    public static readonly Color IndianRed = ParseColor("#CD5C5C");IndianRed205,8097
+    public static readonly Color Indigo = ParseColor("#4B0082");Indigo206,8165
+    public static readonly Color Ivory = ParseColor("#FFFFF0");Ivory207,8230
+    public static readonly Color Khaki = ParseColor("#F0E68C");Khaki208,8294
+    public static readonly Color Lavender = ParseColor("#E6E6FA");Lavender209,8358
+    public static readonly Color LavenderBlush = ParseColor("#FFF0F5");LavenderBlush210,8425
+    public static readonly Color LawnGreen = ParseColor("#7CFC00");LawnGreen211,8497
+    public static readonly Color LemonChiffon = ParseColor("#FFFACD");LemonChiffon212,8565
+    public static readonly Color LightBlue = ParseColor("#ADD8E6");LightBlue213,8636
+    public static readonly Color LightCoral = ParseColor("#F08080");LightCoral214,8704
+    public static readonly Color LightCyan = ParseColor("#E0FFFF");LightCyan215,8773
+    public static readonly Color LightGoldenrodYellow = ParseColor("#FAFAD2");LightGoldenrodYellow216,8841
+    public static readonly Color LightGreen = ParseColor("#90EE90");LightGreen217,8920
+    public static readonly Color LightGrey = ParseColor("#D3D3D3");LightGrey218,8989
+    public static readonly Color LightPink = ParseColor("#FFB6C1");LightPink219,9057
+    public static readonly Color LightSalmon = ParseColor("#FFA07A");LightSalmon220,9125
+    public static readonly Color LightSeaGreen = ParseColor("#20B2AA");LightSeaGreen221,9195
+    public static readonly Color LightSkyBlue = ParseColor("#87CEFA");LightSkyBlue222,9267
+    public static readonly Color LightSlateGray = ParseColor("#778899");LightSlateGray223,9338
+    public static readonly Color LightSteelBlue = ParseColor("#B0C4DE");LightSteelBlue224,9411
+    public static readonly Color LightYellow = ParseColor("#FFFFE0");LightYellow225,9484
+    public static readonly Color Lime = ParseColor("#00FF00");Lime226,9554
+    public static readonly Color LimeGreen = ParseColor("#32CD32");LimeGreen227,9617
+    public static readonly Color Linen = ParseColor("#FAF0E6");Linen228,9685
+    public static readonly Color Magenta = ParseColor("#FF00FF");Magenta229,9749
+    public static readonly Color Maroon = ParseColor("#800000");Maroon230,9815
+    public static readonly Color MediumAquamarine = ParseColor("#66CDAA");MediumAquamarine231,9880
+    public static readonly Color MediumBlue = ParseColor("#0000CD");MediumBlue232,9955
+    public static readonly Color MediumOrchid = ParseColor("#BA55D3");MediumOrchid233,10024
+    public static readonly Color MediumPurple = ParseColor("#9370D8");MediumPurple234,10095
+    public static readonly Color MediumSeaGreen = ParseColor("#3CB371");MediumSeaGreen235,10166
+    public static readonly Color MediumSlateBlue = ParseColor("#7B68EE");MediumSlateBlue236,10239
+    public static readonly Color MediumSpringGreen = ParseColor("#00FA9A");MediumSpringGreen237,10313
+    public static readonly Color MediumTurquoise = ParseColor("#48D1CC");MediumTurquoise238,10389
+    public static readonly Color MediumVioletRed = ParseColor("#C71585");MediumVioletRed239,10463
+    public static readonly Color MidnightBlue = ParseColor("#191970");MidnightBlue240,10537
+    public static readonly Color MintCream = ParseColor("#F5FFFA");MintCream241,10608
+    public static readonly Color MistyRose = ParseColor("#FFE4E1");MistyRose242,10676
+    public static readonly Color Moccasin = ParseColor("#FFE4B5");Moccasin243,10744
+    public static readonly Color NavajoWhite = ParseColor("#FFDEAD");NavajoWhite244,10811
+    public static readonly Color Navy = ParseColor("#000080");Navy245,10881
+    public static readonly Color OldLace = ParseColor("#FDF5E6");OldLace246,10944
+    public static readonly Color Olive = ParseColor("#808000");Olive247,11010
+    public static readonly Color OliveDrab = ParseColor("#6B8E23");OliveDrab248,11074
+    public static readonly Color Orange = ParseColor("#FFA500");Orange249,11142
+    public static readonly Color OrangeRed = ParseColor("#FF4500");OrangeRed250,11207
+    public static readonly Color Orchid = ParseColor("#DA70D6");Orchid251,11275
+    public static readonly Color PaleGoldenrod = ParseColor("#EEE8AA");PaleGoldenrod252,11340
+    public static readonly Color PaleGreen = ParseColor("#98FB98");PaleGreen253,11412
+    public static readonly Color PaleTurquoise = ParseColor("#AFEEEE");PaleTurquoise254,11480
+    public static readonly Color PaleVioletRed = ParseColor("#D87093");PaleVioletRed255,11552
+    public static readonly Color PapayaWhip = ParseColor("#FFEFD5");PapayaWhip256,11624
+    public static readonly Color PeachPuff = ParseColor("#FFDAB9");PeachPuff257,11693
+    public static readonly Color Peru = ParseColor("#CD853F");Peru258,11761
+    public static readonly Color Pink = ParseColor("#FFC0CB");Pink259,11824
+    public static readonly Color Plum = ParseColor("#DDA0DD");Plum260,11887
+    public static readonly Color PowderBlue = ParseColor("#B0E0E6");PowderBlue261,11950
+    public static readonly Color Purple = ParseColor("#800080");Purple262,12019
+    public static readonly Color Red = ParseColor("#FF0000");Red263,12084
+    public static readonly Color RosyBrown = ParseColor("#BC8F8F");RosyBrown264,12146
+    public static readonly Color RoyalBlue = ParseColor("#4169E1");RoyalBlue265,12214
+    public static readonly Color SaddleBrown = ParseColor("#8B4513");SaddleBrown266,12282
+    public static readonly Color Salmon = ParseColor("#FA8072");Salmon267,12352
+    public static readonly Color SandyBrown = ParseColor("#F4A460");SandyBrown268,12417
+    public static readonly Color SeaGreen = ParseColor("#2E8B57");SeaGreen269,12486
+    public static readonly Color Seashell = ParseColor("#FFF5EE");Seashell270,12553
+    public static readonly Color Sienna = ParseColor("#A0522D");Sienna271,12620
+    public static readonly Color Silver = ParseColor("#C0C0C0");Silver272,12685
+    public static readonly Color SkyBlue = ParseColor("#87CEEB");SkyBlue273,12750
+    public static readonly Color SlateBlue = ParseColor("#6A5ACD");SlateBlue274,12816
+    public static readonly Color SlateGray = ParseColor("#708090");SlateGray275,12884
+    public static readonly Color Snow = ParseColor("#FFFAFA");Snow276,12952
+    public static readonly Color SpringGreen = ParseColor("#00FF7F");SpringGreen277,13015
+    public static readonly Color SteelBlue = ParseColor("#4682B4");SteelBlue278,13085
+    public static readonly Color Tan = ParseColor("#D2B48C");Tan279,13153
+    public static readonly Color Teal = ParseColor("#008080");Teal280,13215
+    public static readonly Color Thistle = ParseColor("#D8BFD8");Thistle281,13278
+    public static readonly Color Tomato = ParseColor("#FF6347");Tomato282,13344
+    public static readonly Color Turquoise = ParseColor("#40E0D0");Turquoise283,13409
+    public static readonly Color Violet = ParseColor("#EE82EE");Violet284,13477
+    public static readonly Color Wheat = ParseColor("#F5DEB3");Wheat285,13542
+    public static readonly Color White = ParseColor("#FFFFFF");White286,13606
+    public static readonly Color WhiteSmoke = ParseColor("#F5F5F5");WhiteSmoke287,13670
+    public static readonly Color Yellow = ParseColor("#FFFF00");Yellow288,13739
+    public static readonly Color YellowGreen = ParseColor("#9ACD32");YellowGreen289,13804
+
+Behemoth.Util/Entity.cs,797
+namespace Behemoth.UtilBehemoth.Util4,49
+  public class ComponentNotFoundException : ExceptionComponentNotFoundException6,75
+    public ComponentNotFoundException(string type)ComponentNotFoundException8,133
+  public class EntityEntity13,257
+    public Entity(string id)Entity15,283
+      where T : ComponentComponent22,389
+      where T : ComponentComponent40,694
+    public Entity Set(Component c)Set55,960
+    public void Clear(Type type)Clear75,1278
+    public void Clear()Clear85,1442
+    public string Id { get { return id; } }Id91,1506
+    private string id;id94,1552
+    private IDictionary<Type, Component> components =Type96,1576
+    private IDictionary<Type, Component> components =components96,1576
+      new Dictionary<Type, Component>();Component97,1630
+
+Behemoth.Util/MemUtil.cs,749
+namespace Behemoth.UtilBehemoth.Util10,162
+  public static class MemUtilMemUtil15,272
+    public static Object CallInheritedStaticMethod(CallInheritedStaticMethod34,908
+    public static XDocument ReadXml(byte[] data)ReadXml60,1540
+    public static byte[] ReadBytes(Stream stream)ReadBytes76,1971
+    public static byte[] Ungzip(byte[] data)Ungzip101,2478
+    public static int[] ToInt32Array(byte[] byteArray)ToInt32Array114,2822
+    public static int IntAttribute(XElement elt, string name)IntAttribute131,3199
+    public static T[] Pad<T>(T[] array, int minLength)T141,3478
+    public static void GetArrayDims<T>(T152,3761
+    public static T[,] MakeArray<T>(T165,4143
+    public static T[,] MakeScaledArray<T>(T185,4636
+
+Behemoth.Util/Geom.cs,1271
+namespace Behemoth.UtilBehemoth.Util4,41
+  public static class GeomGeom9,127
+    public static void MakeScaledViewport(MakeScaledViewport18,550
+    public static bool RectanglesIntersect(RectanglesIntersect59,1928
+    public static bool IsInRectangle(IsInRectangle70,2209
+    public static int Hexadecant(double x, double y)Hexadecant89,2873
+    public static bool IsDir8(int dir)IsDir8102,3187
+    public static bool IsDir4(int dir)IsDir4108,3274
+    public static Vec3 Dir8ToVec(int dir8)Dir8ToVec118,3497
+    public static Vec3 Dir4ToVec(int dir4)Dir4ToVec135,3849
+    private static readonly Vec3[] dir8Vecs = new Vec3[] {dir8Vecs148,4065
+    private static readonly Vec3[] dir4Vecs = new Vec3[] {dir4Vecs160,4357
+    public static int VecToDir4(Vec3 vec)VecToDir4171,4634
+    public static int VecToDir8(Vec3 vec)VecToDir8182,4871
+    public static bool PointTo(Vec3 origin, Vec3 target, out int dir8)PointTo194,5157
+    public static void OrientTowards(Vec3 init, Vec3 dir, out Vec3 axis, out double angle)OrientTowards214,5562
+    public static double Rad2Deg(double radian)Rad2Deg224,5820
+    public static double Deg2Rad(double degree)Deg2Rad233,5994
+    public static bool RayPlaneIntersection(RayPlaneIntersection243,6251
+
+Behemoth.Util/Rng.cs,615
+namespace Behemoth.UtilBehemoth.Util4,34
+  public abstract class RngRng10,147
+    public Rng()Rng12,179
+    public int RandInt(int max)RandInt18,242
+    public bool CoinFlip()CoinFlip24,315
+    public double RandDouble()RandDouble30,386
+    public double RandDouble(double min, double max)RandDouble36,483
+    public Vec3 UnitVec()UnitVec50,896
+    public bool OneChanceIn(int num)OneChanceIn67,1222
+    public void Init(long seed)Init73,1305
+    public void Init(string seed)Init79,1392
+    public abstract void Init(byte[] seed);Init88,1581
+    protected abstract int Next();Next93,1729
+
+Behemoth.Util/Cons.cs,362
+namespace Behemoth.UtilBehemoth.Util4,49
+  public class Cons<T>T6,75
+    public Cons(T head, Cons<T> tail)Cons8,102
+    public T Head { get { return head; } }Head15,202
+    public Cons<T> Tail { get { return tail; } }Tail18,247
+    public override String ToString()ToString21,298
+    private T head;head33,521
+    private Cons<T> tail;tail35,542
+
+Behemoth.Util/TestUtil.cs,148
+namespace Behemoth.UtilBehemoth.Util7,156
+  public static class TestUtilTestUtil9,182
+    public static T RoundtripSerialize<T>(T val)T11,217
+
+Behemoth.Util/Vec3.cs,1059
+namespace Behemoth.UtilBehemoth.Util3,15
+  public struct Vec3Vec39,135
+    public double X;X11,160
+    public double Y;Y12,181
+    public double Z;Z13,202
+    public Vec3(double x, double y, double z)Vec316,225
+    public Vec3(Vec3 other)Vec324,324
+    public override bool Equals(Object obj)Equals32,438
+    public override int GetHashCode()GetHashCode38,543
+    public static bool operator==(Vec3 lhs, Vec3 rhs)operator ==44,674
+    public static bool operator!=(Vec3 lhs, Vec3 rhs)operator !=50,807
+    public static Vec3 operator+(Vec3 lhs, Vec3 rhs)operator +56,903
+    public static Vec3 operator-(Vec3 lhs, Vec3 rhs)operator -62,1038
+    public static Vec3 operator*(Vec3 lhs, double rhs)operator *68,1173
+    public static double Dot(Vec3 lhs, Vec3 rhs)Dot74,1304
+    public static double Angle(Vec3 lhs, Vec3 rhs)Angle83,1523
+    public double Abs()Abs89,1641
+    public Vec3 Unit()Unit95,1720
+    public static Vec3 Cross(Vec3 lhs, Vec3 rhs)Cross101,1797
+    public override String ToString()ToString110,2001
+
+Behemoth.Util/Component.cs,722
+namespace Behemoth.UtilBehemoth.Util3,15
+  public abstract class ComponentComponent9,159
+    public Type Family { get { return FamilyOf(this.GetType()); } }Family15,349
+      where T : ComponentComponent22,576
+    public static Type FamilyOf(Type type)FamilyOf31,770
+    public static Type GetFamily()GetFamily55,1712
+    public Entity Entity { get { return entity; } }Entity64,1965
+    internal void Attach(Entity entity)Attach73,2219
+    internal void Detach()Detach86,2532
+    protected virtual void InnerAttach(Entity entity) {}InnerAttach96,2716
+    protected virtual void InnerDetach() {}InnerDetach102,2873
+    protected Type family;family105,2919
+    private Entity entity;entity107,2947
+
+Behemoth.Util/TextUtil.cs,412
+namespace Behemoth.UtilBehemoth.Util4,49
+  public static class TextUtilTextUtil6,75
+    public static IEnumerable<string> SplitAtNewlines(string text)SplitAtNewlines8,110
+    public static IEnumerable<string> SplitLongLine(string text, int maxLength)SplitLongLine18,375
+    public static bool FindCharBackwards(FindCharBackwards58,1499
+    public static bool FindCharForwards(FindCharForwards80,1997
+
+Behemoth.Util/TiledImport.cs,221
+namespace Behemoth.UtilBehemoth.Util8,133
+  public static class TiledImportTiledImport24,664
+    public static void LoadMapData(LoadMapData26,702
+    static int[] GetLayerData(XElement dataElt)GetLayerData64,1812
+
+Behemoth.Util/ICache.cs,172
+namespace Behemoth.UtilBehemoth.Util3,15
+  public interface ICache<K, V> : IDisposableV5,41
+    void Clear();Clear12,144
+    long TotalSize { get; }TotalSize13,162
+
+Behemoth.Util/Tuple.cs,1298
+namespace Behemoth.UtilBehemoth.Util3,15
+  public struct Tuple2<T1, T2>T25,41
+    public Tuple2(T1 first, T2 second) {Tuple27,76
+    public T1 First { get { return first; } }First13,179
+    public T2 Second { get { return second; } }Second16,227
+    public override String ToString()ToString19,277
+    private T1 first;first25,386
+    private T2 second;second26,408
+  public struct Tuple3<T1, T2, T3>T330,437
+    public Tuple3(T1 first, T2 second, T3 third) {Tuple332,476
+    public T1 First { get { return first; } }First39,615
+    public T2 Second { get { return second; } }Second42,663
+    public T3 Third { get { return third; } }Third45,713
+    private T1 first;first48,761
+    private T2 second;second49,783
+    private T3 third;third50,806
+  public struct Tuple4<T1, T2, T3, T4>T454,834
+    public Tuple4(T1 first, T2 second, T3 third, T4 fourth) {Tuple456,877
+    public T1 First { get { return first; } }First64,1055
+    public T2 Second { get { return second; } }Second67,1103
+    public T3 Third { get { return third; } }Third70,1153
+    public T4 Fourth { get { return fourth; } }Fourth73,1201
+    private T1 first;first76,1251
+    private T2 second;second77,1273
+    private T3 third;third78,1296
+    private T4 fourth;fourth79,1318
+
+Behemoth.Util/EntityTemplate.cs,516
+namespace Behemoth.UtilBehemoth.Util4,49
+  public class EntityTemplateEntityTemplate9,179
+    public EntityTemplate() {}EntityTemplate11,213
+    public EntityTemplate(params ComponentTemplate[] templates)EntityTemplate14,246
+    public EntityTemplate AddComponent(ComponentTemplate template)AddComponent23,400
+    public Entity Make(string id)Make30,532
+    public string Name = String.Empty;Name43,745
+    private IList<ComponentTemplate> components = new List<ComponentTemplate>();components46,786
+
+Behemoth.Util/ComponentTemplate.cs,304
+namespace Behemoth.UtilBehemoth.Util3,15
+  public abstract class ComponentTemplateComponentTemplate8,126
+    public abstract Type Family { get; }Family10,172
+    public Component Make(Entity entity)Make16,320
+    protected abstract Component BuildComponent(Entity entity);BuildComponent38,1103
+
+Behemoth.Util/Guid.cs,206
+namespace Behemoth.UtilBehemoth.Util3,15
+  public class GuidGuid9,133
+    public string Next(string prefix)Next11,157
+    public string Next()Next17,248
+    private long counter = 0;counter23,320
+
+Behemoth.Util/Tile.cs,699
+namespace Behemoth.UtilBehemoth.Util4,49
+  public static class TileTile11,188
+    public static void AsciiTableIter(Action<char, int, int> func, string[] lines)AsciiTableIter17,373
+    public static void AsciiTableDims(AsciiTableDims32,733
+    public static void LineOfSight(LineOfSight66,2004
+    static void ProcessOctant(ProcessOctant87,2735
+    public static double EuclideanDist(Point p1, Point p2)EuclideanDist195,5342
+    public static IList<Point> FindPath8(FindPath8206,5635
+    public static IList<Point> FindPath4(FindPath4225,6105
+    public static IEnumerable<Point> Neighbors8(Neighbors8242,6473
+    public static IEnumerable<Point> Neighbors4(Neighbors4263,6903
+
+Behemoth.LuaUtil/LuaState.cs,1403
+namespace Behemoth.LuaUtilBehemoth.LuaUtil6,65
+  public enum LuaTypeLuaType11,206
+    Nil = Lua.LUA_TNIL,Nil13,232
+    Bool = Lua.LUA_TBOOLEAN,Bool14,256
+    Number = Lua.LUA_TNUMBER,Number15,285
+    String = Lua.LUA_TSTRING,String16,315
+    Table = Lua.LUA_TTABLE,Table17,345
+    Function = Lua.LUA_TFUNCTION,Function18,373
+  public class LuaStateLuaState21,412
+    public LuaState()LuaState23,440
+    ~LuaState()~LuaState29,514
+    public IntPtr Ptr { get { return luaState; } }Ptr38,702
+    public void DoString(string str)DoString44,839
+    private void Check(int status)Check57,1137
+    public Object Dump(int stackPos)Dump74,1579
+    public IDictionary<Object, Object> DumpTable(int stackPos)Object106,2696
+    public IDictionary<Object, Object> DumpTable(int stackPos)DumpTable106,2696
+    public IDictionary<Object, Object> DumpGlobals()Object134,3517
+    public IDictionary<Object, Object> DumpGlobals()DumpGlobals134,3517
+    public static IEnumerable<Object> ArrayPart(IDictionary<Object, Object> luaTable)ArrayPart146,3952
+    private bool IsValidDumpKey(int stackPos)IsValidDumpKey157,4188
+    private bool IsValidDumpValue(int stackPos)IsValidDumpValue173,4500
+    private IntPtr luaState;luaState193,4863
+  public class LuaException : Exception {LuaException197,4898
+    public LuaException(string msg) : base(msg) {}LuaException198,4940

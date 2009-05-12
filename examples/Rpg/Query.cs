@@ -219,7 +219,7 @@ namespace Rpg
     /// Return whether an attempt with a certain skill succeeds agains a
     /// certain difficulty. The result is positive if the attempt succeeds,
     /// and its magnitude can be used to tell the magnitude of the success or
-    /// the failure.
+    /// the failure. The result is always between -1 and 1.
     ///
     /// The scale is exponential, +1 to skill or difficulty will chance the
     /// probability by the same amount for any pair of equal skill and
@@ -229,8 +229,20 @@ namespace Rpg
     {
       double attack = Rpg.Service.Rng.RandDouble() * skill;
       double defense = Rpg.Service.Rng.RandDouble() * difficulty;
-      return 4 * Math.Log(
+      var result = 4 * Math.Log(
         Math.Pow(2, attack / 4.0) - Math.Pow(2, defense / 4.0), 2);
+
+      // Normalize to -1, 1.
+      if (result < 0)
+      {
+        result /= difficulty;
+      }
+      else
+      {
+        result /= skill;
+      }
+
+      return result;
     }
   }
 }
