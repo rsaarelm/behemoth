@@ -227,7 +227,7 @@ namespace Rpg
       result.Might = might;
       result.Craft = craft;
 
-      result.Resistance = might;
+      result.Resistance = might / 4;
 
       return result;
     }

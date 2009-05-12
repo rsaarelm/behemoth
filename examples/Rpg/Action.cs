@@ -76,7 +76,7 @@ namespace Rpg
       {
         if (brain.Gibs)
         {
-          UI.Msg("Splodey!");
+          UI.Msg("The {0} dies.", entity.Get<CCore>().Name);
           world.Spawn("gib", entity.Get<CCore>().Pos);
         }
       }
@@ -93,10 +93,20 @@ namespace Rpg
       CBrain brain1, brain2;
       if (entity.TryGet(out brain1) && target.TryGet(out brain2))
       {
-        UI.Msg("Whup!");
-        brain2.Damage(entity, brain1.Might / 4);
+        var damage = Query.Success(brain1.Might, brain2.Craft);
+        if (damage > 0.0)
+        {
+          // XXX: Should have special "you" text case for player.
+          UI.Msg("The {0} hits the {1} for {2}.",
+                 entity.Get<CCore>().Name, target.Get<CCore>().Name, damage);
+          brain2.Damage(entity, damage);
+        }
+        else
+        {
+          UI.Msg("The {0} misses the {1}.",
+                 entity.Get<CCore>().Name, target.Get<CCore>().Name);
+        }
 
-        // TODO: Attack message
       }
     }
 

@@ -214,5 +214,23 @@ namespace Rpg
       return ChooseSpawn(Rpg.Service.Rng.RandDouble(), threatLevel, templates);
     }
 
+
+    /// <summary>
+    /// Return whether an attempt with a certain skill succeeds agains a
+    /// certain difficulty. The result is positive if the attempt succeeds,
+    /// and its magnitude can be used to tell the magnitude of the success or
+    /// the failure.
+    ///
+    /// The scale is exponential, +1 to skill or difficulty will chance the
+    /// probability by the same amount for any pair of equal skill and
+    /// difficulty.
+    /// </summary>
+    public static double Success(double skill, double difficulty)
+    {
+      double attack = Rpg.Service.Rng.RandDouble() * skill;
+      double defense = Rpg.Service.Rng.RandDouble() * difficulty;
+      return 4 * Math.Log(
+        Math.Pow(2, attack / 4.0) - Math.Pow(2, defense / 4.0), 2);
+    }
   }
 }
