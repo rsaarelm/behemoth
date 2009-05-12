@@ -176,11 +176,11 @@ namespace Rpg
                   BrainTemplate.Default(13, 16)));
       world.Add(new EntityTemplate(
                   CoreTemplate.FloorStatic("gib", '*', Color.DarkRed)));
-      
+
       GenerateExampleMap();
 
       Entity pc = world.Spawn("avatar", new Vec3(1, 44, 0));
-                
+
       Action.MakePlayer(pc);
 
       Alg.Times(64, i => SpawnCreature());
@@ -220,7 +220,7 @@ namespace Rpg
     public void GenerateExampleMap()
     {
       int z = 0;
-      
+
       for (int y = 0; y < WorldHeight; y++)
       {
         for (int x = 0; x < WorldWidth; x++)
@@ -228,7 +228,7 @@ namespace Rpg
           double scale = 0.03;
           double noise = Num.PerlinNoise(0.5, 6, (double)x * scale, (double)y * scale, 0.0);
           noise += 0.5;
-          
+
           var terr = "";
           if (noise < 0.15)
           {
@@ -367,7 +367,7 @@ namespace Rpg
     public const double iconFontW = 16.0;
     public const double iconFontH = 16.0;
 
-    public const int ConsoleColumns = 40;
+    public const int ConsoleColumns = 80;
 
     public const int WorldHeight = 80;
     public const int WorldWidth = 1024;
