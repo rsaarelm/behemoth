@@ -10,10 +10,16 @@ namespace Rpg
   {
     void NewGame();
 
+    /// <summary>
+    /// Print an onscreen message.
+    /// </summary>
     void Msg(string fmt, params Object[] args);
 
     IEnumerable<string> MsgLines { get; }
 
+    /// <summary>
+    /// Clear the onscreen message buffer.
+    /// </summary>
     void ClearMsg();
 
     void GameOver(string msg);
@@ -22,8 +28,8 @@ namespace Rpg
 
     Rng Rng { get; }
 
-
     void MoveCmd(int dir8);
+
     void NewTurn();
 
     bool IsGameOver { get; }
