@@ -39,5 +39,15 @@ namespace Rpg
     World World { get; }
 
     Vec3 PlayerPos { get; }
+
+    /// <summary>
+    /// Acquire a thread synchronization lock on game state.
+    /// </summary>
+    void AcquireWorldLock();
+
+    /// <summary>
+    /// Release the thread sychronization lock on game state.
+    /// </summary>
+    void ReleaseWorldLock();
   }
 }

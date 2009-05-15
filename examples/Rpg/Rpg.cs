@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 using Tao.OpenGl;
 using Tao.Sdl;
@@ -332,6 +333,18 @@ namespace Rpg
 
 
     public World World { get { return world; } }
+
+
+    public void AcquireWorldLock()
+    {
+      Monitor.Enter(world);
+    }
+
+
+    public void ReleaseWorldLock()
+    {
+      Monitor.Exit(world);
+    }
 
 
     /// <summary>
