@@ -13,6 +13,8 @@ namespace Behemoth.TaoUtil
   {
     void Resize(int w, int h);
 
+    void FlipScreen();
+
     void PixelProjection();
 
     void AddTexture(string name, Color[,] pixels);

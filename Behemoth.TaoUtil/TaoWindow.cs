@@ -5,23 +5,40 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Util;
-using Behemoth.Apps;
 
 namespace Behemoth.TaoUtil
 {
-  [System.Obsolete("Use TaoWindow instead, don't lock the execution model to App.")]
-  public class TaoApp : App, ITaoService
+  /// <summary>
+  /// A wrapper for OpenGL application windows using Tao.
+  /// </summary>
+  public class TaoWindow : ITaoService
   {
-    public TaoApp(int pixelWidth, int pixelHeight, string title)
+    public TaoWindow(int pixelWidth, int pixelHeight, string title)
     {
       this.pixelWidth = pixelWidth;
       this.pixelHeight = pixelHeight;
       this.windowTitle = title;
+    }
 
+
+    public void FlipScreen()
+    {
+      Sdl.SDL_GL_SwapBuffers();
+    }
+
+
+    public void Init()
+    {
       CacheInit();
       LibInit();
+    }
 
-      RegisterService(typeof(ITaoService), this);
+
+    public void Uninit()
+    {
+      textureCache.Dispose();
+      Media.UninitFacilities();
+      Sdl.SDL_Quit();
     }
 
 
@@ -40,39 +57,6 @@ namespace Behemoth.TaoUtil
       InitSdl();
       InitGl();
     }
-
-
-    protected override void Draw(double timeElapsed)
-    {
-      base.Draw(timeElapsed);
-      FlipScreen();
-    }
-
-
-    public void FlipScreen()
-    {
-      Sdl.SDL_GL_SwapBuffers();
-    }
-
-
-    protected override void InitApp()
-    {
-    }
-
-
-    protected override void UninitApp()
-    {
-      textureCache.Dispose();
-      Media.UninitFacilities();
-      Sdl.SDL_Quit();
-    }
-
-
-    public void Init()
-    {
-    }
-
-    public void Uninit() {}
 
 
     void InitSdl()
@@ -104,67 +88,6 @@ namespace Behemoth.TaoUtil
       // Blending function for sprite transparency
       Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
       Gl.glEnable(Gl.GL_BLEND);
-    }
-
-
-    void ReadInput()
-    {
-      Sdl.SDL_Event evt;
-
-      IScreen screen = null;
-
-      TryGetService(out screen);
-
-      while (Sdl.SDL_PollEvent(out evt) != 0)
-      {
-        switch (evt.type)
-        {
-        case Sdl.SDL_QUIT:
-          Exit();
-          break;
-
-        case Sdl.SDL_VIDEORESIZE:
-          Resize(evt.resize.w, evt.resize.h);
-          break;
-
-        case Sdl.SDL_KEYDOWN:
-          if (screen != null)
-          {
-            // XXX: Can we just cast unicode ints to chars?
-            screen.KeyPressed(
-              evt.key.keysym.sym,
-              evt.key.keysym.mod,
-              (char)evt.key.keysym.unicode);
-          }
-          break;
-
-        case Sdl.SDL_KEYUP:
-          if (screen != null)
-          {
-            screen.KeyReleased(evt.key.keysym.sym);
-          }
-          break;
-
-        case Sdl.SDL_JOYAXISMOTION:
-          // TODO: Handle joystick event.
-          break;
-
-        case Sdl.SDL_JOYBUTTONDOWN:
-          // TODO: Handle joystick event.
-          break;
-
-        case Sdl.SDL_JOYBUTTONUP:
-          // TODO: Handle joystick event.
-          break;
-        }
-      }
-    }
-
-
-    protected override void Update(double timeElapsed)
-    {
-      ReadInput();
-      base.Update(timeElapsed);
     }
 
 

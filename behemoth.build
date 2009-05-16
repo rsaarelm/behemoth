@@ -160,6 +160,7 @@
         <include name="Behemoth.TaoUtil/InputUtil.cs"/>
         <include name="Behemoth.TaoUtil/Media.cs"/>
         <include name="Behemoth.TaoUtil/TaoApp.cs"/>
+        <include name="Behemoth.TaoUtil/TaoWindow.cs"/>
         <include name="Behemoth.TaoUtil/TextureCache.cs"/>
       </sources>
       <references>
