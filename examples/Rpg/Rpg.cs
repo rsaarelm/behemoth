@@ -29,33 +29,14 @@ namespace Rpg
     }
 
 
-    private void PrintTable(IDictionary<Object, Object> table)
-    {
-      foreach (var kvp in table)
-      {
-        if (kvp.Value is IDictionary<Object, Object>) {
-          Console.WriteLine("{0}: [", kvp.Key);
-          PrintTable((IDictionary<Object, Object>)kvp.Value);
-          Console.WriteLine("]");
-        }
-        else
-        {
-          Console.WriteLine("{0}: {1}", kvp.Key, kvp.Value);
-        }
-      }
-    }
-
-
     public void Init()
     {
       var joystick = InputUtil.InitJoystick();
 
       if (joystick.HasValue)
       {
-        //Console.WriteLine("Joystick detected.");
         if (joystick.Value.MatchesPS2Pad())
         {
-          //Console.WriteLine("Joystick looks like a PS2 pad.");
         }
       }
 
@@ -67,12 +48,6 @@ namespace Rpg
       Media.AddPhysFsPath("build", "Rpg.zip");
 
       NewGame();
-
-      // Test Lua dumping.
-      //var lua = new LuaState();
-      //lua.DoString("a = 1 b = 2 c = {5, 4, foo = 'bar'}");
-      //
-      //PrintTable(lua.DumpGlobals());
     }
 
 
