@@ -161,7 +161,7 @@ namespace Rpg
 
       Alg.Times(64, i => SpawnCreature());
 
-      DoLos();
+      Action.DoLos();
     }
 
 
