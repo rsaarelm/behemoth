@@ -59,7 +59,6 @@ namespace Rpg
       world = new World();
       ClearMsg();
       gameOver = false;
-      rng = new DefaultRng();
 
       var terrainTable = new Object[][] {
         Alg.OA("nothing", "NoTerrain", 'x', Color.HotPink, Color.Black),
@@ -327,8 +326,6 @@ namespace Rpg
     private List<string> messages = new List<string>();
 
     private bool gameOver;
-
-    private Rng rng;
 
 
     public const int pixelWidth = 640;

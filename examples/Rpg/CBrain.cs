@@ -229,12 +229,14 @@ namespace Rpg
 
       result.Resistance = might / 4;
 
+      result.Alignment = alignment;
+
       return result;
     }
 
-    double might;
-    double craft;
+    private double might;
+    private double craft;
 
-    int alignment = 0;
+    private int alignment = 0;
   }
 }
