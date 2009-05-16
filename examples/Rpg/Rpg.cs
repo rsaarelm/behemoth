@@ -168,7 +168,7 @@ namespace Rpg
     public Vec3 PlayerPos { get { return Player.Get<CCore>().Pos; } }
 
 
-    public Entity Player { get { return (Entity)world.Globals["player"]; } }
+    public Entity Player { get { return (Entity)World.Globals["player"]; } }
 
 
     public void Msg(string fmt, params Object[] args)
@@ -258,14 +258,8 @@ namespace Rpg
     public void MoveCmd(int dir8)
     {
       Action.AttackMove(Player, dir8);
-      DoLos();
+      Action.DoLos();
       NewTurn();
-    }
-
-
-    void DoLos()
-    {
-      Player.Get<CLos>().DoLos();
     }
 
 
@@ -288,10 +282,6 @@ namespace Rpg
     }
 
 
-    public bool IsMapped(int x, int y, int z)
-    {
-      return Player.Get<CLos>().IsMapped(new Vec3(x, y, z));
-    }
 
 
     public void GameOver(string msg)
@@ -301,7 +291,7 @@ namespace Rpg
     }
 
 
-    public Rng Rng { get { return rng; } }
+    public Rng Rng { get { return World.Rng; } }
 
 
     public bool IsGameOver { get { return gameOver; } }

@@ -34,8 +34,6 @@ namespace Rpg
 
     bool IsGameOver { get; }
 
-    bool IsMapped(int x, int y, int z);
-
     World World { get; }
 
     Vec3 PlayerPos { get; }

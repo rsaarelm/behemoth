@@ -145,5 +145,11 @@ namespace Rpg
       // Give it a line-of-sight component.
       entity.Set(new CLos());
     }
+
+
+    public static void DoLos()
+    {
+      Rpg.Service.Player.Get<CLos>().DoLos();
+    }
   }
 }

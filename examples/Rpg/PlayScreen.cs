@@ -108,7 +108,7 @@ namespace Rpg
           int mapY = yOff + y;
           int mapZ = (int)center.Z;
 
-          if (Rpg.Service.IsMapped(mapX, mapY, mapZ))
+          if (Query.IsMapped(mapX, mapY, mapZ))
           {
             var tile = Rpg.Service.World.Space[mapX, mapY, mapZ];
 

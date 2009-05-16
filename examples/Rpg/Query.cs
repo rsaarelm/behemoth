@@ -244,5 +244,11 @@ namespace Rpg
 
       return result;
     }
+
+
+    public static bool IsMapped(int x, int y, int z)
+    {
+      return Rpg.Service.Player.Get<CLos>().IsMapped(new Vec3(x, y, z));
+    }
   }
 }
