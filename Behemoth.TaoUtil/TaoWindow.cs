@@ -5,6 +5,7 @@ using Tao.OpenGl;
 using Tao.Sdl;
 
 using Behemoth.Util;
+using Behemoth.Apps;
 
 namespace Behemoth.TaoUtil
 {
@@ -91,6 +92,57 @@ namespace Behemoth.TaoUtil
     }
 
 
+    // TODO: Mouse events. These need a more complex signature.
+
+    public bool HandleInput(
+      Action<int, int, char> keyDownCallback,
+      Action<int> keyUpCallback,
+      Action quitCallback)
+    {
+      Sdl.SDL_Event evt;
+
+      if (Sdl.SDL_PollEvent(out evt) == 0)
+      {
+        return false;
+      }
+
+
+      switch (evt.type)
+      {
+      case Sdl.SDL_QUIT:
+        if (quitCallback != null)
+        {
+          quitCallback();
+        }
+        break;
+
+      case Sdl.SDL_VIDEORESIZE:
+        App.Service<ITaoService>().Resize(evt.resize.w, evt.resize.h);
+        break;
+
+      case Sdl.SDL_KEYDOWN:
+        if (keyDownCallback != null)
+        {
+          // XXX: Can we just cast unicode ints to chars?
+          keyDownCallback(
+            evt.key.keysym.sym,
+            evt.key.keysym.mod,
+            (char)evt.key.keysym.unicode);
+        }
+        break;
+
+      case Sdl.SDL_KEYUP:
+        if (keyUpCallback != null)
+        {
+          keyUpCallback(evt.key.keysym.sym);
+        }
+        break;
+      }
+
+      return true;
+    }
+
+
     public void Resize(int w, int h)
     {
       int x, y, width, height;
@@ -114,10 +166,6 @@ namespace Behemoth.TaoUtil
     }
 
 
-    /// <summary>
-    /// A 2d projection where 1 unit corresponds to 1 pixel in the desired
-    /// pixel dimensions.
-    /// </summary>
     public void PixelProjection()
     {
       Gl.glMatrixMode(Gl.GL_PROJECTION);
@@ -127,9 +175,6 @@ namespace Behemoth.TaoUtil
     }
 
 
-    /// <summary>
-    /// Add a procedurally generated texture with a given name.
-    /// </summary>
     public void AddTexture(string name, Color[,] pixels)
     {
       imageCache[name] = Media.PixelsToSurface(pixels);
