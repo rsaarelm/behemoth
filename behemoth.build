@@ -13,10 +13,6 @@
   <property name="timestamp"
             value="${datetime::get-year(datetime::now())}${datetime::get-month(datetime::now())}${datetime::get-day(datetime::now())}"/>
 
-  <!-- The program that gets run with "nant run" -->
-  <property name="currentprogram"
-            value="Rpg.exe"/>
-
   <if test="${platform::is-win32()}">
     <property name="nant.settings.currentframework" value="net-3.5"/>
   </if>
@@ -27,11 +23,6 @@
 
   <target name="clean">
     <delete dir="${build.dir}" failonerror="false"/>
-  </target>
-
-
-  <target name="run" depends="build">
-    <exec program="${build.dir}/${currentprogram}"/>
   </target>
 
 
@@ -56,8 +47,6 @@
   <target name="examples"
           depends="Shooter.exe,
                    Behetris.exe,
-                   Rpg.exe,
-                   Flight.exe
                    "/>
 
 
@@ -259,80 +248,6 @@
       </references>
     </csc>
   </target>
-
-
-  <!-- Rpg demo -->
-  <target name="Rpg.exe" depends="libs,Rpg.zip">
-    <csc target="exe"
-         output="${build.dir}/Rpg.exe">
-      <sources>
-        <include name="examples/Rpg/IRpgService.cs"/>
-
-        <include name="examples/Rpg/Action.cs"/>
-        <include name="examples/Rpg/CBrain.cs"/>
-        <include name="examples/Rpg/CCore.cs"/>
-        <include name="examples/Rpg/CLos.cs"/>
-        <include name="examples/Rpg/Icon.cs"/>
-        <include name="examples/Rpg/Query.cs"/>
-        <include name="examples/Rpg/PlayScreen.cs"/>
-        <include name="examples/Rpg/Rpg.cs"/>
-        <include name="examples/Rpg/Terrain.cs"/>
-        <include name="examples/Rpg/TitleScreen.cs"/>
-        <include name="examples/Rpg/UI.cs"/>
-        <include name="examples/Rpg/World.cs"/>
-      </sources>
-      <references>
-        <include name="${build.dir}/Tao.OpenGl.dll"/>
-        <include name="${build.dir}/Tao.Sdl.dll"/>
-        <include name="${build.dir}/Tao.Lua.dll"/>
-
-        <include name="${build.dir}/Behemoth.Util.dll"/>
-        <include name="${build.dir}/Behemoth.Apps.dll"/>
-        <include name="${build.dir}/Behemoth.LuaUtil.dll"/>
-        <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
-      </references>
-    </csc>
-  </target>
-
-
-  <!-- Data files for rpg demo -->
-  <target name="Rpg.zip" depends="init">
-    <zip zipfile="${build.dir}/Rpg.zip">
-      <fileset basedir="examples/Rpg/data">
-        <include name="**/*"/>
-      </fileset>
-    </zip>
-  </target>
-
-
-  <!-- Flight demo -->
-  <target name="Flight.exe" depends="libs,Flight.zip">
-    <csc target="exe"
-         output="${build.dir}/Flight.exe">
-      <sources>
-        <include name="examples/Flight/Flight.cs"/>
-      </sources>
-      <references>
-        <include name="${build.dir}/Tao.OpenGl.dll"/>
-        <include name="${build.dir}/Tao.Sdl.dll"/>
-
-        <include name="${build.dir}/Behemoth.Util.dll"/>
-        <include name="${build.dir}/Behemoth.Apps.dll"/>
-        <include name="${build.dir}/Behemoth.TaoUtil.dll"/>
-      </references>
-    </csc>
-  </target>
-
-
-  <!-- Data files for flight demo -->
-  <target name="Flight.zip" depends="init">
-    <zip zipfile="${build.dir}/Flight.zip">
-      <fileset basedir="examples/Flight/data">
-        <include name="**/*"/>
-      </fileset>
-    </zip>
-  </target>
-
 
 
   <target name="init">
