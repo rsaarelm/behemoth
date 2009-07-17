@@ -106,49 +106,12 @@ namespace Behemoth.Apps
       try
       {
         InitApp();
-        Main();
+        AppMain();
       }
       finally
       {
         UninitApp();
         UninitServices();
-      }
-    }
-
-
-    public void Exit()
-    {
-      IsRunning = false;
-    }
-
-
-    /// <summary>
-    /// Targeted frame rate in seconds.
-    /// </summary>
-    public double TargetUpdateInterval = 1.0 / 30.0;
-
-
-    public int Tick { get { return tick; } }
-
-
-    protected virtual void Update(double timeElapsed)
-    {
-      IScreen screen;
-      if (TryGetService(out screen))
-      {
-        screen.Update(timeElapsed);
-      }
-
-      tick++;
-    }
-
-
-    protected virtual void Draw(double timeElapsed)
-    {
-      IScreen screen;
-      if (TryGetService(out screen))
-      {
-        screen.Draw(timeElapsed);
       }
     }
 
