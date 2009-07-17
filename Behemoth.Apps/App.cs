@@ -92,42 +92,33 @@ namespace Behemoth.Apps
     }
 
 
+    protected void UninitServices()
+    {
+      foreach (var serv in services.Values)
+      {
+        serv.Uninit();
+      }
+    }
+
+
     public void Run()
     {
-      isRunning = true;
-
-      InitApp();
-
-      double lastTime = TimeUtil.CurrentSeconds;
       try
       {
-        while (isRunning)
-        {
-          if (TimeUtil.CurrentSeconds >= lastTime + TargetUpdateInterval)
-          {
-            Update(TargetUpdateInterval);
-            Draw(TargetUpdateInterval);
-            lastTime += TargetUpdateInterval;
-          }
-        }
+        InitApp();
+        Main();
       }
       finally
       {
-        foreach (var serv in services.Values)
-        {
-          serv.Uninit();
-        }
-
         UninitApp();
-
-        isRunning = false;
+        UninitServices();
       }
     }
 
 
     public void Exit()
     {
-      isRunning = false;
+      IsRunning = false;
     }
 
 
@@ -163,6 +154,12 @@ namespace Behemoth.Apps
 
 
     protected virtual void InitApp() {}
+    
+
+    /// <summary>
+    /// The main function of the app, called from Run.
+    /// </summary>
+    protected virtual void AppMain() {}
 
 
     protected virtual void UninitApp() {}
@@ -170,11 +167,6 @@ namespace Behemoth.Apps
 
     private IDictionary<Type, IAppService> services =
       new Dictionary<Type, IAppService>();
-
-    private bool isRunning = false;
-
-    private int tick = 0;
-
 
     private static App instance = null;
   }

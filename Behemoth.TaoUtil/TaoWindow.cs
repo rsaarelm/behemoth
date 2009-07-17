@@ -30,16 +30,31 @@ namespace Behemoth.TaoUtil
 
     public void Init()
     {
+      if (taoInited)
+      {
+        Console.WriteLine("Warning: Tried to init Tao component twice.");
+        return;
+      }
+
       CacheInit();
       LibInit();
+      taoInited = true;
     }
 
 
     public void Uninit()
     {
+      if (!taoInited)
+      {
+        Console.WriteLine("Warning: Tried to uninit Tao component that isn't inited.");
+        return;
+      }
+
       textureCache.Dispose();
       Media.UninitFacilities();
       Sdl.SDL_Quit();
+
+      taoInited = false;
     }
 
 
@@ -202,5 +217,7 @@ namespace Behemoth.TaoUtil
 
     private ImageCache imageCache;
     private TextureCache textureCache;
+
+    private static bool taoInited = false;
   }
 }
