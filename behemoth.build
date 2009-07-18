@@ -43,11 +43,14 @@
                    Behemoth.LuaUtil.dll
                    "/>
 
-
+<!-- FIXME: These use the old api, not working now.
   <target name="examples"
           depends="Shooter.exe,
                    Behetris.exe,
                    "/>
+-->
+  <target name="examples"
+          depends=""/>
 
 
   <target name="dist"
@@ -148,7 +151,9 @@
         <include name="Behemoth.TaoUtil/ImageCache.cs"/>
         <include name="Behemoth.TaoUtil/InputUtil.cs"/>
         <include name="Behemoth.TaoUtil/Media.cs"/>
+<!-- // Doesn't work with the new App structure.
         <include name="Behemoth.TaoUtil/TaoApp.cs"/>
+-->
         <include name="Behemoth.TaoUtil/TaoWindow.cs"/>
         <include name="Behemoth.TaoUtil/TextureCache.cs"/>
       </sources>
@@ -199,8 +204,8 @@
     </csc>
   </target>
 
-
   <!-- Shooter demo -->
+<!-- Commented out, uses old API
   <target name="Shooter.exe" depends="libs,Shooter.zip">
     <csc target="exe"
          output="${build.dir}/Shooter.exe">
@@ -217,9 +222,10 @@
       </references>
     </csc>
   </target>
-
+-->
 
   <!-- Data files for shooter demo -->
+<!--
   <target name="Shooter.zip" depends="init">
     <zip zipfile="${build.dir}/Shooter.zip">
       <fileset basedir="examples/Shooter/data">
@@ -227,9 +233,11 @@
       </fileset>
     </zip>
   </target>
+-->
 
 
   <!-- Behetris game -->
+<!-- Commented out, uses old API
   <target name="Behetris.exe" depends="libs">
     <csc target="exe"
          output="${build.dir}/Behetris.exe">
@@ -248,8 +256,7 @@
       </references>
     </csc>
   </target>
-
-
+-->
   <target name="init">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${dist.dir}"/>
