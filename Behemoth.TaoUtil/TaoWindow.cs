@@ -196,6 +196,46 @@ namespace Behemoth.TaoUtil
     }
 
 
+    public void TimerEventOn(double intervalInSeconds)
+    {
+      if (timerId != null)
+      {
+        TimerEventOff();
+      }
+
+      timerId = Sdl.SDL_AddTimer((int)(intervalInSeconds * 1000),
+                                 TimerCallback);
+    }
+
+
+    public void TimerEventOff()
+    {
+      if (timerId != null)
+      {
+        Sdl.SDL_RemoveTimer(timerId.Value);
+        timerId = null;
+      }
+    }
+
+
+    private const int TIMER_EVENT_CODE = 1;
+
+
+    public int TimerEventCode { get { return TIMER_EVENT_CODE; } }
+
+
+    private static int TimerCallback(int intervalMs)
+    {
+      Sdl.SDL_Event evt = new Sdl.SDL_Event();
+      evt.type = Sdl.SDL_USEREVENT;
+      evt.user.code = TIMER_EVENT_CODE;
+      evt.user.data1 = IntPtr.Zero;
+      evt.user.data2 = IntPtr.Zero;
+      Sdl.SDL_PushEvent(out evt);
+      return intervalMs;
+    }
+
+
     public int PixelWidth { get { return pixelWidth; } }
 
     public int PixelHeight { get { return pixelHeight; } }
@@ -219,5 +259,7 @@ namespace Behemoth.TaoUtil
     private TextureCache textureCache;
 
     private static bool taoInited = false;
+
+    private Sdl.SDL_TimerID? timerId = null;
   }
 }

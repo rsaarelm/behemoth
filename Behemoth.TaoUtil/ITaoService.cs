@@ -51,6 +51,21 @@ namespace Behemoth.TaoUtil
     void AddTexture(string name, Color[,] pixels);
 
     /// <summary>
+    /// Activate a SDL timer that emits periodic user events to the SDL event queue.
+    /// </summary>
+    void TimerEventOn(double intervalInSeconds);
+
+    /// <summary>
+    /// Deactivate an active SDL timer.
+    /// </summary>
+    void TimerEventOff();
+
+    /// <summary>
+    /// The user event code for the timer event.
+    /// </summary>
+    int TimerEventCode { get; }
+
+    /// <summary>
     /// The logical pixel width.
     /// </summary>
     int PixelWidth { get; }
