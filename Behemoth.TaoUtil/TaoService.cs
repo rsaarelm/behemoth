@@ -12,9 +12,9 @@ namespace Behemoth.TaoUtil
   /// <summary>
   /// A wrapper for OpenGL application windows using Tao.
   /// </summary>
-  public class TaoWindow : ITaoService
+  public class TaoService : ITaoService
   {
-    public TaoWindow(int pixelWidth, int pixelHeight, string title)
+    public TaoService(int pixelWidth, int pixelHeight, string title)
     {
       this.pixelWidth = pixelWidth;
       this.pixelHeight = pixelHeight;
