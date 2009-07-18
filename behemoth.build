@@ -151,9 +151,6 @@
         <include name="Behemoth.TaoUtil/ImageCache.cs"/>
         <include name="Behemoth.TaoUtil/InputUtil.cs"/>
         <include name="Behemoth.TaoUtil/Media.cs"/>
-<!-- // Doesn't work with the new App structure.
-        <include name="Behemoth.TaoUtil/TaoApp.cs"/>
--->
         <include name="Behemoth.TaoUtil/TaoWindow.cs"/>
         <include name="Behemoth.TaoUtil/TextureCache.cs"/>
       </sources>
