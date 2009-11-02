@@ -482,7 +482,7 @@ namespace Behemoth.Util
 
       var acc = 0.0;
 
-      T result;
+      T result = default(T);
 
       foreach (var item in dist)
       {
